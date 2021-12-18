@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Varela+Round&display=swap');
+
+// Colors
+$color-dark: #353a40;
+$color-accent-green: #3c6e71;
+$color-highlight: #ffffff;
+$color-shadow: #d9dbe2;
+$color-accent-dark-blue: #284b63;
+
+// Transitions
+$transition-speed-normal: 0.4s;
+$transition-normal: all $transition-speed-normal;
+
+// Resets
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button {
+    border: none;
+    background-color: initial;
+    outline: none; // don't forget indicator for focus state
+}
+
+// Base Styles
+.app {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    font-family: 'Varela Round', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    &__container {
+        height: calc(100vh - 65px);
+        display: flex;
+    }
+}
+
+// Styles
+.header {
+    display: flex;
+    align-items: center;
+    height: 65px;
+    background-color: $color-accent-dark-blue;
+}
+
+.logo {
+    font-size: 1.5em;
+    color: $color-highlight;
+
+    &__icon {
+        padding-left: 16px;
+    }
+
+    &__text {
+        padding-left: 16px;
+    }
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: $color-dark;
+    width: 65px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+
+    &__button {
+        padding: 10px 0;
+        transition: $transition-normal;
+        color: $color-shadow;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &:hover,
+        &:focus {
+            background-color: lighten($color-dark, 5%);
+            color: $color-highlight;
+        }
+
+        &.active {
+            background-color: lighten($color-dark, 10%);
+            border-left: solid 3px $color-accent-green;
+            color: $color-highlight;
+
+            &:hover,
+            &:focus {
+                background-color: lighten($color-dark, 15%);
+            }
+        }
+    }
+
+    &__icon {
+        font-size: 1.25rem;
+        padding-bottom: 2px;
+    }
+
+    &__text {
+        font-size: 0.6rem;
+    }
+}
+
+.items-panel {
+    background-color: lighten($color-accent-dark-blue, 35%);
+    position: relative;
+    width: 300px;
+
+    .item-panel {
+        display: flex;
+        height: 100%;
+        width: 300px;
+        padding: 18px;
+        opacity: 0;
+        overflow: auto;
+        color: $color-highlight;
+        position: absolute;
+        transition: $transition-normal;
+
+        &.active {
+            opacity: 1;
+        }
+    }
+}
+
+.main {
+    padding: 15px;
+}
