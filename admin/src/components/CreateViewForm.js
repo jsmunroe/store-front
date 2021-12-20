@@ -1,29 +1,24 @@
 import { useState } from "react";
 import { createView } from "../models/view";
 import { replace, toValue } from "../utils/htmlHelpers";
-import { useDialogComplete } from "./Dialog";
 
 export default function CreateViewForm({onSubmit, onCancel}) {
     const [name, setName] = useState('');
 
-    const {complete, isDialog} = useDialogComplete();
+    const clearForm = () => {
+        setName('');
+    }
 
     const handleFormSubmit = event => {
         const view = createView(name)
-
-        if (isDialog) {
-            return complete(view);
-        }
         
         !!onSubmit && onSubmit(view);
+        clearForm();
     }
 
-    const handleCancelClick = event => {
-        if (isDialog) {
-            return complete();
-        }
-        
+    const handleCancelClick = event => {      
         !!onCancel && onCancel();
+        clearForm();
     }
 
     return <form className="form" onSubmit={replace(handleFormSubmit)}>
@@ -35,3 +30,4 @@ export default function CreateViewForm({onSubmit, onCancel}) {
         </div>
     </form>
 }
+
