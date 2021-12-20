@@ -30,4 +30,3 @@ export default function CreateViewForm({onSubmit, onCancel}) {
         </div>
     </form>
 }
-
