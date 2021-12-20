@@ -1,15 +1,5 @@
+@import './src/styles/colors';
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Varela+Round&display=swap');
-
-// Colors
-$color-dark: #353a40;
-$color-accent-green: #3c6e71;
-$color-highlight: #ffffff;
-$color-shadow: #d9dbe2;
-$color-accent-dark-blue: #284b63;
-
-// Transitions
-$transition-speed-normal: 0.4s;
-$transition-normal: all $transition-speed-normal;
 
 // Resets
 *,
@@ -115,7 +105,7 @@ button {
     width: 300px;
 
     .item-panel {
-        display: flex;
+        display: none;
         height: 100%;
         width: 300px;
         padding: 18px;
@@ -126,6 +116,7 @@ button {
         transition: $transition-normal;
 
         &.active {
+            display: flex;
             opacity: 1;
         }
     }

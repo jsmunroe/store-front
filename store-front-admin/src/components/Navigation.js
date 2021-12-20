@@ -1,4 +1,5 @@
 import { useState } from "react"
+import ViewList from "./ViewList";
 
 export default function Navigation() {
     const [active, setActive] = useState('views');   
@@ -23,6 +24,7 @@ export default function Navigation() {
 
         <div className="items-panel">
             <div className={`item-panel ${activeIf('views')}`} name="views">
+                <ViewList/>
             </div>
             <div className={`item-panel ${activeIf('templates')}`} name="templates">
             </div>

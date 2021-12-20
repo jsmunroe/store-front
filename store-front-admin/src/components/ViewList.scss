@@ -1,0 +1,18 @@
+@import './src/styles/colors';
+
+.view-list {
+    width: 100%;
+
+    &__create-view {
+        height: 55px;
+        width: 100%;
+        background-color: rgba($color-shadow, 0.2);
+        color: $color-highlight;
+        transition: $transition-normal;
+
+        &:hover,
+        &:focus {
+            background-color: rgba($color-shadow, 0.5);
+        }
+    }
+}

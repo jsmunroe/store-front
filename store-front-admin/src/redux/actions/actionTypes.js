@@ -1,1 +1,2 @@
-export const addView = 'ADD_VIEW';
+export const createView = 'CREATE_VIEW';
+export const saveView = 'SAVE_VIEW';
