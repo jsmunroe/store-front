@@ -1,10 +1,10 @@
 import { combineReducers  } from "redux";
 import views from './viewsReducer';
-
-debugger;
+import view from './viewReducer';
 
 const rootReducer = combineReducers({
-    views
+    views,
+    view,
 });
 
 export default rootReducer;

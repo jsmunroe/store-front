@@ -2,13 +2,39 @@
 
 .view-list {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 
+    .view-item,
     &__create-view {
         height: 55px;
         width: 100%;
+        transition: $transition-normal;
+    }
+
+    .view-item {
+        border: 0.5px $color-highlight solid;
+        color: $color-shadow;
+
+        &__icon {
+            margin-right: 5px;
+        }
+
+        &:hover,
+        &:focus {
+            color: $color-highlight;
+            background-color: rgba($color-shadow, 0.2);
+        }
+
+        &:hover {
+            transform: scale(105%, 105%);
+        }
+    }
+
+    &__create-view {
         background-color: rgba($color-shadow, 0.2);
         color: $color-highlight;
-        transition: $transition-normal;
 
         &:hover,
         &:focus {

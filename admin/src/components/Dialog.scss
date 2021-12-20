@@ -1,0 +1,30 @@
+@import './src/styles/colors';
+
+.dialog {
+    display: none;
+
+    &.open {
+        display: block;
+    }
+
+    &__content {
+        background-color: $color-highlight;
+        color: $color-dark;
+        min-width: 500px;
+        border-radius: 15px;
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 5px 5px 14px 5px rgba(0, 0, 0, 0.48);
+    }
+
+    &__backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: rgba(black, 0.1);
+    }
+}

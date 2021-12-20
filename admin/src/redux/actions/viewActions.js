@@ -1,7 +1,7 @@
 import * as actionTypes from './actionTypes';
 
-export function createView(view) {
-    return { type: actionTypes.createView, view }
+export function loadView(view) {
+    return { type: actionTypes.loadView, view }
 }
 
 export function saveView(view) {

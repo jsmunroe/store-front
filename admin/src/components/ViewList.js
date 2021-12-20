@@ -1,17 +1,23 @@
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as viewActions from "../redux/actions/viewsActions";
-import * as View from "../models/view";
+import * as viewActions from "../redux/actions/viewActions";
 import useNavigate from "../hooks/useNavigate";
 import './ViewList.scss'
+import Dialog, { useDialogState } from "./Dialog";
+import CreateViewForm from "./CreateViewForm";
 
 function ViewList({views, actions}) {
+    const createViewDialogState = useDialogState();
     const navigate = useNavigate();
 
-    const handleCreateView = event => {
-        const view = View.create();
-        actions.createView(view);
-        navigate.toViewEditor();
+    const handleCreateView = async event => {
+        const view = await createViewDialogState.show();
+
+        if (view) {
+            actions.saveView(view);
+            actions.loadView(view);
+            navigate.toViewEditor();
+        }
     }
 
     return <div className="view-list">
@@ -20,6 +26,10 @@ function ViewList({views, actions}) {
         <button className="view-list__create-view" onClick={handleCreateView}>
             <i className="fas fa-plus view-list__create-view-icon"></i>
         </button>
+
+        <Dialog dialogState={createViewDialogState}>
+            <CreateViewForm />
+        </Dialog>
     </div>
 }
 
