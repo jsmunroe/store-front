@@ -1,4 +1,5 @@
 const initialState = {
+    user: { state: 'Unknown' },
     views: [],
     view: {},
 }

@@ -1,4 +1,4 @@
-import { toFriendlyError } from "./friendlyErrors";
+import { toFriendlyError } from "../config/friendlyErrors";
 
 const isDev = process.env.NODE_ENV !== "production";
 

@@ -1,3 +1,7 @@
+// Auth actions
+export const loadUser = 'LOAD_USER';
+export const clearUser = 'CLEAR_USER';
+
 // Views actions
 export const saveView = 'SAVE_VIEW';
 
