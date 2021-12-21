@@ -72,4 +72,5 @@ export function readAll(snapshot) {
     snapshot.forEach(doc => {
         elements = [...elements, read(doc)];
     });
+    return elements;
 }

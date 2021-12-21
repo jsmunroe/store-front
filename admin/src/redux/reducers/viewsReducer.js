@@ -4,6 +4,9 @@ import initialState from './initialState';
 import _ from 'lodash';
 
 export default createReducer({
+    [actionTypes.loadViews]: function (state, {views}) {
+        return _.sortBy([...views], v => v.name);
+    },
 
     [actionTypes.saveView]: function (state, {view}) {
         if (state.find(v => v.id === view.id)) {

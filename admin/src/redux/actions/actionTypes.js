@@ -6,4 +6,5 @@ export const clearUser = 'CLEAR_USER';
 export const saveView = 'SAVE_VIEW';
 
 // View actions
+export const loadViews = 'LOAD_VIEWS';
 export const loadView = 'LOAD_VIEW';
