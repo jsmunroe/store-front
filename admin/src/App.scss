@@ -132,7 +132,9 @@ option {
 }
 
 .main {
-    padding: 15px;
+    height: calc(100vh - 65px); // 65px - .header
+    width: calc(100vw - 300px - 65px); // 300
+    overflow: auto;
 }
 
 // Reused Styles

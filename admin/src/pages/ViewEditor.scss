@@ -1,0 +1,108 @@
+@import './src/styles/colors';
+
+.view-editor {
+    background-color: $color-shadow;
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+
+    &__page {
+        min-height: 100vh;
+        width: 100vw;
+        border: 2px solid $color-dark;
+        background-color: $color-highlight;
+        //transform: scale(90%);
+    }
+
+    .section {
+        margin: 15px; // TODO: This will be a property of how the section is generally defined.
+        height: 100vh;
+        display: grid;
+        gap: 15px; // TODO: This will be a property of how the section is generally defined.
+        position: relative;
+    }
+
+    .element {
+        border: dashed 4px lightgray;
+        position: relative;
+
+        &__resize-top {
+            background-color: gray;
+            cursor: n-resize;
+            width: 100%;
+            height: 16px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        &__resize-bottom {
+            cursor: s-resize;
+            width: 100%;
+            height: 16px;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+        }
+
+        &__resize-left {
+            cursor: w-resize;
+            width: 16px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        &__resize-right {
+            cursor: e-resize;
+            width: 16px;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+
+        &__resize-top-left {
+            cursor: nw-resize;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        &__resize-bottom-left {
+            cursor: sw-resize;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+        }
+
+        &__resize-top-right {
+            cursor: ne-resize;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+
+        &__resize-bottom-right {
+            cursor: se-resize;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        &__image {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+}
