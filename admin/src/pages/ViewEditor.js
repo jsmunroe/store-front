@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import uuid from "react-uuid"
 import { bindActionCreators } from "redux"
 import Section from "../components/Section"
+import ResizeTool from "../components/tools/ResizeTool"
 import * as viewActions from "../redux/actions/viewActions"
 import './ViewEditor.scss'
 
@@ -32,6 +33,7 @@ const initialSections = [
 ]    
 
 function ViewEditor({view}) {
+    const [selectedTool, setSelectedTool] = useState(new ResizeTool())
     const [sections, setSections] = useState(initialSections);
 
     const handleSectionUpdate = section => {
@@ -40,7 +42,7 @@ function ViewEditor({view}) {
 
     return <div className="view-editor">
         <div className="view-editor__page">
-            {sections.map((section, index) => <Section key={index} onUpdateSection={handleSectionUpdate} section={section} />)}
+            {sections.map((section, index) => <Section key={index} tool={selectedTool} onUpdateSection={handleSectionUpdate} section={section} />)}
         </div>
     </div>
 }
