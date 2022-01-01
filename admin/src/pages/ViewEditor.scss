@@ -11,7 +11,7 @@
         width: 100vw;
         border: 2px solid $color-dark;
         background-color: $color-highlight;
-        //transform: scale(90%);
+        margin: 100px 150px;
     }
 
     .section {
@@ -25,6 +25,11 @@
     .element {
         border: dashed 4px lightgray;
         position: relative;
+        transition: all 0.5s;
+
+        > img {
+            height: 100%;
+        }
 
         &__resize-top {
             background-color: gray;
@@ -103,6 +108,10 @@
             height: 100%;
             width: 100%;
             object-fit: cover;
+        }
+
+        &--no-transition {
+            transition: none;
         }
     }
 }
