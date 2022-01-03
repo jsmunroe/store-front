@@ -20,12 +20,28 @@
         display: grid;
         gap: 15px; // TODO: This will be a property of how the section is generally defined.
         position: relative;
+
+        &__grid-column {
+            pointer-events: none;
+            border-left: silver solid 2px;
+            width: 1px;
+            position: absolute;
+            height: 100%;
+        }
+
+        &__grid-row {
+            pointer-events: none;
+            border-top: silver solid 2px;
+            height: 1px;
+            position: absolute;
+            width: 100%;
+        }
     }
 
     .element {
-        border: dashed 4px lightgray;
-        position: relative;
-        transition: all 0.5s;
+        border: dashed 3px rgba(lightgray, 0);
+        transition: top, left, width, height 0.5s;
+        transition: all 0.2s;
 
         &__image {
             height: 100%;
@@ -36,5 +52,9 @@
         &--no-transition {
             transition: none;
         }
+    }
+
+    .element:hover {
+        border: dashed 3px lightgray;
     }
 }

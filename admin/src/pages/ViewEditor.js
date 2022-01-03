@@ -11,22 +11,14 @@ const initialSections = [
     {
         id: uuid(),
         columns: 12,
-        rows: 7,
+        rows: 12,
         elements: [
             {
                 id: uuid(),
                 type: 'Image',
                 src: 'https://dummyimage.com/600x400/fff/BBB.png',
-                width: 3,
-                height: 3,
-            },
-            {
-                id: uuid(),
-                type: 'Image',
-                src: 'https://dummyimage.com/800x600/fff/BBB.png',
-                left: 3,
-                width: 1,
-                height: 3,
+                width: 5,
+                height: 7,
             },
         ]
     }

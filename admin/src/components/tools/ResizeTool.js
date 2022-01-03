@@ -1,3 +1,5 @@
+import { px } from "../../utils/number";
+
 export default class ResizeTool {
     constructor() {
         this.target = null;
@@ -56,6 +58,10 @@ export default class ResizeTool {
     }
     
     onPointerDown(event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) {
+            return;
+        }
+
         const sectionStyle = window.getComputedStyle(this._section);
         this._sectionColumnGap = parseFloat(sectionStyle.columnGap);
         this._sectionRowGap = parseFloat(sectionStyle.rowGap);
@@ -67,6 +73,19 @@ export default class ResizeTool {
         this._targetHandles = this.getHandles(clientX, clientY, this._pointerDownRect);
         this._target.setPointerCapture(event.pointerId);
         this._target.classList.add('element--no-transition');
+
+        // Change from grid positioning to absolute position.
+        const { gridRowStart, gridRowEnd, gridColumnStart, gridColumnEnd } = this._target.style;
+        this._pointerDownGridPosition = { gridRowStart, gridRowEnd, gridColumnStart, gridColumnEnd };
+        this._target.style.gridRowStart = '';
+        this._target.style.gridRowEnd = '';
+        this._target.style.gridColumnStart = '';
+        this._target.style.gridColumnEnd = '';
+        this._target.style.position = 'absolute';
+        this._target.style.top = px(this._pointerDownRect.top);
+        this._target.style.left = px(this._pointerDownRect.left);
+        this._target.style.width = px(this._pointerDownRect.width);
+        this._target.style.height = px(this._pointerDownRect.height);
 
         this.updateSnapPositions();
     }
@@ -83,19 +102,21 @@ export default class ResizeTool {
             ({ clientX, clientY } = this.snap(clientX, clientY));
 
             if (this._targetHandles.top) {
-                this._target.style.marginTop = `${clientY - this._pointerDownRect.top}px`;
+                this._target.style.top = px(clientY);
+                this._target.style.height = px(this._pointerDownRect.bottom - clientY);
             }
 
             if (this._targetHandles.left) {
-                this._target.style.marginLeft = `${clientX - this._pointerDownRect.left}px`;
+                this._target.style.left = px(clientX);
+                this._target.style.width = px(this._pointerDownRect.right - clientX);
             }
 
             if (this._targetHandles.right) {
-                this._target.style.marginRight = `${this._pointerDownRect.right - clientX}px`;
+                this._target.style.width = px(clientX - this._pointerDownRect.left);
             }
 
             if (this._targetHandles.bottom) {
-                this._target.style.marginBottom = `${this._pointerDownRect.bottom - clientY}px`;
+                this._target.style.height = px(clientY - this._pointerDownRect.top);
             }
         } 
         else {
@@ -108,13 +129,18 @@ export default class ResizeTool {
     }
     
     onPointerUp(event) {
-        this._target.style.marginTop = null;
-        this._target.style.marginLeft = null;
-        this._target.style.marginRight = null;
-        this._target.style.marginBottom = null;
+        this._target.style.position = '';
+        this._target.style.top = '';
+        this._target.style.left = '';
+        this._target.style.width = '';
+        this._target.style.height = '';
+        this._target.style.gridRowStart = this._pointerDownGridPosition.gridRowStart;
+        this._target.style.gridRowEnd = this._pointerDownGridPosition.gridRowEnd;
+        this._target.style.gridColumnStart = this._pointerDownGridPosition.gridColumnStart;
+        this._target.style.gridColumnEnd = this._pointerDownGridPosition.gridColumnEnd;
 
         this._target.releasePointerCapture(event.pointerId);
-        setTimeout(() => this._target.classList.remove('element--no-transition'), 0);
+        this._target.classList.remove('element--no-transition');
 
         const updatedElement = this.updateElementPosition(this._element);
         if (updatedElement) {
@@ -140,14 +166,17 @@ export default class ResizeTool {
     }
 
     getRect(element) {
-        const rect = element.getBoundingClientRect();
+        const {top, right, bottom, left, width, height, x, y} = element.getBoundingClientRect();
 
         return {
-            ...rect, 
-            top: rect.top - this._sectionRect.y,
-            left: rect.left - this._sectionRect.x,
-            right: rect.right - this._sectionRect.x,
-            bottom: rect.bottom - this._sectionRect.y,
+            top: top - this._sectionRect.y,
+            left: left - this._sectionRect.x,
+            right: right - this._sectionRect.x,
+            bottom: bottom - this._sectionRect.y,
+            width, 
+            height, 
+            x: x - this._sectionRect.x,
+            y: y - this._sectionRect.y,
         }
     }
 
@@ -190,9 +219,9 @@ export default class ResizeTool {
         const halfColumnGap = this._sectionColumnGap / 2;
         const halfRowGap = this._sectionRowGap / 2;
         this._leftSnapPositions = [-halfColumnGap, ...this._sectionGrid.columns].map(position => position + halfColumnGap);
-        this._rightSnapPositions = [...this._sectionGrid.columns, this._sectionRect.width].map(position => position - halfColumnGap);;
+        this._rightSnapPositions = [...this._sectionGrid.columns, this._sectionRect.width + halfColumnGap].map(position => position - halfColumnGap);;
         this._topSnapPositions = [-halfRowGap, ...this._sectionGrid.rows].map(position => position + halfRowGap);;
-        this._bottomSnapPositions = [...this._sectionGrid.rows, this._sectionRect.height].map(position => position - halfRowGap);;
+        this._bottomSnapPositions = [...this._sectionGrid.rows, this._sectionRect.height + halfRowGap].map(position => position - halfRowGap);;
     }
 
     updateHandleType({top, left, bottom, right}) {
