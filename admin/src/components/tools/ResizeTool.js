@@ -70,6 +70,7 @@ export default class ResizeTool {
         const { clientX, clientY } = this.getPointer(event);
         
         this._pointerDownRect = this.getRect(this._target);
+        this._grabLocation = { x: clientX - this._pointerDownRect.x, y: clientY - this._pointerDownRect.y };
         this._targetHandles = this.getHandles(clientX, clientY, this._pointerDownRect);
         this._target.setPointerCapture(event.pointerId);
         this._target.classList.add('element--no-transition');
@@ -99,24 +100,31 @@ export default class ResizeTool {
 
         if (this._target.hasPointerCapture(event.pointerId)) {      
 
-            ({ clientX, clientY } = this.snap(clientX, clientY));
+            const { snapX, snapY } = this.snap(clientX, clientY);
 
             if (this._targetHandles.top) {
-                this._target.style.top = px(clientY);
-                this._target.style.height = px(this._pointerDownRect.bottom - clientY);
+                this._target.style.top = px(snapY);
+                this._target.style.height = px(this._pointerDownRect.bottom - snapY);
             }
 
             if (this._targetHandles.left) {
-                this._target.style.left = px(clientX);
-                this._target.style.width = px(this._pointerDownRect.right - clientX);
+                this._target.style.left = px(snapX);
+                this._target.style.width = px(this._pointerDownRect.right - snapX);
             }
 
             if (this._targetHandles.right) {
-                this._target.style.width = px(clientX - this._pointerDownRect.left);
+                this._target.style.width = px(snapX - this._pointerDownRect.left);
             }
 
             if (this._targetHandles.bottom) {
-                this._target.style.height = px(clientY - this._pointerDownRect.top);
+                this._target.style.height = px(snapY - this._pointerDownRect.top);
+            }
+
+            if (this._targetHandles.body) {
+                const { snapX, snapY } = this.snap(clientX - this._grabLocation.x, clientY - this._grabLocation.y, true)
+
+                this._target.style.left = px(snapX);
+                this._target.style.top = px(snapY);
             }
         } 
         else {
@@ -149,13 +157,16 @@ export default class ResizeTool {
     }
 
     getHandles(clientX, clientY, targetRect) {
-        return {
+        const handles = {
             top: Math.abs(clientY - targetRect.top) < this._handleThreshold,
             left: Math.abs(clientX - targetRect.left) < this._handleThreshold,
             bottom: Math.abs(clientY - targetRect.bottom) < this._handleThreshold,
             right: Math.abs(clientX - targetRect.right) < this._handleThreshold,
         };
 
+        handles.body = !handles.top && !handles.left && !handles.right && !handles.bottom;
+
+        return handles;
     }
 
     getPointer(event) {
@@ -180,10 +191,15 @@ export default class ResizeTool {
         }
     }
 
-    snap(clientX, clientY) {
-        const { top, left, right, bottom } = this._targetHandles;
-        
-        if (top || bottom) {
+    snap(clientX, clientY, log) {
+        let { top, left, right, bottom, body } = this._targetHandles;
+
+        if (body) {
+            top = true;
+            left = true;
+        }
+
+        if (top || bottom ) {
             const rows = top ? this._topSnapPositions : this._bottomSnapPositions;
 
             const rowIndex = rows.findIndex(row => Math.abs(row - clientY) < this._resizeSnapThreshold);
@@ -194,11 +210,10 @@ export default class ResizeTool {
             } 
             else {
                 this._snappedRowIndex = -1;
-
             }
         }
 
-        if (left || right) {
+        if (left || right ) {
             const columns = left ? this._leftSnapPositions : this._rightSnapPositions;
 
             const columnIndex = columns.findIndex(column => Math.abs(column - clientX) < this._resizeSnapThreshold);
@@ -212,7 +227,7 @@ export default class ResizeTool {
             }
         }
 
-        return { clientX, clientY };
+        return { snapX: clientX, snapY: clientY };
     }
 
     updateSnapPositions() {
@@ -224,7 +239,7 @@ export default class ResizeTool {
         this._bottomSnapPositions = [...this._sectionGrid.rows, this._sectionRect.height + halfRowGap].map(position => position - halfRowGap);;
     }
 
-    updateHandleType({top, left, bottom, right}) {
+    updateHandleType({top, left, bottom, right, body}) {
         if ((top && left) || (bottom && right)) {
             this._target.style.cursor = 'nwse-resize';
             return;
@@ -245,7 +260,12 @@ export default class ResizeTool {
             return;
         }
 
-        this._target.style.cursor = null;
+        if (body) {
+            this._target.style.cursor = 'move';
+            return;
+        }
+
+        this._target.style.cursor = 'null';
     }
 
     updateElementPosition() {
@@ -282,8 +302,18 @@ export default class ResizeTool {
             };
         }
 
+        if (this._targetHandles.body && this._snappedRowIndex >= 0) {
+            position = {...position,
+                top: this._snappedRowIndex,
+            };
+        }
+
+        if (this._targetHandles.body && this._snappedColumnIndex >= 0) {
+            position = {...position,
+                left: this._snappedColumnIndex,  
+            };
+        }
+
         return (position === this._element) ? null : position;
     }
-
-
 }

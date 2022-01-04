@@ -21,19 +21,22 @@
         gap: 15px; // TODO: This will be a property of how the section is generally defined.
         position: relative;
 
-        &__grid-column {
+        &__grid-column,
+        &__grid-row {
             pointer-events: none;
-            border-left: silver solid 2px;
-            width: 1px;
             position: absolute;
+            opacity: 0.3;
+        }
+
+        &__grid-column {
+            border-left: solid 1px $color-dark;
+            width: 0.5px;
             height: 100%;
         }
 
         &__grid-row {
-            pointer-events: none;
-            border-top: silver solid 2px;
-            height: 1px;
-            position: absolute;
+            border-top: solid 1px $color-dark;
+            height: 0.5px;
             width: 100%;
         }
     }

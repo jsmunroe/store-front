@@ -16,7 +16,7 @@ const initialSections = [
             {
                 id: uuid(),
                 type: 'Image',
-                src: 'https://dummyimage.com/600x400/fff/BBB.png',
+                src: 'https://www.teabreakgardener.co.uk/wp-content/uploads/2019/05/IMG_1481.jpg',
                 width: 5,
                 height: 7,
             },
