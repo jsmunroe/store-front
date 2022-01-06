@@ -34,8 +34,9 @@ export default function Dialog({dialogState, children}) {
     </div>
 }
 
-export function useDialogState(isShown) {
-    return new DialogState(isShown);
+export function useDialogState(isShown = false) {
+    const [dialogState] = useState(new DialogState(isShown));
+    return dialogState
 }
 
 export function useDialogComplete() {

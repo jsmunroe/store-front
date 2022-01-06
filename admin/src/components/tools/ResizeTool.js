@@ -2,14 +2,15 @@ import { px } from "../../utils/number";
 
 export default class ResizeTool {
     constructor() {
-        this.target = null;
-        this.section = null;
+        this._target = null;
+        this._section = null;
     
-        this.targetHandles = { 
+        this._targetHandles = { 
             top: false,
             left: false,
             bottom: false,
             right: false,
+            body: false,
         };
     
         this._sectionRect = null;
@@ -142,10 +143,10 @@ export default class ResizeTool {
         this._target.style.left = '';
         this._target.style.width = '';
         this._target.style.height = '';
-        this._target.style.gridRowStart = this._pointerDownGridPosition.gridRowStart;
-        this._target.style.gridRowEnd = this._pointerDownGridPosition.gridRowEnd;
-        this._target.style.gridColumnStart = this._pointerDownGridPosition.gridColumnStart;
-        this._target.style.gridColumnEnd = this._pointerDownGridPosition.gridColumnEnd;
+        this._target.style.gridRowStart = this._pointerDownGridPosition?.gridRowStart ?? this._target.style.gridRowStart;
+        this._target.style.gridRowEnd = this._pointerDownGridPosition?.gridRowEnd ?? this._target.style.gridRowEnd;
+        this._target.style.gridColumnStart = this._pointerDownGridPosition?.gridColumnStart ?? this._target.style.gridColumnStart;
+        this._target.style.gridColumnEnd = this._pointerDownGridPosition?.gridColumnEnd ?? this._target.style.gridColumnEnd;
 
         this._target.releasePointerCapture(event.pointerId);
         this._target.classList.remove('element--no-transition');
@@ -154,6 +155,14 @@ export default class ResizeTool {
         if (updatedElement) {
             this._onChange(updatedElement);
         }
+    }
+
+    onBlur(event) {
+        this._target.style.cursor = '';
+    }
+
+    onFocus(event) {
+        // Not used.
     }
 
     getHandles(clientX, clientY, targetRect) {

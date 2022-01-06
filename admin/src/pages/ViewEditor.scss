@@ -44,7 +44,6 @@
     .element {
         border: dashed 3px rgba(lightgray, 0);
         transition: top, left, width, height 0.5s;
-        transition: all 0.2s;
 
         &__image {
             height: 100%;
@@ -52,12 +51,26 @@
             object-fit: cover;
         }
 
+        &__tool-buttons {
+            position: absolute;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            padding: 15px;
+            transition: $transition-normal;
+        }
+
         &--no-transition {
             transition: none;
         }
-    }
 
-    .element:hover {
-        border: dashed 3px lightgray;
+        &:focus,
+        &:focus-within {
+            border: dashed 3px lightgray;
+
+            .element__tool-buttons {
+                display: flex;
+            }
+        }
     }
 }
