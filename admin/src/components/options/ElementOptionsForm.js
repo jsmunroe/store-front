@@ -23,7 +23,7 @@ const ElementOptionsForm = Component => {
                 
                 {/* Common options for all elements would go here. */}
 
-                <Component elementOptions={elementOptions} onChange={handleElementOptionsChange} />
+                <Component elementOptions={options} onChange={handleElementOptionsChange} />
                 
                 <div className="form__buttons">
                     <button type="submit" className="form__submit">Save</button>

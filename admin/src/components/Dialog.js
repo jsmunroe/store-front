@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useClass } from "../utils/htmlHelpers";
 import './Dialog.scss';
 
-const DialogCompleteContext = React.createContext({})
+
+export function useDialogState(isShown = false) {
+    const [dialogState] = useState(new DialogState(isShown));
+    return dialogState
+}
 
 export default function Dialog({dialogState, children}) {
     const dialogRef = useRef();
@@ -18,34 +22,59 @@ export default function Dialog({dialogState, children}) {
         dialogState.complete();
     }
 
-    const value = {
-        complete: dialogState.complete.bind(dialogState), 
-        cancel: dialogState.cancel.bind(dialogState),
-        isDialog: dialogState.isDialog,
-    };
-
     return <div className={`dialog ${useClass(isShown, 'open')}`} ref={dialogRef}>
         <div className="dialog__backdrop" onMouseDown={handleBackdropMouseDown}></div>
         <div className="dialog__content">
-            <DialogCompleteContext.Provider value={value}>
-                {children}
-            </DialogCompleteContext.Provider>
+            {children}
         </div>
     </div>
 }
 
-export function useDialogState(isShown = false) {
-    const [dialogState] = useState(new DialogState(isShown));
-    return dialogState
+const DialogContext = React.createContext();
+
+export function MobileHarness({children}) {
+    const [component, setComponent] = useState(<></>);
+    const dialogState = useDialogState();
+
+    const handleSubmit = model => {
+        dialogState.complete(model);
+    }    
+
+    const handleCancel = () => {
+        dialogState.cancel();
+    }
+
+    const contextValue = {
+        show: (onShow) => {
+            setComponent(onShow({
+                onSubmit: handleSubmit,
+                onCancel: handleCancel,
+            }));
+            return dialogState.show();
+        }
+    }
+
+    const Component = component;
+
+    return <DialogContext.Provider value={contextValue}>
+        {children}
+        <Dialog dialogState={dialogState}>
+            {component}
+        </Dialog>
+    </DialogContext.Provider>
 }
 
-export function useDialogComplete() {
-    const dialogCompleteContext = React.useContext(DialogCompleteContext);
+export function useDialog() {
+    const context = useContext(DialogContext);
 
-    return !!dialogCompleteContext ? {...dialogCompleteContext, isDialog: true} : {isDialog: false};
+    if (!context) {
+        throw new Error("useDialog can only be called from a component within the MobileHarness element.")
+    }
+
+    return context;
 }
 
-export const formAsDialog = Component => ({dialogState, ...props}) => {
+export const formAsDialog = (Component, dialogState) => (props) => {
     const handleSubmit = model => {
         dialogState?.complete(model);
     }    
@@ -62,7 +91,7 @@ export const formAsDialog = Component => ({dialogState, ...props}) => {
 class DialogState {
     constructor(isShown = false) {
         this._isShown = isShown;
-        this._isShownChangedHandlers = [];
+        this._isShownChangedHandler = () => {};
         this._autoFocusInput = null;
     }
 
@@ -100,10 +129,10 @@ class DialogState {
     }
 
     onIsShownChanged(handler) {
-        this._isShownChangedHandlers.push(handler);
+        this._isShownChangedHandler = handler;
     }
 
     _raiseIsShownChanged(value) {
-        this._isShownChangedHandlers.forEach(h => !!h && h(value));
+        this._isShownChangedHandler(value);
     }
 }

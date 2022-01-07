@@ -3,13 +3,11 @@ import { bindActionCreators } from "redux";
 import * as viewActions from "../redux/actions/viewActions";
 import useNavigate from "../hooks/useNavigate";
 import './ViewList.scss'
-import { formAsDialog, useDialogState } from "./Dialog";
+import { useDialog } from "./Dialog";
 import CreateViewForm from "./CreateViewForm";
 
-const CreateViewDialog = formAsDialog(CreateViewForm);
-
 function ViewList({views, actions}) {
-    const createViewDialogState = useDialogState();
+    const dialog = useDialog();
     const navigate = useNavigate();
 
     const handleViewItemClick = view => {
@@ -18,7 +16,7 @@ function ViewList({views, actions}) {
     }
 
     const handleCreateViewClick = async event => {
-        const view = await createViewDialogState.show();
+        const view = await dialog.show(props => <CreateViewForm views={views} {...props} />);
 
         if (view) {
             actions.saveView(view);
@@ -36,8 +34,6 @@ function ViewList({views, actions}) {
         <button className="view-list__create-view" onClick={handleCreateViewClick} title="New View">
             <i className="fas fa-plus view-list__create-view-icon"></i>
         </button>
-
-        <CreateViewDialog views={views} dialogState={createViewDialogState}/>
     </div>
 }
 
