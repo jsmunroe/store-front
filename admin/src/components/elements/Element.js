@@ -8,7 +8,7 @@ export default function Element({element, tool, sectionGrid, optionsForm, onChan
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null)
 
-    const { placementStyles } = useElementPlacement(element);
+    const { placementStyles } = useElementPlacement(element,sectionGrid);
 
     const dialog = useDialog();
 
