@@ -20,6 +20,15 @@ const initialSections = [
                 width: 5,
                 height: 7,
             },
+            {
+                id: uuid(),
+                type: 'Image',
+                src: 'https://www.teabreakgardener.co.uk/wp-content/uploads/2021/06/IMG_1576.jpg',
+                top: 2,
+                left: 6,
+                width: 5,
+                height: 7,
+            },
         ]
     }
 ]    

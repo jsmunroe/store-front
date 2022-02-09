@@ -23,25 +23,19 @@ export default function Element({element, tool, sectionGrid, optionsForm, onChan
     const handlePointerDown = event => {
         event.stopPropagation();
 
-        if (hasFocus) {
-            if (event.target.closest('.element__tool-buttons')) {
-                return;
-            }
-
-            localTool?.onPointerDown(event);
+        if (event.target.closest('.element__tool-buttons')) {
+            return;
         }
+
+        localTool?.onPointerDown(event);
     }
 
     const handlePointerMove = event => {
-        if (hasFocus) {
-            localTool?.onPointerMove(event);
-        }
+        localTool?.onPointerMove(event);
     }
 
     const handlePointerUp = event => {
-        if (hasFocus) {
-            localTool?.onPointerUp(event);
-        }
+        localTool?.onPointerUp(event);
     }
 
     const handleFocus = event => {
