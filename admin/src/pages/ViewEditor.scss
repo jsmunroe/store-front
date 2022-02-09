@@ -43,7 +43,7 @@
 
     .element {
         border: dashed 3px rgba(lightgray, 0);
-        transition: top, left, width, height 0.5s;
+        transition: top 0.2s, left 0.2s, width 0.2s, height 0.2s;
 
         &__image {
             height: 100%;

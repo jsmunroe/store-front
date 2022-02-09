@@ -1,3 +1,4 @@
+import { closestIndex } from "../../utils/array";
 import { px } from "../../utils/number";
 
 export default class ResizeTool {
@@ -26,7 +27,7 @@ export default class ResizeTool {
         this._bottomSnapPositions = [];
     
         this._handleThreshold = 15;
-        this._resizeSnapThreshold = 20;
+        this._snapThreshold = 20;
     }
 
 
@@ -76,19 +77,6 @@ export default class ResizeTool {
         this._target.setPointerCapture(event.pointerId);
         this._target.classList.add('element--no-transition');
 
-        // Change from grid positioning to absolute position.
-        const { gridRowStart, gridRowEnd, gridColumnStart, gridColumnEnd } = this._target.style;
-        this._pointerDownGridPosition = { gridRowStart, gridRowEnd, gridColumnStart, gridColumnEnd };
-        this._target.style.gridRowStart = '';
-        this._target.style.gridRowEnd = '';
-        this._target.style.gridColumnStart = '';
-        this._target.style.gridColumnEnd = '';
-        this._target.style.position = 'absolute';
-        this._target.style.top = px(this._pointerDownRect.top);
-        this._target.style.left = px(this._pointerDownRect.left);
-        this._target.style.width = px(this._pointerDownRect.width);
-        this._target.style.height = px(this._pointerDownRect.height);
-
         this.updateSnapPositions();
     }
     
@@ -100,33 +88,7 @@ export default class ResizeTool {
         let { clientX, clientY } = this.getPointer(event);
 
         if (this._target.hasPointerCapture(event.pointerId)) {      
-
-            const { snapX, snapY } = this.snap(clientX, clientY);
-
-            if (this._targetHandles.top) {
-                this._target.style.top = px(snapY);
-                this._target.style.height = px(this._pointerDownRect.bottom - snapY);
-            }
-
-            if (this._targetHandles.left) {
-                this._target.style.left = px(snapX);
-                this._target.style.width = px(this._pointerDownRect.right - snapX);
-            }
-
-            if (this._targetHandles.right) {
-                this._target.style.width = px(snapX - this._pointerDownRect.left);
-            }
-
-            if (this._targetHandles.bottom) {
-                this._target.style.height = px(snapY - this._pointerDownRect.top);
-            }
-
-            if (this._targetHandles.body) {
-                const { snapX, snapY } = this.snap(clientX - this._grabLocation.x, clientY - this._grabLocation.y, true)
-
-                this._target.style.left = px(snapX);
-                this._target.style.top = px(snapY);
-            }
+            this.snapHandles(clientX, clientY);
         } 
         else {
             const { clientX, clientY } = this.getPointer(event);
@@ -138,18 +100,11 @@ export default class ResizeTool {
     }
     
     onPointerUp(event) {
-        this._target.style.position = '';
-        this._target.style.top = '';
-        this._target.style.left = '';
-        this._target.style.width = '';
-        this._target.style.height = '';
-        this._target.style.gridRowStart = this._pointerDownGridPosition?.gridRowStart ?? this._target.style.gridRowStart;
-        this._target.style.gridRowEnd = this._pointerDownGridPosition?.gridRowEnd ?? this._target.style.gridRowEnd;
-        this._target.style.gridColumnStart = this._pointerDownGridPosition?.gridColumnStart ?? this._target.style.gridColumnStart;
-        this._target.style.gridColumnEnd = this._pointerDownGridPosition?.gridColumnEnd ?? this._target.style.gridColumnEnd;
-
         this._target.releasePointerCapture(event.pointerId);
         this._target.classList.remove('element--no-transition');
+
+        let { clientX, clientY } = this.getPointer(event);
+        this.snapHandles(clientX, clientY, this.snapClosest.bind(this));
 
         const updatedElement = this.updateElementPosition(this._element);
         if (updatedElement) {
@@ -200,7 +155,13 @@ export default class ResizeTool {
         }
     }
 
-    snap(clientX, clientY, log) {
+    // Snap to nothing.
+    snapNone(clientX, clientY) {
+        return { snapX: clientX, snapY: clientY };
+    }
+
+    // Snap this point to a row or column if one is within the snap threshold.
+    snapClose(clientX, clientY) {
         let { top, left, right, bottom, body } = this._targetHandles;
 
         if (body) {
@@ -211,7 +172,7 @@ export default class ResizeTool {
         if (top || bottom ) {
             const rows = top ? this._topSnapPositions : this._bottomSnapPositions;
 
-            const rowIndex = rows.findIndex(row => Math.abs(row - clientY) < this._resizeSnapThreshold);
+            const rowIndex = rows.findIndex(row => Math.abs(row - clientY) < this._snapThreshold);
             if (rowIndex !== -1) {
                 clientY = rows[rowIndex];
 
@@ -225,7 +186,7 @@ export default class ResizeTool {
         if (left || right ) {
             const columns = left ? this._leftSnapPositions : this._rightSnapPositions;
 
-            const columnIndex = columns.findIndex(column => Math.abs(column - clientX) < this._resizeSnapThreshold);
+            const columnIndex = columns.findIndex(column => Math.abs(column - clientX) < this._snapThreshold);
             if (columnIndex !== -1) {
                 clientX = columns[columnIndex];
 
@@ -237,6 +198,75 @@ export default class ResizeTool {
         }
 
         return { snapX: clientX, snapY: clientY };
+    }
+
+    // Snap this point to the closest column and row regardless of threshold.
+    snapClosest(clientX, clientY) {
+        let { top, left, right, bottom, body } = this._targetHandles;
+
+        if (body) {
+            top = true;
+            left = true;
+        }
+
+        if (top || bottom ) {
+            const rows = top ? this._topSnapPositions : this._bottomSnapPositions;
+
+            const rowIndex = closestIndex(rows, clientY);
+            if (rowIndex !== -1) {
+                clientY = rows[rowIndex];
+
+                this._snappedRowIndex = rowIndex + (top ? 0 : 1); // To include the zeroth row if bottom handle is active.
+            } 
+            else {
+                this._snappedRowIndex = -1;
+            }
+        }
+
+        if (left || right ) {
+            const columns = left ? this._leftSnapPositions : this._rightSnapPositions;
+
+            const columnIndex = closestIndex(columns, clientX);
+            if (columnIndex !== -1) {
+                clientX = columns[columnIndex];
+
+                this._snappedColumnIndex = columnIndex + (left ? 0 : 1); // To include the zeroth column if bottom handle is active.
+            }
+            else {
+                this._snappedColumnIndex = -1;
+            }
+        }
+
+        return { snapX: clientX, snapY: clientY }; 
+    }
+
+    snapHandles(clientX, clientY, snap = this.snapNone.bind(this)) {
+        const { snapX, snapY } = snap(clientX, clientY);
+
+        if (this._targetHandles.top) {
+            this._target.style.top = px(snapY);
+            this._target.style.height = px(this._pointerDownRect.bottom - snapY);
+        }
+
+        if (this._targetHandles.left) {
+            this._target.style.left = px(snapX);
+            this._target.style.width = px(this._pointerDownRect.right - snapX);
+        }
+
+        if (this._targetHandles.right) {
+            this._target.style.width = px(snapX - this._pointerDownRect.left);
+        }
+
+        if (this._targetHandles.bottom) {
+            this._target.style.height = px(snapY - this._pointerDownRect.top);
+        }
+
+        if (this._targetHandles.body) {
+            const { snapX, snapY } = snap(clientX - this._grabLocation.x, clientY - this._grabLocation.y, true)
+
+            this._target.style.left = px(snapX);
+            this._target.style.top = px(snapY);
+        }
     }
 
     updateSnapPositions() {
