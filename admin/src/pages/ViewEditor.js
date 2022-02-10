@@ -1,37 +1,11 @@
 import { useState } from "react"
 import { connect } from "react-redux"
-import uuid from "react-uuid"
 import { bindActionCreators } from "redux"
 import Section from "../components/Section"
 import ResizeTool from "../components/tools/ResizeTool"
 import * as viewActions from "../redux/actions/viewActions"
+import initialSections from "../config/initialSections.json"
 import './ViewEditor.scss'
-
-const initialSections = [
-    {
-        id: uuid(),
-        columns: 12,
-        rows: 12,
-        elements: [
-            {
-                id: uuid(),
-                type: 'Image',
-                src: 'https://www.teabreakgardener.co.uk/wp-content/uploads/2019/05/IMG_1481.jpg',
-                width: 5,
-                height: 7,
-            },
-            {
-                id: uuid(),
-                type: 'Image',
-                src: 'https://www.teabreakgardener.co.uk/wp-content/uploads/2021/06/IMG_1576.jpg',
-                top: 2,
-                left: 6,
-                width: 5,
-                height: 7,
-            },
-        ]
-    }
-]    
 
 function ViewEditor({view}) {
     const [selectedTool, setSelectedTool] = useState(new ResizeTool())

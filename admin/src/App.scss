@@ -148,13 +148,40 @@ option {
 
     &__label {
         padding-top: 9px;
+        text-align: right;
     }
 
-    &__input {
+    &__label:not(.no-colon)::after {
+        content: ':'
+    }
+
+    &__input, &__textarea {
         height: 38px;
         border-radius: 5px;
         padding: 0 10px;
         outline: none;
+    }
+
+    &__textarea {
+        padding: 10px;
+    }
+
+    &__radio input[type="radio"] {
+        display: none;
+    }
+
+    &__radio {
+        display: inline-block;
+        margin-top: 4px;
+        margin-right: 5px;
+        padding: 5px 10px;
+        border: solid 1px gray;
+        border-radius: 5px;
+    }
+
+    &__radio.checked {
+        color: white;
+        background: $color-accent-green;
     }
 
     &__buttons {
@@ -219,5 +246,17 @@ option {
 
     & i.fas {
         pointer-events: none;
+    }
+}
+
+.fas {
+    &.super {
+        position: relative;
+        top: -5px
+    }
+
+    &.sub {
+        position: relative;
+        bottom: -5px;
     }
 }

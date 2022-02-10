@@ -1,0 +1,36 @@
+[
+    {
+        "id": "d04e46cf-9810-4652-bf31-4690ab5264f4",
+        "columns": 12,
+        "rows": 12,
+        "elements": [
+            {
+                "id": "8fed59a5-9fcf-4f0f-9be5-8f3c4aef9624",
+                "type": "Image",
+                "src": "https://www.teabreakgardener.co.uk/wp-content/uploads/2019/05/IMG_1481.jpg",
+                "top": 1,
+                "left": 1,
+                "width": 7,
+                "height": 7
+            },
+            {
+                "id": "793f6c03-6dc7-48ff-8846-fb9a873e38c7",
+                "type": "Image",
+                "src": "https://www.teabreakgardener.co.uk/wp-content/uploads/2021/06/IMG_1576.jpg",
+                "top": 3,
+                "left": 6,
+                "width": 5,
+                "height": 8
+            },
+            {
+                "id": "5542a473-ccc7-4f9f-9129-27712b9ea6ae",
+                "type": "Text",
+                "text": "Hello World",
+                "top": 8,
+                "left": 1,
+                "width": 5,
+                "height": 3
+            }
+        ]
+    }
+]

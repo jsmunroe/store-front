@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useSectionGrid from "../hooks/useSectionGrid";
-import Image from "./elements/Image";
+import Element from "./elements/Element";
 
 export default function Section({section, tool, onUpdateSection}) {
     const [displayGrid] = useState(true);
@@ -14,7 +14,7 @@ export default function Section({section, tool, onUpdateSection}) {
 
     return <section className="section" style={styles} ref={setSectionElement}>
         {displayGrid && <SectionGrid grid={grid} />}
-        {section.elements?.map((element, index) => <Image key={index} sectionGrid={grid} tool={tool} onChange={handleElementChange} element={element} />)}
+        {section.elements?.map((element, index) => <Element type={element.type} key={index} sectionGrid={grid} tool={tool} onChange={handleElementChange} element={element} />)}
     </section>
 }
 
