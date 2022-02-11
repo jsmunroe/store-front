@@ -6,4 +6,5 @@ $color-shadow: #d9dbe2;
 $color-accent-dark-blue: #284b63;
 
 // Transitions
-$transition-normal: all 0.4s;
+$transition-normal-duration: 0.2s;
+$transition-normal: all $transition-normal-duration;

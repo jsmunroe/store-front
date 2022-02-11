@@ -12,7 +12,7 @@ function ViewList({views, actions}) {
 
     const handleViewItemClick = view => {
         actions.loadView(view);
-        navigate.toViewEditor();
+        navigate.toViewEditor(view.id);
     }
 
     const handleCreateViewClick = async event => {

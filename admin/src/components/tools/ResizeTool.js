@@ -1,8 +1,11 @@
 import { closestIndex } from "../../utils/array";
 import { px } from "../../utils/number";
+import Tool from "./Tool";
 
-export default class ResizeTool {
+export default class ResizeTool extends Tool {
     constructor() {
+        super('resize');
+
         this._target = null;
         this._section = null;
     
@@ -32,7 +35,7 @@ export default class ResizeTool {
 
 
     // Bind to a single element creating a state to support that element only.
-    bind(element, target, sectionGrid, onChange) {
+    bindElement(element, target, sectionGrid, onChange) {
         if (!target) {
             return null;
         }

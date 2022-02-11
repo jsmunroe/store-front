@@ -5,7 +5,7 @@
     min-height: 100%;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     padding: top;
 
@@ -79,5 +79,38 @@
                 display: flex;
             }
         }
+    }
+}
+
+.tool-bar {
+    align-self: start;
+    margin: 5px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    &__button input[type="radio"] {
+        display: none;
+    }
+
+    &__button {
+        display: block;
+        background-color: $color-highlight;
+        border-radius: 5px;
+        padding: 10px;
+        //box-shadow: 2px 4px 9px 0px rgba(0,0,0,0.3);
+        transition: transform $transition-normal-duration;
+        cursor: pointer;
+    }
+
+    &__button:hover {
+        transform: scale(1.1, 1.1);
+    }
+
+    &__button.checked {
+        outline: solid rgba($color-dark, 0.8);
+        outline-width: 3px;
+        outline-offset: -5px;
     }
 }

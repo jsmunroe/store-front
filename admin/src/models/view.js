@@ -8,5 +8,14 @@ export function createView(name) {
     return {
         id: uuid(),
         name,
+        sections: [createSection()],
     };
+}
+
+export function createSection() {
+    return {
+        id: uuid(),
+        columns: 12,
+        rows: 12
+    }
 }
