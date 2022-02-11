@@ -107,10 +107,17 @@
     &__button:hover {
         transform: scale(1.1, 1.1);
     }
+    
+    &__button:focus-within {
+        outline: solid rgba($color-dark, 0.6);
+        outline-width: 1px;
+        outline-offset: -5px;
+    }
 
     &__button.checked {
         outline: solid rgba($color-dark, 0.8);
         outline-width: 3px;
         outline-offset: -5px;
     }
+
 }

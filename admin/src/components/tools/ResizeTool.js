@@ -7,7 +7,7 @@ export default class ResizeTool extends Tool {
         super('resize');
 
         this._target = null;
-        this._section = null;
+        this._sectionElement = null;
     
         this._targetHandles = { 
             top: false,
@@ -49,13 +49,13 @@ export default class ResizeTool extends Tool {
         };
 
         tool._target = target;
-        tool._section = target.closest('.section');
+        tool._sectionElement = target.closest('.section');
 
         tool._sectionGrid = sectionGrid;
 
         tool._onChange = onChange;
 
-        if (!tool._section) {
+        if (!tool._sectionElement) {
             throw new Error('Cannot find parent section element.');
         }
 
@@ -67,10 +67,10 @@ export default class ResizeTool extends Tool {
             return;
         }
 
-        const sectionStyle = window.getComputedStyle(this._section);
+        const sectionStyle = window.getComputedStyle(this._sectionElement);
         this._sectionColumnGap = parseFloat(sectionStyle.columnGap);
         this._sectionRowGap = parseFloat(sectionStyle.rowGap);
-        this._sectionRect = this._section.getBoundingClientRect();
+        this._sectionRect = this._sectionElement.getBoundingClientRect();
 
         const { clientX, clientY } = this.getPointer(event);
         
@@ -86,7 +86,7 @@ export default class ResizeTool extends Tool {
     onPointerMove(event) {
         event.preventDefault();
 
-        this._sectionRect = this._section.getBoundingClientRect();
+        this._sectionRect = this._sectionElement.getBoundingClientRect();
 
         let { clientX, clientY } = this.getPointer(event);
 

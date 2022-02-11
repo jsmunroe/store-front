@@ -14,7 +14,7 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
 
     useEffect(() => {
         if (!!tool && !!domElement && !! sectionGrid) {
-            setLocalTool(tool.bind(element, domElement, sectionGrid, onChange));
+            setLocalTool(tool.bindElement(element, domElement, sectionGrid, onChange));
         }       
 
     }, [tool, domElement, element, sectionGrid, onChange])
