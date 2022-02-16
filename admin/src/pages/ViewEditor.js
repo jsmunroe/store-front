@@ -18,7 +18,7 @@ function ViewEditor({view, viewsLoaded, actions}) {
         if (viewsLoaded) {
             actions.loadViewById(id);
         }
-    }, [id, viewsLoaded])
+    }, [id, viewsLoaded, actions])
 
     const handleSectionUpdate = section => {  
         view = saveElementOnProperty(view, 'sections', section);

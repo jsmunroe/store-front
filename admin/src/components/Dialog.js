@@ -54,8 +54,6 @@ export function MobileHarness({children}) {
         }
     }
 
-    const Component = component;
-
     return <DialogContext.Provider value={contextValue}>
         {children}
         <Dialog dialogState={dialogState}>

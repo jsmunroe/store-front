@@ -4,7 +4,7 @@ import useElementPlacement from "../../hooks/useElementPlacement"
 import { useDialog } from "../Dialog";
 
 export default function ElementBase({element, tool, sectionGrid, optionsForm, onChange, children}) {
-    const [hasFocus, setHasFocus] = useState(false);
+    const [, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null)
 
