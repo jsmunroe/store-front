@@ -18,8 +18,7 @@ const ElementOptionsForm = Component => {
             onCancel();
         }
 
-        return <div className="options">
-            <form className="form" onSubmit={handleSubmitForm}>
+        return <form className="form" onSubmit={handleSubmitForm}>
                 
                 {/* Common options for all elements would go here. */}
 
@@ -30,7 +29,6 @@ const ElementOptionsForm = Component => {
                     <button type="button" className="form__button" onClick={handleCancelClick}>Cancel</button>
                 </div>
             </form>
-        </div>
     }
 
     return ElementOptionsComponent;

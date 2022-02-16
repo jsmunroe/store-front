@@ -1,18 +1,12 @@
 @import './src/styles/colors';
 
-.dialog {
-    display: none;
+.modal {
     z-index: 10;
-
-    &.open {
-        display: block;
-    }
 
     &__content {
         background-color: $color-highlight;
         color: $color-dark;
-        min-width: 650px;
-        //border-radius: 15px;
+        min-width: 800px;
         position: fixed;
         top: 45%;
         left: 50%;
