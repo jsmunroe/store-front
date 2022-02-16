@@ -2,9 +2,13 @@ function byId(e1, e2) {
     return typeof e1?.id !== 'undefined' && typeof e2?.id !== 'undefined' && e1.id === e2.id;
 }
 
+export function saveElementOnProperty(obj, propertyName, element, match = byId) {
+    return {...obj, [propertyName]: saveElement(obj[propertyName], element, match)};
+}
+
 // Save an element if it exists within the given array, otherwise, 
 //  push it on to the end of the array.
-function saveElement(array, element, match = byId) {   
+export function saveElement(array, element, match = byId) {   
     if (!array || !array.length) {
         return [element];
     }

@@ -39,6 +39,18 @@
             height: 0.5px;
             width: 100%;
         }
+
+        .selector {
+            display: inline-block;
+            position: absolute;
+            background-color: rgba($color-dark, 0.2);
+        }
+
+        .hover {
+            display: inline-block;
+            position: absolute;
+            border: $color-dark solid 5px;
+        }
     }
 
     .element {
@@ -119,5 +131,4 @@
         outline-width: 3px;
         outline-offset: -5px;
     }
-
 }

@@ -1,33 +1,44 @@
-import Tool from "./Tool";
+import { Tool, ToolFactory } from "./Tool"
+import { createElement } from "../../models/createElement"
+import { saveElementOnProperty } from "../../utils/mutate"
 
-export default class InsertElementTool extends Tool {
+export default class InsertElementToolFactory extends ToolFactory {
     constructor(elementType) {
         super(`insert-${elementType?.toLowerCase()}`);
 
         this.elementType = elementType;
     }
 
-    // Bind to a section creating a state to support that section only.
-    bindSection(section, target, sectionGrid, onChange) {
+    // Bind a new tool to a section creating a state to support that section only.
+    bindToSection(section, target, sectionGrid, onChange) { 
         if (!target) {
             return null;
         }
 
-        let tool = new InsertElementTool(this.elementType);
+        return new InsertElementTool(this.elementType, section, target, sectionGrid, onChange);
+    }
+}
 
-        tool._section = section;
-        tool._target = target;
-        tool._sectionGrid = sectionGrid;
-        tool._onChange = onChange;
+export class InsertElementTool extends Tool {
+    constructor(elementType, section, target, sectionGrid, onChange) {
+        super(target, sectionGrid, onChange);
 
-        return tool;
+        this.elementType = elementType;
+
+        this._section = section;
+        this._target = target;
+        this._sectionGrid = sectionGrid;
+        this._onChange = onChange;
+
+        this._pointerDownCell = null;
+
+        this._selectionEnabled = true;
     }
 
-    onPointerDown(event) {
-        debugger;
+    onSelect(selection) {
+        const element = createElement(this.elementType, selection);
+        const section = saveElementOnProperty(this._section, 'elements', element);
+
+        this._onChange(section);
     }
-    
-    onPointerMove(event) { }
-    
-    onPointerUp(event) { }
 }

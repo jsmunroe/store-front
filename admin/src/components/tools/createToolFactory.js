@@ -1,19 +1,18 @@
 import InsertElementTool from "./InsertElementTool";
-import ResizeTool from "./ResizeTool";
+import ResizeToolFactory from "./ResizeTool";
 
 const toolFactoryMap = {
-    resize: () => new ResizeTool(),
+    resize: () => new ResizeToolFactory(),
     'insert-image': () => new InsertElementTool('Image'),
     'insert-text': () => new InsertElementTool('Text'),
 }
 
 const defaultToolFactory = toolFactoryMap.resize;
 
-export default function createTool(name) {
-    var factory = toolFactoryMap[name];
+export default function createToolFactory(name) {
+    var factory = toolFactoryMap[name] ?? defaultToolFactory;
 
     if (!factory) {
-        console.error(`"${name}" is not a recognized tool key.`);
         factory = defaultToolFactory;
     }
 

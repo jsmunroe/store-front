@@ -77,7 +77,11 @@ export function replace(handler) {
     }
 }
 
-export function sanitize(string) {
+export function sanitize(text) {
+    if (!text) {
+        return '';
+    }
+
     const map = {
         '&': '&amp;',
         '<': '&lt;',
@@ -87,5 +91,5 @@ export function sanitize(string) {
         "/": '&#x2F;',
     };
     const reg = /[&<>"'/]/ig;
-    return string.replace(reg, (match)=>(map[match]));
+    return text.replace(reg, (match)=>(map[match]));
   }

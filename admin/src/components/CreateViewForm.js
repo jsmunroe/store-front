@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createView } from "../models/view";
+import { createView } from "../models/createView";
 import { replace, toValue } from "../utils/htmlHelpers";
 
 export default function CreateViewForm({onSubmit, onCancel}) {

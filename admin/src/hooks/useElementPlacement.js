@@ -16,7 +16,7 @@ export default function useElementPlacement(element, sectionGrid) {
         return { placementStyles: { display: 'none' } };
     }
 
-    const placement = computeElementPlacement(sectionGrid, element);
+    const placement = sectionGrid.computeElementPlacement(element);
 
     const placementStyles = {
         position: 'absolute',

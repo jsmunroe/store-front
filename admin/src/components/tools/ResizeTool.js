@@ -1,14 +1,26 @@
 import { closestIndex } from "../../utils/array";
 import { px } from "../../utils/number";
-import Tool from "./Tool";
+import { Tool, ToolFactory } from "./Tool";
 
-export default class ResizeTool extends Tool {
+export default class ResizeToolFactory extends ToolFactory {
     constructor() {
         super('resize');
-
-        this._target = null;
-        this._sectionElement = null;
+    }
     
+    // Bind a new tool to a single element creating a state to support that element only.
+    bindToElement(element, target, sectionGrid, onChange) { 
+        if (!target) {
+            return null;
+        }
+
+        return new ResizeTool(element, target, sectionGrid, onChange);
+    }
+}
+
+export class ResizeTool extends Tool {
+    constructor(element, target, sectionGrid, onChange) {
+        super(target, sectionGrid, onChange);
+   
         this._targetHandles = { 
             top: false,
             left: false,
@@ -17,7 +29,6 @@ export default class ResizeTool extends Tool {
             body: false,
         };
     
-        this._sectionRect = null;
         this._sectionColumnGap = 0;
         this._sectionRowGap = 0;
         this._pointerDownRect = null;
@@ -31,38 +42,21 @@ export default class ResizeTool extends Tool {
     
         this._handleThreshold = 15;
         this._snapThreshold = 20;
-    }
 
-
-    // Bind to a single element creating a state to support that element only.
-    bindElement(element, target, sectionGrid, onChange) {
-        if (!target) {
-            return null;
-        }
-
-        const tool = new ResizeTool()
-
-        tool._element = {
+        this._element = {
             ...element, 
             top: element.top ?? 0,
             left: element.left ?? 0
         };
 
-        tool._target = target;
-        tool._sectionElement = target.closest('.section');
-
-        tool._sectionGrid = sectionGrid;
-
-        tool._onChange = onChange;
-
-        if (!tool._sectionElement) {
+        if (!this._sectionElement) {
             throw new Error('Cannot find parent section element.');
         }
-
-        return tool;
     }
     
     onPointerDown(event) {
+        super.onPointerDown(event);
+        
         if (event.pointerType === 'mouse' && event.button !== 0) {
             return;
         }
@@ -70,20 +64,20 @@ export default class ResizeTool extends Tool {
         const sectionStyle = window.getComputedStyle(this._sectionElement);
         this._sectionColumnGap = parseFloat(sectionStyle.columnGap);
         this._sectionRowGap = parseFloat(sectionStyle.rowGap);
-        this._sectionRect = this._sectionElement.getBoundingClientRect();
 
         const { clientX, clientY } = this.getPointer(event);
         
         this._pointerDownRect = this.getRect(this._target);
         this._grabLocation = { x: clientX - this._pointerDownRect.x, y: clientY - this._pointerDownRect.y };
         this._targetHandles = this.getHandles(clientX, clientY, this._pointerDownRect);
-        this._target.setPointerCapture(event.pointerId);
         this._target.classList.add('element--no-transition');
 
         this.updateSnapPositions();
     }
     
     onPointerMove(event) {
+        super.onPointerMove(event);
+
         event.preventDefault();
 
         this._sectionRect = this._sectionElement.getBoundingClientRect();
@@ -103,7 +97,8 @@ export default class ResizeTool extends Tool {
     }
     
     onPointerUp(event) {
-        this._target.releasePointerCapture(event.pointerId);
+        super.onPointerUp(event);
+
         this._target.classList.remove('element--no-transition');
 
         let { clientX, clientY } = this.getPointer(event);
@@ -134,28 +129,6 @@ export default class ResizeTool extends Tool {
         handles.body = !handles.top && !handles.left && !handles.right && !handles.bottom;
 
         return handles;
-    }
-
-    getPointer(event) {
-        return {
-            clientX: event.clientX - this._sectionRect.x,
-            clientY: event.clientY - this._sectionRect.y,
-        }
-    }
-
-    getRect(element) {
-        const {top, right, bottom, left, width, height, x, y} = element.getBoundingClientRect();
-
-        return {
-            top: top - this._sectionRect.y,
-            left: left - this._sectionRect.x,
-            right: right - this._sectionRect.x,
-            bottom: bottom - this._sectionRect.y,
-            width, 
-            height, 
-            x: x - this._sectionRect.x,
-            y: y - this._sectionRect.y,
-        }
     }
 
     // Snap to nothing.

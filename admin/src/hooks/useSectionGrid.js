@@ -21,15 +21,26 @@ export default function useSectionGrid(section, sectionElement) {
                 gridTemplateColumns: `repeat(${section.columns}, 1fr)`, //uniform(section.columns, '1fr').join(' ');
             });
         
-            setGrid({
-                columns: range(1, section.columns).map(idx => idx * (columnWidth + columnGap) - columnGap/2), // centers of the gaps between columns.
-                rows: range(1, section.rows).map(idx => idx * (rowHeight + rowGap) - rowGap/2), // centers of the gaps between columns.
+            const columns = range(1, section.columns).map(idx => idx * (columnWidth + columnGap) - columnGap/2); // centers of the gaps between columns.
+            const rows = range(1, section.rows).map(idx => idx * (rowHeight + rowGap) - rowGap/2); // centers of the gaps between columns.
+
+            const sectionGrid = {
+                width: sectionRect.width,
+                height: rows[rows.length - 1] + rowHeight,
+                columns,
+                rows,
                 rowHeight,
                 columnWidth,
                 rowGap,
                 columnGap,
                 rect: sectionRect,
-            });
+            };
+
+            sectionGrid.computeElementPlacement = element => computeElementPlacement(sectionGrid, element);
+            sectionGrid.hitCell = location => hitCell(sectionGrid, location);
+            sectionGrid.getCellRect = location => getCellRect(sectionGrid, location);
+
+            setGrid(sectionGrid);
         }
 
     }, [section, sectionElement])
@@ -41,7 +52,7 @@ export default function useSectionGrid(section, sectionElement) {
 }
 
 // Compute the pixel placement of an element within a section (i.e., top, left, width, and height).
-export function computeElementPlacement(sectionGrid, element) {
+function computeElementPlacement(sectionGrid, element) {
     const halfColumnGap = sectionGrid.columnGap / 2;
     const halfRowGap = sectionGrid.rowGap / 2;
     const leftSnapPositions = [-halfColumnGap, ...sectionGrid.columns].map(position => position + halfColumnGap);
@@ -55,3 +66,23 @@ export function computeElementPlacement(sectionGrid, element) {
     return {top, left, width, height};
 }
 
+// Compute the cell coordinates (column, row) for the given section-releative location.
+function hitCell(sectionGrid, {x, y}) {
+    const columns = [...sectionGrid.columns, sectionGrid.width];
+    const rows = [...sectionGrid.rows, sectionGrid.height];
+
+    const column = columns.findIndex(c => x <= c);
+    const row = rows.findIndex(r => y <= r);
+
+    return { column, row }
+}
+
+// Get the rectangle for a cell at the given column and row.
+function getCellRect(sectionGrid, {column, row}) {
+    const left = column * (sectionGrid.columnWidth + sectionGrid.columnGap) - sectionGrid.columnGap / 2;
+    const top = row * (sectionGrid.rowHeight + sectionGrid.rowGap) - sectionGrid.rowGap / 2;
+    const width = sectionGrid.columnWidth + sectionGrid.columnGap;
+    const height = sectionGrid.rowHeight + sectionGrid.rowGap;
+
+    return {left, top, width, height};
+}
