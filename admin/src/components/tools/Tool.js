@@ -5,11 +5,27 @@ export class ToolFactory {
         this.key = key;
     }
 
-    // Bind a new tool to a single element creating a state to support that element only.
-    bindToElement(element, target, sectionGrid, onChange) { }
+    bindToElement(element, target, sectionGrid, onChange) {
+        return oldTool => {
+            oldTool?.unbind();
 
-    // Bind a new tool to a section creating a state to support that section only.
-    bindToSection(section, target, sectionGrid, onChange) { }
+            return this.createElementTool(element, target, sectionGrid, onChange);
+        }
+    }
+
+    bindToSection(section, target, sectionGrid, onChange) {
+        return oldTool => {
+            oldTool?.unbind();
+
+            return this.createSectionTool(section, target, sectionGrid, onChange)
+        }
+    }
+
+    // Create a new tool to a single element creating a state to support that element only.
+    createElementTool(element, target, sectionGrid, onChange) { }
+
+    // Create a new tool to a section creating a state to support that section only.
+    createSectionTool(section, target, sectionGrid, onChange) { }
 }
 
 export class Tool {

@@ -10,19 +10,24 @@ import './ViewEditor.scss'
 import RadioButton from "../components/controls/RadioButton"
 import { saveElementOnProperty } from "../utils/mutate"
 
+
 function ViewEditor({view, viewsLoaded, actions}) {
     const [toolFactory, setToolFactory] = useState(createToolFactory(null))
+    const [optionsState, setOptionsState] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {
         if (viewsLoaded) {
             actions.loadViewById(id);
         }
-    }, [id, viewsLoaded])
+    }, [id, viewsLoaded, actions])
 
     const handleSectionUpdate = section => {  
         view = saveElementOnProperty(view, 'sections', section);
         actions.saveView(view);
+
+        // Change tool back to default tool
+        setToolFactory(createToolFactory(null));
     }
 
     const handleSelectTool = value => {

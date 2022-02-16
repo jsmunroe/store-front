@@ -10,7 +10,6 @@ export default function Section({section, toolFactory, onUpdateSection}) {
 
     useEffect(() => {
         if (!!toolFactory && !!sectionElement && !! grid) {
-            localTool?.unbind();
             setLocalTool(toolFactory.bindToSection(section, sectionElement, grid, onUpdateSection));
         }       
 

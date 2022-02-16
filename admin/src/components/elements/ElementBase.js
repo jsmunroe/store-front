@@ -1,25 +1,23 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
-import { useDialog } from "../Dialog";
+import { useModal } from "../Modal";
 
 export default function ElementBase({element, tool, sectionGrid, optionsForm, onChange, children}) {
-    const [hasFocus, setHasFocus] = useState(false);
+    const [, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
-    const [domElement, setDomElement] = useState(null)
+    const [domElement, setDomElement] = useState(null);
 
     const { placementStyles } = useElementPlacement(element,sectionGrid);
 
-    const dialog = useDialog();
+    const modal = useModal();
 
     useEffect(() => {
         if (!!tool && !!domElement && !! sectionGrid) {
-            localTool?.unbind();
             setLocalTool(tool.bindToElement(element, domElement, sectionGrid, onChange));
         }       
 
     }, [tool, domElement, element, sectionGrid, onChange])
-
 
     const handlePointerDown = event => {
         event.stopPropagation();
@@ -49,13 +47,15 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
         localTool?.onBlur(event);
     }
 
-    const handleShowOptionsDialog = async event => {
-        const OptionsForm = optionsForm;
-        const options = await dialog.show(props => <OptionsForm elementOptions={element} {...props}/> );
+    const handleShowOptionsUpdate = elementOptions => {
+        
+    }
 
-        if (options) {
-            onChange({...element, ...options});
-            domElement.blur();
+    const handleShowOptionsDialog = async event => {
+        const elementOptions = await modal.show(optionsForm, { elementOptions: element, onUpdate: handleShowOptionsUpdate });
+
+        if (elementOptions) {
+            onChange({...element, ...elementOptions});
         }
     }
 
