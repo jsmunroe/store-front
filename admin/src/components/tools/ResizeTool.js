@@ -8,7 +8,7 @@ export default class ResizeToolFactory extends ToolFactory {
     }
     
     // Bind a new tool to a single element creating a state to support that element only.
-    bindToElement(element, target, sectionGrid, onChange) { 
+    createElementTool(element, target, sectionGrid, onChange) { 
         if (!target) {
             return null;
         }

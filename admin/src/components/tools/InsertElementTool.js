@@ -10,7 +10,7 @@ export default class InsertElementToolFactory extends ToolFactory {
     }
 
     // Bind a new tool to a section creating a state to support that section only.
-    bindToSection(section, target, sectionGrid, onChange) { 
+    createSectionTool(section, target, sectionGrid, onChange) { 
         if (!target) {
             return null;
         }

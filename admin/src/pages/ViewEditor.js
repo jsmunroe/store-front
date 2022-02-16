@@ -23,6 +23,9 @@ function ViewEditor({view, viewsLoaded, actions}) {
     const handleSectionUpdate = section => {  
         view = saveElementOnProperty(view, 'sections', section);
         actions.saveView(view);
+
+        // Change tool back to default tool
+        setToolFactory(createToolFactory(null));
     }
 
     const handleSelectTool = value => {
