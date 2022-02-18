@@ -20,6 +20,7 @@
         left: 0;
         height: 100vh;
         width: 100vw;
-        background-color: transparent;
+        background-color: rgba(0, 0, 0, 0.38);
+        backdrop-filter: blur(2px);
     }
 }

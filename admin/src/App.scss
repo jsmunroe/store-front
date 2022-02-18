@@ -156,10 +156,13 @@ option {
     }
 
     &__input, &__textarea {
-        height: 38px;
         border-radius: 5px;
         padding: 0 10px;
         outline: none;
+    }
+
+    &__input {
+        height: 38px;
     }
 
     &__textarea {

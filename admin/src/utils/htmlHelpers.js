@@ -92,4 +92,29 @@ export function sanitize(text) {
     };
     const reg = /[&<>"'/]/ig;
     return text.replace(reg, (match)=>(map[match]));
-  }
+}
+
+export function unsanitize(text) {
+    if (!text) {
+        return '';
+    }
+
+    const map = {
+        '&amp;' : '&',
+        '&lt;'  : '<',
+        '&gt;'  : '>',
+        '&quot;': '"',
+        '&#x27;': "'",
+        '&#x2F;': "/",
+    };
+    const reg = /&[#\w\d]+;/ig;
+    return text.replace(reg, (match)=>(map[match]));
+}
+
+export function newLinesToBreaks(text) {
+    return text.replace(/(\r\n|\r|\n)/, '<br/>');
+}
+
+export function breaksToNewLines(text) {
+    return text.replace(/\<br\s*\/?\>/i, '\r\n');  
+}

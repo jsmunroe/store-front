@@ -9,7 +9,7 @@ function TextOptionsForm({elementOptions, onChange}) {
 
     return <>
         <label className="form__label">Text</label>
-        <textarea className="form__textarea" name="text" type="text" value={elementOptions.text} onChange={toNameValue(handlePropertyValueChange)} required></textarea>
+        <textarea className="form__textarea"  name="text" type="text" autoFocus rows={3} value={elementOptions.text} onChange={toNameValue(handlePropertyValueChange)} required></textarea>
 
         <label className="form__label">Horizontal Align</label>
         <div>
