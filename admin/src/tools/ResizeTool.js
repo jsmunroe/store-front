@@ -1,5 +1,5 @@
-import { closestIndex } from "../../utils/array";
-import { px } from "../../utils/number";
+import { closestIndex } from "../utils/array";
+import { px } from "../utils/number";
 import { Tool, ToolFactory } from "./Tool";
 
 export default class ResizeToolFactory extends ToolFactory {

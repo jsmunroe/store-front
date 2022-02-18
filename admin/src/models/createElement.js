@@ -1,19 +1,15 @@
 import uuid from 'react-uuid';
 
-function defaultText(element) {
-    return {...element, 
+const defaultElementByType = {
+    text: element => ({...element, 
         fontSize: 16,
         horizontalAlign: 'left',
         verticalAlign: 'top'
-    }
-}
-
-const defaultElementByType = {
-    text: defaultText,
+    }),
 };
 
 export function createElement(type, bounds) {
-    const element = {
+    let element = {
         id: uuid(),
         type: type,
         top: bounds.top,
@@ -22,8 +18,7 @@ export function createElement(type, bounds) {
         height: bounds.height
     };
 
-    const defaultElement = defaultElementByType[type];
-    if (defaultElement) {
-        element = defaultElement(element);
-    }
+    const defaultElement = defaultElementByType[type] ?? (element => element);
+
+    return defaultElement(element);
 }
