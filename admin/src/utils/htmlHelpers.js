@@ -50,6 +50,20 @@ export function toNameValue(handler) {
     }
 }
 
+export function toNameIsChecked(handler) {
+    return event => {
+        event.target?.setCustomValidity('');
+
+        if (typeof handler === 'function') {
+            const validity = handler(event.target.name, event.target.checked, event);
+
+            if (typeof validity === 'string') {
+                event.target?.setCustomValidity(validity);
+            }
+        }
+    }
+}
+
 export function toNumberNameValue(handler) {
     return event => {
         event.target?.setCustomValidity('');

@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { breaksToNewLines, newLinesToBreaks, sanitize, unsanitize } from "../../utils/htmlHelpers";
+import { px } from "../../utils/number";
 import TextOptionsForm from "../options/TextOptionsForm";
 import ElementBase from "./ElementBase";
 
@@ -36,6 +37,9 @@ const Text = forwardRef(({element, ...props}, ref) => {
         justifyContent: translateFlexAlign(element.horizontalAlign),
         alignItems: translateFlexAlign(element.verticalAlign),
         textAlign: element.horizontalAlign,
+        fontWeight: element.isBold ? "600" : "normal",
+        fontStyle: element.isItalic ? "italic" : "normal",
+        fontSize: px(element.fontSize) ?? '16px'
     };    
 
     const handleInput = event => {
