@@ -20,6 +20,11 @@ export default function Section({section, toolFactory, onUpdateSection}) {
         onUpdateSection({...section, elements });
     }
 
+    const handleElementRemove = (element) => {
+        const elements = section.elements.filter(e => e.id !== element.id);
+        onUpdateSection({...section, elements });
+    }
+
     const handlePointerDown = event => {
         event.stopPropagation();
 
@@ -36,7 +41,7 @@ export default function Section({section, toolFactory, onUpdateSection}) {
 
     return <section className="section" style={styles} ref={setSectionElement} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
         {displayGrid && <SectionGrid grid={grid} />}
-        {section.elements?.map((element, index) => <Element type={element.type} key={index} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} element={element} />)}
+        {section.elements?.map((element, index) => <Element type={element.type} key={index} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
 }
 

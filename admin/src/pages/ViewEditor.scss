@@ -71,13 +71,22 @@
             outline: none;
         }
 
-        &__tool-buttons {
+        &__tool-buttons, &__close-button {
             position: absolute;
             display: none;
             flex-direction: column;
             gap: 5px;
-            padding: 15px;
             transition: $transition-normal;
+        }
+
+        &__tool-buttons {
+            top: 10px;
+            left: 10px;
+        }
+
+        &__close-button {
+            top: 10px;
+            right: 10px;
         }
 
         &--no-transition {
@@ -88,7 +97,7 @@
         &:focus-within {
             border: dashed 3px lightgray;
 
-            .element__tool-buttons {
+            .element__tool-buttons, .element__close-button {
                 display: flex;
             }
         }

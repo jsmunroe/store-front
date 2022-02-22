@@ -20,20 +20,23 @@ button {
 input,
 textarea,
 select,
-option {
+option,
+span {
     outline: none; // don't forget indicator for focus state
     font: inherit;
 }
 
 // Base Styles
-.app {
+body {
     margin: 0;
     height: 100vh;
     font-family: 'Nunito', sans-serif;
     font-family: 'Varela Round', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
 
+.app {
     &__container {
         height: calc(100vh - 65px);
         display: flex;
@@ -135,6 +138,41 @@ option {
     height: calc(100vh - 65px); // 65px - .header
     width: calc(100vw - 300px - 65px); // 300
     overflow: auto;
+}
+
+.modal, .confirm {
+    z-index: 10;
+
+    &__content {
+        background-color: $color-highlight;
+        color: $color-dark;
+        min-width: 800px;
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 5px 5px 15px 2px rgba(0, 0, 0, 0.38);
+    }
+
+    &__backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.38);
+        backdrop-filter: blur(2px);
+    }
+}
+
+.confirm {
+    &__content {
+        min-width: 400px;
+    }
+}
+
+.confirm-box__overlay {
+    display: none;
 }
 
 // Reused Styles

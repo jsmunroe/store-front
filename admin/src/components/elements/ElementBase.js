@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
-import { useModal } from "../Modal";
+import { useModal, confirm } from "../Modal";
 
-export default function ElementBase({element, tool, sectionGrid, optionsForm, onChange, children}) {
+export default function ElementBase({element, tool, sectionGrid, optionsForm, onChange, onRemove, children}) {
     const [, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
@@ -20,12 +20,6 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
     }, [tool, domElement, element, sectionGrid, onChange])
 
     const handlePointerDown = event => {
-        event.stopPropagation();
-
-        if (event.target.closest('.element__tool-buttons')) {
-            return;
-        }
-
         localTool?.onPointerDown(event);
     }
 
@@ -59,9 +53,20 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
         }
     }
 
+    const handleRemoveRequest = async event => {
+        const result = await confirm('Are you sure you want to remove this element?');
+
+        if (result) {
+            onRemove(element);
+        }
+    }
+
     return <div className="element" tabIndex={0} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} ref={setDomElement}>
         <div className="element__tool-buttons">
-            {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v"></i></button>}
+            {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
+        </div>
+        <div className="element__close-button">
+            <button className="button tool-button" title="Options" onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
         </div>
         {children}
     </div>
