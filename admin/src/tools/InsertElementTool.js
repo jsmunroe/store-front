@@ -1,6 +1,6 @@
 import { Tool, ToolFactory } from "./Tool"
-import { createElement } from "../../models/createElement"
-import { saveElementOnProperty } from "../../utils/mutate"
+import { createElement } from "../models/createElement"
+import { saveElementOnProperty } from "../utils/mutate"
 
 export default class InsertElementToolFactory extends ToolFactory {
     constructor(elementType) {

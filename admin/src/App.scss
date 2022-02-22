@@ -155,31 +155,38 @@ option {
         content: ':'
     }
 
-    &__input, &__textarea {
-        height: 38px;
+    &__input, &__textarea, &__select {
         border-radius: 5px;
         padding: 0 10px;
         outline: none;
+    }
+
+    &__input, &__select {
+        height: 38px;
+    }
+
+    &__select {
+        padding: 0 5px;
+        width: fit-content;
     }
 
     &__textarea {
         padding: 10px;
     }
 
-    &__radio input[type="radio"] {
+    &__radio input[type="radio"], &__checkbox input[type="checkbox"] {
         display: none;
     }
 
-    &__radio {
+    &__radio, &__checkbox {
         display: inline-block;
-        margin-top: 4px;
         margin-right: 5px;
-        padding: 5px 10px;
+        padding: 5px;
         border: solid 1px gray;
         border-radius: 5px;
     }
 
-    &__radio.checked {
+    &__radio.checked, &__checkbox.checked {
         color: white;
         background: $color-accent-green;
     }

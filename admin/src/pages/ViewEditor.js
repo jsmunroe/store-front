@@ -5,7 +5,7 @@ import Section from "../components/Section"
 import * as viewActions from "../redux/actions/viewActions"
 import { useParams } from "react-router-dom"
 import { toValue } from "../utils/htmlHelpers"
-import createToolFactory from "../components/tools/createToolFactory"
+import createToolFactory from "../tools/createToolFactory"
 import './ViewEditor.scss'
 import RadioButton from "../components/controls/RadioButton"
 import { saveElementOnProperty } from "../utils/mutate"
@@ -13,7 +13,6 @@ import { saveElementOnProperty } from "../utils/mutate"
 
 function ViewEditor({view, viewsLoaded, actions}) {
     const [toolFactory, setToolFactory] = useState(createToolFactory(null))
-    const [optionsState, setOptionsState] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {

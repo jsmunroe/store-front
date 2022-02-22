@@ -1,4 +1,4 @@
-import { px } from "../../utils/number";
+import { px } from "../utils/number";
 
 export class ToolFactory {
     constructor(key) {
