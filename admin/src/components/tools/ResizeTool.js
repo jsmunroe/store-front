@@ -84,7 +84,7 @@ export class ResizeTool extends Tool {
 
         let { clientX, clientY } = this.getPointer(event);
 
-        if (this._target.hasPointerCapture(event.pointerId)) {      
+        if (event.target.hasPointerCapture(event.pointerId)) {      
             this.snapHandles(clientX, clientY);
         } 
         else {
