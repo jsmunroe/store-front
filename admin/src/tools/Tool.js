@@ -144,8 +144,8 @@ export class Tool {
         return {
             top: corrected.start.row,
             left: corrected.start.column,
-            width: corrected.end.column - corrected.start.column,
-            height: corrected.end.row - corrected.start.row,
+            width: corrected.end.column - corrected.start.column + 1,
+            height: corrected.end.row - corrected.start.row + 1,
         };
     }
 
