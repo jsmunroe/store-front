@@ -61,12 +61,12 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
         }
     }
 
-    return <div className="element" tabIndex={0} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} ref={setDomElement}>
+    return <div className="element" tabIndex={0} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
         <div className="element__tool-buttons">
             {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
         </div>
         <div className="element__close-button">
-            <button className="button tool-button" title="Options" onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
+            <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
         </div>
         {children}
     </div>

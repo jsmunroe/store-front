@@ -40,5 +40,7 @@ export class InsertElementTool extends Tool {
         const section = saveElementOnProperty(this._section, 'elements', element);
 
         this._onChange(section);
+
+        setTimeout(() => document.querySelector(`[data-id="${element.id}"]`)?.focus(), 250);
     }
 }

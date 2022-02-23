@@ -62,6 +62,23 @@
             height: 100%;
             width: 100%;
             object-fit: cover;
+
+            &.error {
+                visibility: hidden;
+            }
+        }
+
+        &__error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 90%;
+            font-weight: 400;
+            color: #FCA712;
+
+            p {
+                background-color: rgba(white, 0.7);
+            }
         }
 
         &__text {
@@ -100,6 +117,10 @@
             .element__tool-buttons, .element__close-button {
                 display: flex;
             }
+        }
+
+        &:hover {
+            background-color: rgba($color-accent-dark-blue, 0.1);
         }
     }
 }
