@@ -3,7 +3,7 @@ import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
 import { useModal, confirm } from "../Modal";
 
-export default function ElementBase({element, tool, sectionGrid, optionsForm, onChange, onRemove, children}) {
+export default function ElementBase({element, tool, sectionGrid, optionsForm, isEditing, onChange, onRemove, children}) {
     const [, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
@@ -18,6 +18,15 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
         }       
 
     }, [tool, domElement, element, sectionGrid, onChange])
+
+    useEffect(() => {
+        if (isEditing) {
+            localTool?.disable();
+        } else {
+            localTool?.enable();
+        }
+        
+    }, [localTool, isEditing])
 
     const handlePointerDown = event => {
         localTool?.onPointerDown(event);
@@ -61,14 +70,14 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, on
         }
     }
 
-    return <div className="element" tabIndex={0} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
-        <div className="element__tool-buttons">
-            {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
-        </div>
-        <div className="element__close-button">
-            <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
-        </div>
+    return <div className="element" tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
         {children}
+        {!isEditing && <div className="element__tool-buttons">
+            {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
+        </div>}
+        {!isEditing && <div className="element__close-button">
+            <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
+        </div>}
     </div>
 }
 

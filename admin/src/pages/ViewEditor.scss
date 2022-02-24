@@ -57,6 +57,7 @@
     .element {
         border: dashed 3px rgba(lightgray, 0);
         transition: top 0.2s, left 0.2s, width 0.2s, height 0.2s;
+        display: flex;
 
         &__image {
             height: 100%;
@@ -83,9 +84,46 @@
 
         &__text {
             height: 100%;
+            width: 100%;
             padding: 5px;
             font-size: 2em;
             outline: none;
+            border: none;
+            background: transparent;
+            resize: none;
+            outline: none;
+            overflow: visible;
+            background: white;
+        }
+
+        &__edit-button {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+        }
+
+        &__button {
+            border: 2px solid $color_dark;
+            border-radius: 5px;
+            min-width: 75px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    
+        &__button {
+            border-color: lighten($color-dark, 50%);
+            background-color: $color-highlight;
+            color: $color-dark;
+    
+            &:hover,
+            &:focus {
+                background-color: $color-accent-light-green;
+                color: black;
+            }
         }
 
         &__tool-buttons, &__close-button {
@@ -115,6 +153,10 @@
             border: dashed 3px lightgray;
 
             .element__tool-buttons, .element__close-button {
+                display: flex;
+            }
+
+            .element__edit-button {
                 display: flex;
             }
         }

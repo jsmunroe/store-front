@@ -36,6 +36,7 @@ export class Tool {
         this._sectionRect = null;
         this._isPointerDown = false;
 
+        this._enabled = true;
         this._selectionEnabled = false;
 
 
@@ -52,7 +53,20 @@ export class Tool {
         this._hover?.remove();
     }
 
+    disable() {
+        this._enabled = false;
+        this.unbind();
+    }
+
+    enable() {
+        this._enabled = true;
+    }
+
     onPointerDown(event) {
+        if (!this._enabled) {
+            return;
+        }
+
         event.target.setPointerCapture(event.pointerId);
         this._sectionRect = this._sectionElement?.getBoundingClientRect();
         this._isPointerDown = true;
@@ -60,9 +74,15 @@ export class Tool {
         if (this._selectionEnabled) {
             this._pointerDownCell = {...this.hitCell(event)};
         }
+
+        this.doPointerDown(event);
     }
     
     onPointerMove(event) { 
+        if (!this._enabled) {
+            return;
+        }
+
         this._sectionRect = this._sectionElement?.getBoundingClientRect();
 
         if (this._selectionEnabled) {
@@ -73,9 +93,15 @@ export class Tool {
                 this.hoverCell(cell);
             }
         }
+
+        this.doPointerMove(event);
     }
     
     onPointerUp(event) { 
+        if (!this._enabled) {
+            return;
+        }
+
         event.target.releasePointerCapture(event.pointerId);
         this._sectionRect = this._sectionElement?.getBoundingClientRect();
         this._isPointerDown = false;
@@ -86,13 +112,33 @@ export class Tool {
             this.onSelect(selection)
             this._pointerDownCell = null;
         }
+
+        this.doPointerUp(event);
     }
 
-    onBlur(event) { }
+    onBlur(event) {
+        if (!this._enabled) {
+            return;
+        }
 
-    onFocus(event) { }
+        this.doBlur(event);
+    }
+
+    onFocus(event) {
+        if (!this._enabled) {
+            return;
+        }
+
+        this.doFocus(event);
+    }
 
     onSelect(selection) { }
+
+    doPointerDown(event) { }
+    doPointerMove(event) { }
+    doPointerUp(event) { }
+    doBlur(event) { }
+    doFocus(event) { }
 
     getPointer(event) {
         return {

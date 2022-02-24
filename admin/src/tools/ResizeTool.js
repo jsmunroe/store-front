@@ -54,9 +54,12 @@ export class ResizeTool extends Tool {
         }
     }
     
-    onPointerDown(event) {
-        super.onPointerDown(event);
-        
+    unbind() {
+        super.unbind();
+        this._target.style.cursor = null;
+    }
+
+    doPointerDown(event) {       
         if (event.pointerType === 'mouse' && event.button !== 0) {
             return;
         }
@@ -75,9 +78,7 @@ export class ResizeTool extends Tool {
         this.updateSnapPositions();
     }
     
-    onPointerMove(event) {
-        super.onPointerMove(event);
-
+    doPointerMove(event) {
         event.preventDefault();
 
         this._sectionRect = this._sectionElement.getBoundingClientRect();
@@ -96,9 +97,7 @@ export class ResizeTool extends Tool {
         }
     }
     
-    onPointerUp(event) {
-        super.onPointerUp(event);
-
+    doPointerUp(event) {
         this._target.classList.remove('element--no-transition');
 
         let { clientX, clientY } = this.getPointer(event);
@@ -110,11 +109,11 @@ export class ResizeTool extends Tool {
         }
     }
 
-    onBlur(event) {
+    doBlur(event) {
         this._target.style.cursor = '';
     }
 
-    onFocus(event) {
+    doFocus(event) {
         // Not used.
     }
 

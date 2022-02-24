@@ -5,7 +5,7 @@ export function useClass(shouldUse, className) {
 
 export function toValue(handler) {
     return event => {
-        event.target?.setCustomValidity('');
+        event.target?.setCustomValidity && event.target?.setCustomValidity('');
 
         if (typeof handler === 'function') {
             const validity = handler(event.target.value, event);

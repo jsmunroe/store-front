@@ -41,7 +41,7 @@ export default function Section({section, toolFactory, onUpdateSection}) {
 
     return <section className="section" style={styles} ref={setSectionElement} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
         {displayGrid && <SectionGrid grid={grid} />}
-        {section.elements?.map((element, index) => <Element type={element.type} key={index} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
+        {section.elements?.map((element) => <Element type={element.type} key={element.id} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
 }
 
