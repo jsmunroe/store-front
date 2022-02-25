@@ -175,7 +175,8 @@
     flex-direction: column;
     gap: 5px;
 
-    &__button input[type="radio"] {
+    &__button input[type="radio"], 
+    &__button input[type="checkbox"] {
         display: none;
     }
 
@@ -183,7 +184,7 @@
         display: block;
         background-color: $color-highlight;
         border-radius: 5px;
-        padding: 10px;
+        padding: 7px;
         //box-shadow: 2px 4px 9px 0px rgba(0,0,0,0.3);
         transition: transform $transition-normal-duration;
         cursor: pointer;
@@ -203,5 +204,13 @@
         outline: solid rgba($color-dark, 0.8);
         outline-width: 3px;
         outline-offset: -5px;
+    }
+
+    &__button i {
+        vertical-align: middle;
+    }
+
+    &__spacer {
+        height: 10px;
     }
 }

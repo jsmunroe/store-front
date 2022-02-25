@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import useSectionGrid from "../hooks/useSectionGrid";
 import Element from "./elements/Element";
 
-export default function Section({section, toolFactory, onUpdateSection}) {
-    const [displayGrid] = useState(true);
+export default function Section({section, toolFactory, showGrid, onUpdateSection}) {
     const [sectionElement, setSectionElement] = useState(null);
     const [localTool, setLocalTool] = useState(null);
     const { grid, styles } = useSectionGrid(section, sectionElement);
@@ -40,7 +39,7 @@ export default function Section({section, toolFactory, onUpdateSection}) {
     }
 
     return <section className="section" style={styles} ref={setSectionElement} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-        {displayGrid && <SectionGrid grid={grid} />}
+        {showGrid && <SectionGrid grid={grid} />}
         {section.elements?.map((element) => <Element type={element.type} key={element.id} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
 }
