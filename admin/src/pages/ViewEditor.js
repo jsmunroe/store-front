@@ -42,7 +42,7 @@ function ViewEditor({view, viewsLoaded, actions}) {
 
     return <div className="view-editor">
         <div className="tool-bar">
-            <RadioButton className="tool-bar__button" name="tool" value="resize" title="Text" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="icon-resize"></i></RadioButton>
+            <RadioButton className="tool-bar__button" name="tool" value="resize" title="Resize" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="icon-resize"></i></RadioButton>
             <RadioButton className="tool-bar__button" name="tool" value="insert-text" title="Text" checked={toolFactory.key === 'insert-text'} onChange={toValue(handleSelectTool)}><i className="icon-insert-text"></i></RadioButton>
             <RadioButton className="tool-bar__button" name="tool" value="insert-image" title="Image" checked={toolFactory.key === 'insert-image'} onChange={toValue(handleSelectTool)}><i className="icon-insert-image"></i></RadioButton>
             <div className="tool-bar__spacer"></div>

@@ -7,6 +7,8 @@ function ImageOptionsForm({elementOptions, onChange}) {
     }
 
     return <>
+        <div className="form__title"><i className="icon-image"></i> Text Element Properties</div>
+
         <label className="form__label">Image Source</label>
         <input className="form__input" name="src" type="text" value={elementOptions.src} onChange={toNameValue(handlePropertyValueChange)} required></input>
     </>;

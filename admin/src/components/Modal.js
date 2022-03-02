@@ -7,13 +7,20 @@ import { confirm as confirmBox } from "react-confirm-box";
 const ModalContext = createContext();
 
 export function Modal({content, ...state}) {
+    const { onCancel, onSubmit } = state;
+    useEffect(() => {
+        if (content) {
+            return setupKeyCommandHandler(onSubmit, onCancel)
+        }
+    }, [content, onSubmit, onCancel]);
+
     if (!content) {
         return <></>;
     }
 
     const ContentComponent = content;
     return <div className="modal">
-        <div className="modal__backdrop"></div>
+        <div className="modal__backdrop" onMouseDown={onCancel}></div>
         <div className="modal__content">
             <ContentComponent {...state}/>
         </div>
@@ -90,15 +97,17 @@ function Confirm({message, onConfirm, onCancel}) {
 
 function setupKeyCommandHandler(onConfirm, onCancel) {
     const handleKeyCommands = event => {
-        event.preventDefault();
-        event.stopPropagation();
 
         if (['Enter', 'NumpadEnter'].includes(event.code)) {
-            onConfirm();
+            event.preventDefault();
+            event.stopPropagation();
+            onConfirm && onConfirm();
         }
 
         if (['Escape'].includes(event.code)) {
-            onCancel();
+            event.preventDefault();
+            event.stopPropagation();
+            onCancel && onCancel();
         }
     }
 
