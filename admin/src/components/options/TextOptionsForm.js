@@ -1,29 +1,54 @@
 import { toNameIsChecked, toNameValue } from "../../utils/htmlHelpers";
+import ReactQuill from 'react-quill';
 import Checkbox from "../controls/Checkbox";
 import RadioButton from "../controls/RadioButton";
 import ElementOptionsForm from "./ElementOptionsForm";
+import 'react-quill/dist/quill.snow.css';
+import { translateFlexAlign } from "../elements/Text";
+import { px } from "../../utils/number";
+
+const { Quill } = ReactQuill;
 
 function TextOptionsForm({elementOptions, onChange}) {
     const handlePropertyValueChange = (name, value) => {
         onChange({...elementOptions, [name]: value})
     }
 
+    const handleKeyDown = event => {
+        event.stopPropagation();
+    }
+
     const fontSizes = [10, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 84];
+
+    const modules = {
+        toolbar: [
+          ['bold', 'italic', 'underline','strike','link','clean']
+        ],
+      };
+
+    Quill.style = { 
+        display: 'flex',
+        justifyContent: translateFlexAlign(elementOptions.horizontalAlign),
+        alignItems: translateFlexAlign(elementOptions.verticalAlign),
+        textAlign: elementOptions.horizontalAlign,
+        fontWeight: elementOptions.isBold ? "600" : "normal",
+        fontStyle: elementOptions.isItalic ? "italic" : "normal",
+        fontSize: px(elementOptions.fontSize) ?? '16px'
+    };   
 
     return <>
         <div className="form__title"><i className="icon-text"></i> Text Element Properties</div>
         
-        <label className="form__label">Text</label>
-        <textarea className="form__textarea"  name="text" type="text" autoFocus rows={3} value={elementOptions.text} onChange={toNameValue(handlePropertyValueChange)} required></textarea>
+        <div className="form__row">
+            <ReactQuill theme="snow" value={elementOptions.text} modules={modules} onChange={value => handlePropertyValueChange('text', value)} onKeyDown={handleKeyDown} />
+            <br/>
+        </div>
 
-        <label className="form__label">Font</label>
+        <label className="form__label">Font Size</label>
         <div>
             <select className="form__select" name="fontSize" value={elementOptions.fontSize} onChange={toNameValue(handlePropertyValueChange)}>
                 {fontSizes.map(f => <option key={f} value={f}>{f} pixels</option>)}
             </select>
-            &nbsp;&nbsp;
-            <Checkbox className="form__checkbox" name="isBold" title="Bold" value={true} checked={elementOptions.isBold} onChange={toNameIsChecked(handlePropertyValueChange)}><i className="fas fa-bold fa-fw"></i></Checkbox>
-            <Checkbox className="form__checkbox" name="isItalic" title="Italic" value={true} checked={elementOptions.isItalic} onChange={toNameIsChecked(handlePropertyValueChange)}><i className="fas fa-italic fa-fw"></i></Checkbox>
         </div>
 
         <label className="form__label">Horizontal Align</label>
