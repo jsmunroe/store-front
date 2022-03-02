@@ -16,6 +16,8 @@
     .view-item {
         border: 0.5px $color-highlight solid;
         color: $color-shadow;
+        text-align: left;
+        padding-left: 15px;
 
         &__icon {
             margin-right: 5px;
@@ -35,6 +37,10 @@
     &__create-view {
         background-color: rgba($color-shadow, 0.2);
         color: $color-highlight;
+
+        &__icon {
+            font-size: 1.25em;
+        }
 
         &:hover,
         &:focus {

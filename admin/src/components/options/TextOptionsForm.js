@@ -11,6 +11,8 @@ function TextOptionsForm({elementOptions, onChange}) {
     const fontSizes = [10, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 84];
 
     return <>
+        <div className="form__title"><i className="icon-text"></i> Text Element Properties</div>
+        
         <label className="form__label">Text</label>
         <textarea className="form__textarea"  name="text" type="text" autoFocus rows={3} value={elementOptions.text} onChange={toNameValue(handlePropertyValueChange)} required></textarea>
 

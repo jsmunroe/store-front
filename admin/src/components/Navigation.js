@@ -12,11 +12,11 @@ export default function Navigation() {
         <div className="sidebar">
             <section className="menu">
                 <button className={`menu__button ${activeIf('views')}`} value="views" onClick={() => setActive('views')}>
-                    <i className="fas fa-grip-horizontal menu__icon"></i>
+                    <i className="icon-view-list menu__icon"></i>
                     <span className="menu__text">Views</span>
                 </button>
                 <button className={`menu__button ${activeIf('templates')}`} value="templates" onClick={() => setActive('templates')}>
-                    <i className="fas fa-book menu__icon"></i>
+                    <i className="icon-template-list menu__icon"></i>
                     <span className="menu__text">Templates</span>
                 </button>
             </section>

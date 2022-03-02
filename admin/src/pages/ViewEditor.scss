@@ -181,10 +181,14 @@
     }
 
     &__button {
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         background-color: $color-highlight;
         border-radius: 5px;
-        padding: 7px;
+        padding: 3px;
+        height: 36px;
+        width: 36px;
         //box-shadow: 2px 4px 9px 0px rgba(0,0,0,0.3);
         transition: transform $transition-normal-duration;
         cursor: pointer;
@@ -197,17 +201,15 @@
     &__button:focus-within {
         outline: solid rgba($color-dark, 0.6);
         outline-width: 1px;
-        outline-offset: -5px;
     }
 
     &__button.checked {
         outline: solid rgba($color-dark, 0.8);
         outline-width: 3px;
-        outline-offset: -5px;
     }
 
     &__button i {
-        vertical-align: middle;
+        font-size: 1.2em;
     }
 
     &__spacer {

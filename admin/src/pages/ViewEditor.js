@@ -42,11 +42,11 @@ function ViewEditor({view, viewsLoaded, actions}) {
 
     return <div className="view-editor">
         <div className="tool-bar">
-            <RadioButton className="tool-bar__button" name="tool" value="resize" title="Text" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="fas fa-expand-arrows-alt fa-fw"></i></RadioButton>
-            <RadioButton className="tool-bar__button" name="tool" value="insert-text" title="Text" checked={toolFactory.key === 'insert-text'} onChange={toValue(handleSelectTool)}><i className="fas fa-font fa-fw"></i></RadioButton>
-            <RadioButton className="tool-bar__button" name="tool" value="insert-image" title="Image" checked={toolFactory.key === 'insert-image'} onChange={toValue(handleSelectTool)}><i className="far fa-image fa-fw"></i></RadioButton>
+            <RadioButton className="tool-bar__button" name="tool" value="resize" title="Text" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="icon-resize"></i></RadioButton>
+            <RadioButton className="tool-bar__button" name="tool" value="insert-text" title="Text" checked={toolFactory.key === 'insert-text'} onChange={toValue(handleSelectTool)}><i className="icon-insert-text"></i></RadioButton>
+            <RadioButton className="tool-bar__button" name="tool" value="insert-image" title="Image" checked={toolFactory.key === 'insert-image'} onChange={toValue(handleSelectTool)}><i className="icon-insert-image"></i></RadioButton>
             <div className="tool-bar__spacer"></div>
-            <Checkbox className="tool-bar__button" name="showGrid" title="Show Grid" checked={showGrid} onChange={toIsChecked(handleShowGrid)}><i className="fas fa-border-all fa-fw"></i></Checkbox>
+            <Checkbox className="tool-bar__button" name="showGrid" title="Show Grid" checked={showGrid} onChange={toIsChecked(handleShowGrid)}><i className="icon-grid"></i></Checkbox>
         </div>
         <div className="view-editor__page">
             {view?.sections?.map((section, index) => <Section key={index} toolFactory={toolFactory} onUpdateSection={handleSectionUpdate} section={section} showGrid={showGrid} />)}
