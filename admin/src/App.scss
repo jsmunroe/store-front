@@ -47,7 +47,7 @@ body {
 .header {
     display: flex;
     align-items: center;
-    height: 65px;
+    height: 50px;
     background-color: $color-accent-dark-blue;
 }
 
@@ -193,7 +193,7 @@ body {
 
         i {
             font-size: 1.25em;
-            vertical-align: middle;
+            vertical-align: text-bottom;
             padding-right: 5px;
         }
     }
@@ -242,7 +242,7 @@ body {
         border-radius: 5px;
     }
 
-    &__radio.checked, &__checkbox.checked {
+    &__radio.checked, &__checkbox.checked, .ql-snow.ql-toolbar &__checkbox.ql-active {
         color: white;
         background: $color-accent-green;
     }
@@ -299,23 +299,64 @@ body {
 }
 
 .tool-button {
-    background-color: $color-shadow;
+    background-color: $color-highlight;
+    border: solid $color-dark 1px;
     border-radius: 3px;
-    height: 35px;
-    width: 35px;
-    opacity: 0.7;
+    height: 23px;
+    width: 23px;
     transition: $transition-normal;
 
     &:hover,
     &:focus {
         background-color: $color-highlight;
-        opacity: 1;
     }
 
-    & i.fas {
+    & i {
         pointer-events: none;
+        font-size: 0.9em;
+    }
+
+    & input[type="radio"], 
+    & input[type="checkbox"] {
+        display: none;
+    }
+
+    & {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $color-highlight;
+        border-radius: 3px;
+        padding: 3px;
+        height: 23px;
+        width: 23px;
+        //box-shadow: 2px 4px 9px 0px rgba(0,0,0,0.3);
+        transition: transform $transition-normal-duration;
+        cursor: pointer;
+    }
+
+    &:hover, &.checked:hover {
+        background-color: $color-accent-dark-blue;
+        background-color: lighten($color-accent-dark-blue, 60);
+    }
+
+    &:focus-within {
+        background-color: darken($color-highlight, 0.3);
+        background-color: lighten($color-accent-dark-blue, 60);
+    }
+
+    &.checked {
+        outline: solid $color-accent-green;
+        background-color: lighten($color-accent-dark-blue, 60);
+        outline-width: 2px;
+    }
+
+    & i {
+        font-size: 1em;
     }
 }
+
+
 
 .fas {
     &.super {
@@ -326,5 +367,11 @@ body {
     &.sub {
         position: relative;
         bottom: -5px;
+    }
+}
+
+.quill {
+    .ql-container {
+        font-size: 1em;
     }
 }

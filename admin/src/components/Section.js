@@ -45,8 +45,22 @@ export default function Section({section, toolFactory, showGrid, onUpdateSection
 }
 
 function SectionGrid({grid}) {
+    const getColumnStyle = column => {
+        return {
+            left: column - grid.columnGap * 0.5,
+            width: grid.columnGap,
+        }
+    }
+
+    const getRowStyle = row => {
+        return {
+            top: row - grid.rowGap * 0.5,
+            height: grid.rowGap,
+        }
+    }
+
     return <>
-        {grid?.columns.map(column => <div key={column} className="section__grid-column" style={{left: column}}></div>)}
-        {grid?.rows.map(row => <div key={row} className="section__grid-row" style={{top: row}}></div>)}
+        {grid?.columns.map(column => <div key={column} className="section__grid-column" style={getColumnStyle(column)}></div>)}
+        {grid?.rows.map(row => <div key={row} className="section__grid-row" style={getRowStyle(row)}></div>)}
     </>
 }

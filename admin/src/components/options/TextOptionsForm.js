@@ -1,13 +1,13 @@
-import { toNameIsChecked, toNameValue } from "../../utils/htmlHelpers";
+import { toNameValue } from "../../utils/htmlHelpers";
 import ReactQuill from 'react-quill';
-import Checkbox from "../controls/Checkbox";
 import RadioButton from "../controls/RadioButton";
 import ElementOptionsForm from "./ElementOptionsForm";
 import 'react-quill/dist/quill.snow.css';
-import { translateFlexAlign } from "../elements/Text";
-import { px } from "../../utils/number";
 
 const { Quill } = ReactQuill;
+var icons = Quill.import('ui/icons');
+icons.bold = '<i class="fas fa-bold fa-fw"></i>';
+Quill.register('ui/icons', icons);
 
 function TextOptionsForm({elementOptions, onChange}) {
     const handlePropertyValueChange = (name, value) => {
@@ -21,25 +21,16 @@ function TextOptionsForm({elementOptions, onChange}) {
     const fontSizes = [10, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 84];
 
     const modules = {
-        toolbar: [
-          ['bold', 'italic', 'underline','strike','link','clean']
-        ],
-      };
-
-    Quill.style = { 
-        display: 'flex',
-        justifyContent: translateFlexAlign(elementOptions.horizontalAlign),
-        alignItems: translateFlexAlign(elementOptions.verticalAlign),
-        textAlign: elementOptions.horizontalAlign,
-        fontWeight: elementOptions.isBold ? "600" : "normal",
-        fontStyle: elementOptions.isItalic ? "italic" : "normal",
-        fontSize: px(elementOptions.fontSize) ?? '16px'
-    };   
+        toolbar: {
+            container: '#toolbar',
+        },
+    };
 
     return <>
         <div className="form__title"><i className="icon-text"></i> Text Element Properties</div>
         
         <div className="form__row">
+            <EditorToolbar />
             <ReactQuill theme="snow" value={elementOptions.text} modules={modules} onChange={value => handlePropertyValueChange('text', value)} onKeyDown={handleKeyDown} />
             <br/>
         </div>
@@ -65,6 +56,17 @@ function TextOptionsForm({elementOptions, onChange}) {
             <RadioButton className="form__radio" name="verticalAlign" title="Bottom" value="bottom" checked={elementOptions.verticalAlign === 'bottom'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw sub"></i></RadioButton>
         </div>
     </>;
+}
+
+function EditorToolbar() {
+    return <div id="toolbar">
+        <button className="ql-bold form__checkbox"><i className="fas fa-bold fa-fw"></i></button>
+        <button className="ql-italic form__checkbox"></button>
+        <button className="ql-underline form__checkbox"></button>
+        <button className="ql-strike form__checkbox"></button>
+        <button className="ql-link form__checkbox"></button>
+        <button className="ql-clean form__checkbox"></button>
+    </div>
 }
 
 export default ElementOptionsForm(TextOptionsForm);
