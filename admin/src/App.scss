@@ -39,7 +39,7 @@ body {
 
 .app {
     &__container {
-        height: calc(100vh - 65px);
+        height: calc(100vh - 50px);
         display: flex;
     }
 }
@@ -138,8 +138,8 @@ body {
 }
 
 .main {
-    height: calc(100vh - 65px); // 65px - .header
-    width: calc(100vw - 300px - 65px); // 300
+    height: calc(100vh - 50px); // 50px - .header
+    width: calc(100vw - 300px - 50px); // 300
     overflow: auto;
 }
 

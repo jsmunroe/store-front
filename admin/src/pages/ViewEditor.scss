@@ -147,6 +147,7 @@
         &:focus-within {
             outline: dashed 2px lightgray;
             outline-offset: -2px;
+            z-index: 100;
 
             .element__tool-buttons, .element__close-button {
                 display: flex;
@@ -171,6 +172,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    position: fixed;
+    left: 370px;
 
     &__button {
         @include icon-button;
