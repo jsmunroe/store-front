@@ -1,4 +1,5 @@
 @import './src/styles/colors';
+@import './src/styles/mixins';
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Varela+Round&display=swap');
 
 // Resets
@@ -230,21 +231,11 @@ body {
         padding: 10px;
     }
 
-    &__radio input[type="radio"], &__checkbox input[type="checkbox"] {
-        display: none;
-    }
-
     &__radio, &__checkbox {
+        @include icon-button;
         display: inline-block;
         margin-right: 5px;
         padding: 5px;
-        border: solid 1px gray;
-        border-radius: 5px;
-    }
-
-    &__radio.checked, &__checkbox.checked, .ql-snow.ql-toolbar &__checkbox.ql-active {
-        color: white;
-        background: $color-accent-green;
     }
 
     &__buttons {
@@ -256,7 +247,6 @@ body {
 
     &__submit,
     &__button {
-        border: 2px solid $color_dark;
         border-radius: 5px;
         min-width: 75px;
         padding: 8px 16px;
@@ -269,27 +259,11 @@ body {
     }
 
     &__button {
-        border-color: lighten($color-dark, 50%);
-        background-color: $color-highlight;
-        color: $color-dark;
-
-        &:hover,
-        &:focus {
-            background-color: $color-accent-light-green;
-        }
+        @include button;
     }
 
     &__submit {
-        border-color: transparent;
-        background-color: $color-accent-green;
-        color: $color-highlight;
-
-        &:hover,
-        &:focus {
-            border-color: $color-accent-green;
-            background-color: $color-highlight;
-            color: $color-accent-green;
-        }
+        @include primary-button;
     }
 
     // Quill text editor
@@ -299,64 +273,10 @@ body {
 }
 
 .tool-button {
-    background-color: $color-highlight;
-    border: solid $color-dark 1px;
-    border-radius: 3px;
-    height: 23px;
-    width: 23px;
-    transition: $transition-normal;
-
-    &:hover,
-    &:focus {
-        background-color: $color-highlight;
-    }
-
-    & i {
-        pointer-events: none;
-        font-size: 0.9em;
-    }
-
-    & input[type="radio"], 
-    & input[type="checkbox"] {
-        display: none;
-    }
-
-    & {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: $color-highlight;
-        border-radius: 3px;
-        padding: 3px;
-        height: 23px;
-        width: 23px;
-        //box-shadow: 2px 4px 9px 0px rgba(0,0,0,0.3);
-        transition: transform $transition-normal-duration;
-        cursor: pointer;
-    }
-
-    &:hover, &.checked:hover {
-        background-color: $color-accent-dark-blue;
-        background-color: lighten($color-accent-dark-blue, 60);
-    }
-
-    &:focus-within {
-        background-color: darken($color-highlight, 0.3);
-        background-color: lighten($color-accent-dark-blue, 60);
-    }
-
-    &.checked {
-        outline: solid $color-accent-green;
-        background-color: lighten($color-accent-dark-blue, 60);
-        outline-width: 2px;
-    }
-
-    & i {
-        font-size: 1em;
-    }
+    @include icon-button;
+    width: 25px;
+    height: 25px;
 }
-
-
 
 .fas {
     &.super {

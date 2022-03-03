@@ -1,0 +1,56 @@
+@import './src/styles/colors';
+
+@mixin button {
+    border: 2px solid lighten($color-dark, 50%);
+    background-color: $color-highlight;
+    color: $color-dark;
+    border-radius: 3px;
+    transition: $transition-normal;
+    cursor: pointer;
+
+    & input[type="radio"], 
+    & input[type="checkbox"] {
+        display: none;
+    }
+
+    &:hover, &:focus-within {
+        background-color: $color-accent-light-green;
+    }
+}
+
+@mixin primary-button {
+    @include button;
+    border: 2px solid transparent;
+    background-color: $color-accent-green;
+    color: $color-highlight;
+
+    &:hover, &:focus-within {
+        border-color: $color-accent-green;
+        background-color: $color-highlight;
+        color: $color-accent-green;
+    }
+}
+
+@mixin icon-button {
+    @include button;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.checked {
+        border-color: transparent;
+        background-color: $color-accent-green;
+        color: $color-highlight;
+    }
+
+    &.checked:hover {
+        border-color: $color-accent-green;
+        background-color: $color-highlight;
+        color: $color-accent-green;
+    }
+
+    & i {
+        pointer-events: none;
+        font-size: 0.9em;
+    }
+}
