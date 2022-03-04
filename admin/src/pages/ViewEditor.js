@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux"
 import Section from "../components/Section"
 import * as viewActions from "../redux/actions/viewActions"
 import { useParams } from "react-router-dom"
-import { toIsChecked, toNameIsChecked, toValue } from "../utils/htmlHelpers"
+import { toIsChecked, toValue } from "../utils/htmlHelpers"
 import createToolFactory from "../tools/createToolFactory"
 import './ViewEditor.scss'
 import RadioButton from "../components/controls/RadioButton"

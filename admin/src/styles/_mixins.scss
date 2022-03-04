@@ -37,7 +37,7 @@
     justify-content: center;
     align-items: center;
 
-    &.checked {
+    &.checked, .ql-snow.ql-toolbar &.ql-active {
         border-color: transparent;
         background-color: $color-accent-green;
         color: $color-highlight;
@@ -52,5 +52,26 @@
     & i {
         pointer-events: none;
         font-size: 0.9em;
+    }
+}
+
+@mixin ql-button {
+    @include icon-button;
+
+    &.ql-active {
+        border-color: transparent;
+        background-color: $color-accent-green;
+        color: $color-highlight;
+    }
+
+    &.ql-active:hover {
+        border-color: $color-accent-green;
+        background-color: $color-highlight;
+        color: $color-accent-green;
+    }
+
+    &:hover, &:focus-within {
+        background-color: $color-accent-light-green;
+        color: $color-dark;
     }
 }

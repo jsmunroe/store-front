@@ -52,7 +52,6 @@
 
     .element {
         transition: top 0.2s, left 0.2s, width 0.2s, height 0.2s;
-        display: flex;
 
         &__image {
             height: 100%;
@@ -147,7 +146,7 @@
         &:focus-within {
             outline: dashed 2px lightgray;
             outline-offset: -2px;
-            z-index: 100;
+            z-index: 1;
 
             .element__tool-buttons, .element__close-button {
                 display: flex;
