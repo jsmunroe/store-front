@@ -1,6 +1,9 @@
 const initialState = {
     user: { state: 'Unknown' },
-    views: [],
+    views: { 
+        loaded: false,
+        all: [],
+    },
     view: {},
 }
 

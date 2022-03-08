@@ -57,7 +57,7 @@ function ViewEditor({view, viewsLoaded, actions}) {
 function mapStateToProps({view, views}, ownProps) {
     return {
         view, 
-        viewsLoaded: !!views?.length
+        viewsLoaded: views.loaded
     }
 }
 

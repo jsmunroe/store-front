@@ -5,11 +5,11 @@ import initialState from './initialState';
 export default createReducer({
 
     [actionTypes.loadView]: function (state, {view}) {
-        return {...view};
+        return state.id === view.id ? state : view;
     },
 
     [actionTypes.saveView]: function (state, {view}) {
-        return {...view};
+        return state.id === view.id ? view : state;
     }
 
-}, initialState.views)
+}, initialState.view)

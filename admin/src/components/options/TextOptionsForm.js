@@ -14,7 +14,7 @@ icons.strike = '<i class="fas fa-strikethrough fa-fw"></i>';
 icons.link = '<i class="fas fa-link fa-fw"></i>';
 icons.clean = '<i class="fas fa-remove-format fa-fw"></i>';
 
-Quill.register('ui/icons', icons);
+Quill.register('ui/icons', icons, true);
 
 function TextOptionsForm({elementOptions, onChange}) {
     const handlePropertyValueChange = (name, value) => {
