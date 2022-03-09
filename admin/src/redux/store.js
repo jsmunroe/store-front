@@ -1,6 +1,7 @@
 import configureStore from "./configureStore.dev";
-import initialState from "./reducers/initialState";
 
-const store = configureStore(initialState);
-
+const store = configureStore({});
 export default store;
+
+export const dispatch = action => store.dispatch(action);
+export const getState = () => store.getState();

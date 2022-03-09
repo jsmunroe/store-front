@@ -16,6 +16,12 @@
     &:hover, &:focus-within {
         background-color: $color-accent-light-green;
     }
+
+    &:disabled {
+        background-color: $color-shadow;
+        color: lighten($color-dark, 50%);
+        cursor: default;
+    }
 }
 
 @mixin primary-button {

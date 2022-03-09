@@ -3,6 +3,7 @@ import rootReducer from "./reducers";
 import reduxImmutableStateInvarient from "redux-immutable-state-invariant"
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
+import dispatchMiddleware from "./dispatchMiddleware";
 
 export default function configureStore(initialState) {
     const composeEnhancers = composeWithDevTools({ trace: true })
@@ -13,6 +14,7 @@ export default function configureStore(initialState) {
         composeEnhancers(
             applyMiddleware(
                 thunk,
+                dispatchMiddleware,
                 reduxImmutableStateInvarient() // Warns if state is mutated within a repository.
             ),
         ),
