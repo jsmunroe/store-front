@@ -8,18 +8,18 @@ export default class ResizeToolFactory extends ToolFactory {
     }
     
     // Bind a new tool to a single element creating a state to support that element only.
-    createElementTool(element, target, sectionGrid, onChange) { 
+    createElementTool(element, target, viewGrid, onChange) { 
         if (!target) {
             return null;
         }
 
-        return new ResizeTool(element, target, sectionGrid, onChange);
+        return new ResizeTool(element, target, viewGrid, onChange);
     }
 }
 
 export class ResizeTool extends Tool {
-    constructor(element, target, sectionGrid, onChange) {
-        super(target, sectionGrid, onChange);
+    constructor(element, target, viewGrid, onChange) {
+        super(target, viewGrid, onChange);
    
         this._targetHandles = { 
             top: false,
@@ -29,8 +29,8 @@ export class ResizeTool extends Tool {
             body: false,
         };
     
-        this._sectionColumnGap = 0;
-        this._sectionRowGap = 0;
+        this._columnGap = 0;
+        this._rowGap = 0;
         this._pointerDownRect = null;
         this._snappedColumnIndex = -1;
         this._snappedRowIndex = -1;
@@ -49,8 +49,8 @@ export class ResizeTool extends Tool {
             left: element.left ?? 0
         };
 
-        if (!this._sectionElement) {
-            throw new Error('Cannot find parent section element.');
+        if (!this._viewElement) {
+            throw new Error('Cannot find parent view element.');
         }
     }
     
@@ -64,9 +64,9 @@ export class ResizeTool extends Tool {
             return;
         }
 
-        const sectionStyle = window.getComputedStyle(this._sectionElement);
-        this._sectionColumnGap = parseFloat(sectionStyle.columnGap);
-        this._sectionRowGap = parseFloat(sectionStyle.rowGap);
+        const viewStyle = window.getComputedStyle(this._viewElement);
+        this._columnGap = parseFloat(viewStyle.columnGap);
+        this._rowGap = parseFloat(viewStyle.rowGap);
 
         const { clientX, clientY } = this.getPointer(event);
         
@@ -81,7 +81,7 @@ export class ResizeTool extends Tool {
     doPointerMove(event) {
         event.preventDefault();
 
-        this._sectionRect = this._sectionElement.getBoundingClientRect();
+        this._viewRect = this._viewElement.getBoundingClientRect();
 
         let { clientX, clientY } = this.getPointer(event);
 
@@ -245,12 +245,12 @@ export class ResizeTool extends Tool {
     }
 
     updateSnapPositions() {
-        const halfColumnGap = this._sectionColumnGap / 2;
-        const halfRowGap = this._sectionRowGap / 2;
-        this._leftSnapPositions = [-halfColumnGap, ...this._sectionGrid.columns].map(position => position + halfColumnGap);
-        this._rightSnapPositions = [...this._sectionGrid.columns, this._sectionRect.width + halfColumnGap].map(position => position - halfColumnGap);;
-        this._topSnapPositions = [-halfRowGap, ...this._sectionGrid.rows].map(position => position + halfRowGap);;
-        this._bottomSnapPositions = [...this._sectionGrid.rows, this._sectionRect.height + halfRowGap].map(position => position - halfRowGap);;
+        const halfColumnGap = this._columnGap / 2;
+        const halfRowGap = this._rowGap / 2;
+        this._leftSnapPositions = [-halfColumnGap, ...this._viewGrid.columns].map(position => position + halfColumnGap);
+        this._rightSnapPositions = [...this._viewGrid.columns, this._viewRect.width + halfColumnGap].map(position => position - halfColumnGap);;
+        this._topSnapPositions = [-halfRowGap, ...this._viewGrid.rows].map(position => position + halfRowGap);;
+        this._bottomSnapPositions = [...this._viewGrid.rows, this._viewRect.height + halfRowGap].map(position => position - halfRowGap);;
     }
 
     updateHandleType({top, left, bottom, right, body}) {

@@ -9,25 +9,25 @@ export default class InsertElementToolFactory extends ToolFactory {
         this.elementType = elementType;
     }
 
-    // Bind a new tool to a section creating a state to support that section only.
-    createSectionTool(section, target, sectionGrid, onChange) { 
+    // Bind a new tool to a view creating a state to support that view only.
+    createViewTool(view, target, viewGrid, onChange) { 
         if (!target) {
             return null;
         }
 
-        return new InsertElementTool(this.elementType, section, target, sectionGrid, onChange);
+        return new InsertElementTool(this.elementType, view, target, viewGrid, onChange);
     }
 }
 
 export class InsertElementTool extends Tool {
-    constructor(elementType, section, target, sectionGrid, onChange) {
-        super(target, sectionGrid, onChange);
+    constructor(elementType, view, target, viewGrid, onChange) {
+        super(target, viewGrid, onChange);
 
         this.elementType = elementType;
 
-        this._section = section;
+        this._view = view;
         this._target = target;
-        this._sectionGrid = sectionGrid;
+        this._viewGrid = viewGrid;
         this._onChange = onChange;
 
         this._pointerDownCell = null;
@@ -37,9 +37,9 @@ export class InsertElementTool extends Tool {
 
     onSelect(selection) {
         const element = createElement(this.elementType, selection);
-        const section = saveElementOnProperty(this._section, 'elements', element);
+        const view = saveElementOnProperty(this._view, 'elements', element);
 
-        this._onChange(section);
+        this._onChange(view);
 
         setTimeout(() => document.querySelector(`[data-id="${element.id}"]`)?.focus(), 250);
     }

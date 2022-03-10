@@ -2,23 +2,23 @@ import { useEffect } from "react";
 import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
 import { bindKeyEvents } from "../../utils/domHelpers";
-import { useModal, confirm } from "../Modal";
+import { useModal } from "../Modal";
 
-export default function ElementBase({element, tool, sectionGrid, optionsForm, isEditing, onFocus, onBlur, onChange, onRemove, children}) {
+export default function ElementBase({element, tool, grid, optionsForm, isEditing, onFocus, onBlur, onChange, onRemove, children}) {
     const [hasFocus, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
 
-    const { placementStyles } = useElementPlacement(element,sectionGrid);
+    const { placementStyles } = useElementPlacement(element,grid);
 
     const modal = useModal();
 
     useEffect(() => {
-        if (!!tool && !!domElement && !! sectionGrid) {
-            setLocalTool(tool.bindToElement(element, domElement, sectionGrid, onChange));
+        if (!!tool && !!domElement && !! grid) {
+            setLocalTool(tool.bindToElement(element, domElement, grid, onChange));
         }       
 
-    }, [tool, domElement, element, sectionGrid, onChange])
+    }, [tool, domElement, element, grid, onChange])
 
     useEffect(() => {
         if (isEditing) {

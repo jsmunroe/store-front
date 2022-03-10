@@ -3,16 +3,20 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { confirm as confirmBox } from "react-confirm-box";
+import { bindKeyEvents, stop } from "../utils/domHelpers";
 
 const ModalContext = createContext();
 
 export function Modal({content, ...state}) {
-    const { onCancel, onSubmit } = state;
+    const { onCancel } = state;
     useEffect(() => {
-        if (content) {
-            return setupKeyCommandHandler(onSubmit, onCancel)
-        }
-    }, [content, onSubmit, onCancel]);
+        return bindKeyEvents(event => {
+            if (content && ['Escape'].includes(event.code)) {
+                stop(event);
+                onCancel && onCancel();
+            }
+        })
+    }, [content, onCancel]);
 
     if (!content) {
         return <></>;

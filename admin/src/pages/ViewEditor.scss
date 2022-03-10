@@ -16,10 +16,10 @@
         background-color: $color-highlight;
     }
 
-    .section {
-        margin: 15px; // TODO: This will be a property of how the section is generally defined.
+    .view {
+        margin: 15px; // TODO: This will be a property of how the view is generally defined.
         display: grid;
-        gap: 15px; // TODO: This will be a property of how the section is generally defined.
+        gap: 15px; // TODO: This will be a property of how the view is generally defined.
         position: relative;
 
         &__grid-column,

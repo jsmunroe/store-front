@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
-import Section from "../components/Section"
+import View from "../components/View"
 import * as viewActions from "../redux/actions/viewActions"
 import { useParams } from "react-router-dom"
 import { toIsChecked, toValue } from "../utils/htmlHelpers"
 import createToolFactory from "../tools/createToolFactory"
 import './ViewEditor.scss'
-import { saveElementOnProperty } from "../utils/mutate"
 import RadioButton from "../components/controls/RadioButton"
 import Checkbox from "../components/controls/Checkbox"
 import Undo from "../components/Undo"
@@ -28,8 +27,7 @@ function ViewEditor({view, viewsLoaded, actions}) {
         }
     }, [id, viewsLoaded, actions])
 
-    const handleSectionUpdate = section => {  
-        view = saveElementOnProperty(view, 'sections', section);
+    const handleViewUpdate = view => {  
         actions.saveView(view);
 
         // Change tool back to default tool
@@ -59,16 +57,14 @@ function ViewEditor({view, viewsLoaded, actions}) {
 
         element = {...element, id: uuid(), top: 2, left: 2}
         
-        let elements = [...view.sections[0].elements, element];
-        let section = {...view.sections[0], elements};
-        let sections = view.sections.map(s => s.id === section.id ? section : s);
-        view = {...view, sections};
+        let elements = [...view.elements, element];
+        view = {...view, elements};
         actions.saveView(view);
     }
 
     return <div className="view-editor">
         <div className="view-editor__page">
-            {view?.sections?.map((section, index) => <Section key={index} toolFactory={toolFactory} onUpdateSection={handleSectionUpdate} onSelectedElementChange={setSelectedElement} section={section} showGrid={showGrid} />)}
+            <View toolFactory={toolFactory} onUpdate={handleViewUpdate} onSelectedElementChange={setSelectedElement} view={view} showGrid={showGrid} />
         </div>
         <div className="tool-bar">
             <RadioButton className="tool-bar__button" name="tool" value="resize" title="Resize" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="icon-resize"></i></RadioButton>
