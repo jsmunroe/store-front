@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
+import { bindKeyEvents } from "../../utils/domHelpers";
 import { useModal, confirm } from "../Modal";
 
 export default function ElementBase({element, tool, sectionGrid, optionsForm, isEditing, onFocus, onBlur, onChange, onRemove, children}) {
-    const [, setHasFocus] = useState(false);
+    const [hasFocus, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
 
@@ -27,6 +28,14 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, is
         }
         
     }, [localTool, isEditing])
+
+    useEffect(() => {
+        return bindKeyEvents(event => {
+            if (hasFocus && event.code === 'Delete') {
+                handleRemoveRequest(event);
+            }
+        })
+    })
 
     const handlePointerDown = event => {
         localTool?.onPointerDown(event);
@@ -64,12 +73,8 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, is
         }
     }
 
-    const handleRemoveRequest = async event => {
-        const result = await confirm('Are you sure you want to remove this element?');
-
-        if (result) {
-            onRemove(element);
-        }
+    const handleRemoveRequest = event => {
+        onRemove(element);
     }
 
     return <div className="element" tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>

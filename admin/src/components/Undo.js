@@ -1,30 +1,21 @@
 import { useEffect } from "react";
 import { connect } from "react-redux"
 import * as undoActions from "../redux/actions/undoActions"
+import { bindKeyEvents, stop } from "../utils/domHelpers";
 
-function bindKeyEvents(canUndo, undo, canRedo, redo) {
-    const onKeyDown = event => {
-        if (canUndo && event.ctrlKey && event.code === 'KeyZ') {
-            undo();
-        }
-
-        if (canRedo && event.ctrlKey && event.code === 'KeyY') {
-            redo();
-        }
-    }
-
-    document.addEventListener('keydown', onKeyDown);
-
-    return () => { 
-        document.removeEventListener('keydown', onKeyDown);
-    }
-}
-
-function Undo({stateName, canRedo, canUndo, onUndo, onRedo}) {
+function Undo({stateName, canUndo, onUndo, canRedo, onRedo}) {
     useEffect(() => {
-
-        return bindKeyEvents(canUndo, onUndo, canRedo, onRedo);
-
+        return bindKeyEvents(event => {
+            if (canUndo && event.ctrlKey && event.code === 'KeyZ') {
+                stop(event);
+                onUndo();
+            }
+    
+            if (canRedo && event.ctrlKey && event.code === 'KeyY') {
+                stop(event);
+                onRedo();
+            }
+        });
     }, [canUndo, onUndo, canRedo, onRedo])
 
     return <>

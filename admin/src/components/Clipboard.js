@@ -1,27 +1,19 @@
 import { useEffect } from "react";
-
-function bindKeyEvents(canCopy, copy, canPaste, paste) {
-    const onKeyDown = event => {
-        if (canCopy && event.ctrlKey && event.code === 'KeyC') {
-            copy();
-        }
-
-        if (canPaste && event.ctrlKey && event.code === 'KeyV') {
-            paste();
-        }
-    }
-
-    document.addEventListener('keydown', onKeyDown);
-
-    return () => { 
-        document.removeEventListener('keydown', onKeyDown);
-    }
-}
+import { bindKeyEvents, stop } from "../utils/domHelpers";
 
 export default function Clipboard({canCopy, onCopy, canPaste, onPaste}) {
     useEffect(() => {
-
-        return bindKeyEvents(canCopy, onCopy, canPaste, onPaste);
+        return bindKeyEvents(event => {
+            if (canCopy && event.ctrlKey && event.code === 'KeyC') {
+                stop(event);
+                onCopy();
+            }
+    
+            if (canPaste && event.ctrlKey && event.code === 'KeyV') {
+                stop(event);
+                onPaste();
+            }
+        });
 
     }, [canCopy, onCopy, canPaste, onPaste])
 
