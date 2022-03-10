@@ -3,7 +3,7 @@ import { useState } from "react";
 import useElementPlacement from "../../hooks/useElementPlacement"
 import { useModal, confirm } from "../Modal";
 
-export default function ElementBase({element, tool, sectionGrid, optionsForm, isEditing, onChange, onRemove, children}) {
+export default function ElementBase({element, tool, sectionGrid, optionsForm, isEditing, onFocus, onBlur, onChange, onRemove, children}) {
     const [, setHasFocus] = useState(false);
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
@@ -43,11 +43,13 @@ export default function ElementBase({element, tool, sectionGrid, optionsForm, is
     const handleFocus = event => {
         setHasFocus(true);
         localTool?.onFocus(event);
+        onFocus(element, domElement);
     }
 
     const handleBlur = event => {
         setHasFocus(false);
         localTool?.onBlur(event);
+        onBlur(element, domElement);
     }
 
     const handleShowOptionsUpdate = elementOptions => {

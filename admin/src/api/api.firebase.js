@@ -45,12 +45,10 @@ export async function getCollection(path) {
 }
 
 export async function readDoc(path) {
-    console.log(`Firestore reading document: ${logPath(path)}`)
     return read(await getDoc(path));
 }
 
 export async function readCollection(path) {
-    console.log(`Firestore reading collection: ${logPath(path)}`)
     return readAll(await getCollection(path));
 }
 

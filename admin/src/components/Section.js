@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import useSectionGrid from "../hooks/useSectionGrid";
 import Element from "./elements/Element";
 
-export default function Section({section, toolFactory, showGrid, onUpdateSection}) {
-    const [sectionElement, setSectionElement] = useState(null);
+export default function Section({section, toolFactory, showGrid, onUpdateSection, onSelectedElementChange}) {
+    const [domSection, setDomSection] = useState(null);
     const [localTool, setLocalTool] = useState(null);
-    const { grid, styles } = useSectionGrid(section, sectionElement);
+    const { grid, styles } = useSectionGrid(section, domSection);
 
     useEffect(() => {
-        if (!!toolFactory && !!sectionElement && !! grid) {
-            setLocalTool(toolFactory.bindToSection(section, sectionElement, grid, onUpdateSection));
+        if (!!toolFactory && !!domSection && !! grid) {
+            setLocalTool(toolFactory.bindToSection(section, domSection, grid, onUpdateSection));
         }       
 
-    }, [toolFactory, sectionElement, section, grid, onUpdateSection])
+    }, [toolFactory, domSection, section, grid, onUpdateSection])
 
     const handleElementChange = (element) => {
         const elements = section.elements.map(e => e.id === element.id ? element : e);
@@ -38,9 +38,17 @@ export default function Section({section, toolFactory, showGrid, onUpdateSection
         localTool?.onPointerUp(event);
     }
 
-    return <section className="section" style={styles} ref={setSectionElement} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
+    const handleElementFocus = (element, domElement) => {
+        onSelectedElementChange({isSelected: true, element, domElement});
+    }
+
+    const handleElementBlur = (element, domElement) => {
+        onSelectedElementChange({isSelected: false});
+    }
+
+    return <section className="section" style={styles} ref={setDomSection} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
         {showGrid && <SectionGrid grid={grid} />}
-        {section.elements?.map((element) => <Element type={element.type} key={element.id} sectionGrid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
+        {section.elements?.map((element) => <Element type={element.type} key={element.id} sectionGrid={grid} tool={toolFactory} onFocus={handleElementFocus} onBlur={handleElementBlur} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
 }
 
