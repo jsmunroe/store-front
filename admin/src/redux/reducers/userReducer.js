@@ -12,4 +12,4 @@ export default createReducer({
         return { state: 'NotAuthenticated' };
     }
 
-}, initialState.views)
+}, initialState.user)

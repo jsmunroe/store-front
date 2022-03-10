@@ -40,7 +40,7 @@ function ViewList({views, actions}) {
 
 function mapStateToProps({views}, ownProps) {
     return {
-        views
+        views: views.loaded ? views.all : [],
     }
 }
 

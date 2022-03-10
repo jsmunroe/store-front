@@ -5,15 +5,22 @@ import _ from 'lodash';
 
 export default createReducer({
     [actionTypes.loadViews]: function (state, {views}) {
-        return _.sortBy([...views], v => v.name);
+        return {
+            loaded: true,
+            all: _.sortBy([...views], v => v.name),
+        };
     },
 
     [actionTypes.saveView]: function (state, {view}) {
-        if (state.find(v => v.id === view.id)) {
-            return state.map(v => v.id === view.id ? view : v);
+        if (state.all.find(v => v.id === view.id)) {
+            return {...state,
+                all: state.all.map(v => v.id === view.id ? view : v)
+            };
         }
 
-        return _.sortBy([...state, view], v => v.name);
+        return {...state, 
+            all: _.sortBy([...state.all, view], v => v.name) 
+        };
     },
 
 }, initialState.views)

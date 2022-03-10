@@ -285,8 +285,13 @@ export class ResizeTool extends Tool {
     updateElementPosition() {
         let position = this._element;
 
-        if (this._targetHandles.top && this._snappedRowIndex >= 0) {
-            const bottom = this._element.top + this._element.height;
+        const bottom = this._element.top + this._element.height;
+        const right = this._element.left + this._element.width;
+
+        if (this._targetHandles.top && this._snappedRowIndex >= 0 &&
+            position.top !== this._snappedRowIndex &&
+            position.height !== bottom - this.snappedRowIndex) {
+                
             position = {
                 ...position, 
                 top: this._snappedRowIndex,
@@ -294,35 +299,45 @@ export class ResizeTool extends Tool {
             };
         }
 
-        if (this._targetHandles.bottom && this._snappedRowIndex >= 0) {
+        if (this._targetHandles.bottom && this._snappedRowIndex >= 0 && 
+            position.height !== this._snappedRowIndex - this._element.top) {
+
             position = {
                 ...position, 
                 height: this._snappedRowIndex - this._element.top
             };
         }
 
-        if (this._targetHandles.left && this._snappedColumnIndex >= 0) {
-            const right = this._element.left + this._element.width;
+        if (this._targetHandles.left && this._snappedColumnIndex >= 0 &&
+            position.left !== this._snappedColumnIndex &&
+            position.width !== right - this._snappedColumnIndex) {
+
             position = {...position, 
                 left: this._snappedColumnIndex, 
                 width: right - this._snappedColumnIndex
             };
         }
 
-        if (this._targetHandles.right && this._snappedColumnIndex >= 0) {
+        if (this._targetHandles.right && this._snappedColumnIndex >= 0 && 
+            position.width !== this._snappedColumnIndex - this._element.left) {
+
             position = {
                 ...position, 
                 width: this._snappedColumnIndex - this._element.left
             };
         }
 
-        if (this._targetHandles.body && this._snappedRowIndex >= 0) {
+        if (this._targetHandles.body && this._snappedRowIndex >= 0 &&
+            position.top !== this._snappedRowIndex) {
+
             position = {...position,
                 top: this._snappedRowIndex,
             };
         }
 
-        if (this._targetHandles.body && this._snappedColumnIndex >= 0) {
+        if (this._targetHandles.body && this._snappedColumnIndex >= 0 &&
+            position.left !== this._snappedColumnIndex) {
+
             position = {...position,
                 left: this._snappedColumnIndex,  
             };

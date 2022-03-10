@@ -5,9 +5,16 @@ import ElementOptionsForm from "./ElementOptionsForm";
 import 'react-quill/dist/quill.snow.css';
 
 const { Quill } = ReactQuill;
+
 var icons = Quill.import('ui/icons');
 icons.bold = '<i class="fas fa-bold fa-fw"></i>';
-Quill.register('ui/icons', icons);
+icons.italic = '<i class="fas fa-italic fa-fw"></i>';
+icons.underline = '<i class="fas fa-underline fa-fw"></i>';
+icons.strike = '<i class="fas fa-strikethrough fa-fw"></i>';
+icons.link = '<i class="fas fa-link fa-fw"></i>';
+icons.clean = '<i class="fas fa-remove-format fa-fw"></i>';
+
+Quill.register('ui/icons', icons, true);
 
 function TextOptionsForm({elementOptions, onChange}) {
     const handlePropertyValueChange = (name, value) => {
@@ -18,7 +25,14 @@ function TextOptionsForm({elementOptions, onChange}) {
         event.stopPropagation();
     }
 
-    const fontSizes = [10, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 84];
+    const fontSizes = [
+        { text: 'Very Small', size: 10 },
+        { text: 'Small', size: 14 },
+        { text: 'Normal', size: 16 },
+        { text: 'Large', size: 24 },
+        { text: 'Header', size: 36 },
+        { text: 'Banner', size: 48 },
+    ];
 
     const modules = {
         toolbar: {
@@ -38,7 +52,7 @@ function TextOptionsForm({elementOptions, onChange}) {
         <label className="form__label">Font Size</label>
         <div>
             <select className="form__select" name="fontSize" value={elementOptions.fontSize} onChange={toNameValue(handlePropertyValueChange)}>
-                {fontSizes.map(f => <option key={f} value={f}>{f} pixels</option>)}
+                {fontSizes.map(f => <option key={f.size} value={f.size}>{f.text}</option>)}
             </select>
         </div>
 
@@ -60,12 +74,12 @@ function TextOptionsForm({elementOptions, onChange}) {
 
 function EditorToolbar() {
     return <div id="toolbar">
-        <button className="ql-bold form__checkbox"><i className="fas fa-bold fa-fw"></i></button>
-        <button className="ql-italic form__checkbox"></button>
-        <button className="ql-underline form__checkbox"></button>
-        <button className="ql-strike form__checkbox"></button>
-        <button className="ql-link form__checkbox"></button>
-        <button className="ql-clean form__checkbox"></button>
+        <button className="ql-bold" title="Bold"></button>
+        <button className="ql-italic" title="Italics"></button>
+        <button className="ql-underline" title="Underline"></button>
+        <button className="ql-strike" title="Strike-through"></button>
+        <button className="ql-link" title="Create Link"></button>
+        <button className="ql-clean" title="Clear Format"></button>
     </div>
 }
 

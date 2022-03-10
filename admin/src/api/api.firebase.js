@@ -27,33 +27,49 @@ export function path() {
     return Array.from(arguments);
 }
 
+function logPath(path) {
+    if (Array.isArray(path)) {
+        return path.join('/');
+    }
+    return path;
+}
+
 export async function getDoc(path) {
+    console.log(`Firestore getting document: ${logPath(path)}`)
     return await fs.getDoc(fs.doc(db, ...path));
 }
 
 export async function getCollection(path) {
+    console.log(`Firestore getting collection: ${logPath(path)}`)
     return await fs.getDocs(fs.collection(db, ...path))
 }
 
 export async function readDoc(path) {
+    console.log(`Firestore reading document: ${logPath(path)}`)
     return read(await getDoc(path));
 }
 
 export async function readCollection(path) {
+    console.log(`Firestore reading collection: ${logPath(path)}`)
     return readAll(await getCollection(path));
 }
 
 export async function setDoc(path, data, options) {
+    console.log(`Firestore setting document: ${logPath(path)}`)
     return await fs.setDoc(fs.doc(db, ...path), data, options);
 }
 
 export async function addDoc(path, data) {
+    console.log(`Firestore adding document: ${logPath(path)}`)
+
     const ref = await fs.addDoc(fs.collection(db, ...path), data);
 
     return ref.id;
 }
 
 export async function deleteDoc(path) {
+    console.log(`Firestore deleting document: ${logPath(path)}`)
+
     await fs.deleteDoc(fs.doc(db, ...path));
 }
 
