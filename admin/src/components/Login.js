@@ -24,7 +24,6 @@ function Login({user, children}) {
 
     const handleFormSubmit = async (event) => {
         await login(userName, password);
-        navigator.toWelcome();
     }
 
     return <div className="login">
