@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useViewGrid from "../hooks/useViewGrid";
 import Element from "./elements/Element";
+import ViewGrid from "./ViewGrid";
 
 export default function View({view, toolFactory, showGrid, onUpdate, onSelectedElementChange}) {
     const [domView, setDomView] = useState(null);
@@ -51,28 +52,7 @@ export default function View({view, toolFactory, showGrid, onUpdate, onSelectedE
     }
 
     return <section className="view" style={styles} ref={setDomView} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-        {showGrid && <Grid grid={grid} />}
+        {showGrid && <ViewGrid grid={grid} />}
         {view.elements?.map((element) => <Element type={element.type} key={element.id} grid={grid} tool={toolFactory} onFocus={handleElementFocus} onBlur={handleElementBlur} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
-}
-
-function Grid({grid}) {
-    const getColumnStyle = column => {
-        return {
-            left: column - grid.columnGap * 0.5,
-            width: grid.columnGap,
-        }
-    }
-
-    const getRowStyle = row => {
-        return {
-            top: row - grid.rowGap * 0.5,
-            height: grid.rowGap,
-        }
-    }
-
-    return <>
-        {grid?.columns.map(column => <div key={column} className="view__grid-column" style={getColumnStyle(column)}></div>)}
-        {grid?.rows.map(row => <div key={row} className="view__grid-row" style={getRowStyle(row)}></div>)}
-    </>
 }
