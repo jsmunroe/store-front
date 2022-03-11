@@ -6,13 +6,13 @@ import { key, useKeyBindings } from "../hooks/useKeyBindings";
 import { useInterval } from "../hooks/useInterval";
 import { useState } from "react";
 
-function Clipboard({selectedElements, canCopy, actions}) {
+function Copy({selectedElements, canCopy, actions}) {
     const [canPaste, setCanPaste] = useState(false);
 
     const handleCopy = async event =>  {
         event.preventDefault();
         event.stopPropagation();
-        
+
         await copyElements(selectedElements);
         setCanPaste(await hasElements());
     };
@@ -61,4 +61,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Clipboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Copy);

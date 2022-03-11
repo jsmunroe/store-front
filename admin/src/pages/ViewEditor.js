@@ -10,7 +10,7 @@ import createToolFactory from "../tools/createToolFactory"
 import RadioButton from "../components/controls/RadioButton"
 import Checkbox from "../components/controls/Checkbox"
 import Undo from "../components/Undo"
-import Clipboard from "../components/Clipboard"
+import Copy from "../components/Copy"
 import useSetting from "../hooks/useSetting"
 import { key, useKeyBindings } from "../hooks/useKeyBindings"
 import './ViewEditor.scss'
@@ -69,7 +69,7 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
             <div className="tool-bar__spacer"></div>
             <Undo stateName="view" />
             <div className="tool-bar__spacer"></div>
-            <Clipboard />
+            <Copy />
         </div>
     </div>
 }
