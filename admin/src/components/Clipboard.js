@@ -1,24 +1,42 @@
-import { useEffect } from "react";
-import { bindKeyEvents, stop } from "../utils/domHelpers";
+import { connect } from "react-redux";
+import { copyElements, pasteElements } from "../utils/clipboard"
+import * as viewEditorActions from '../redux/actions/viewEditorActions'
+import { bindActionCreators } from "redux";
+import { key, useKeyBindings } from "../hooks/useKeyBindings";
 
-export default function Clipboard({canCopy, onCopy, canPaste, onPaste}) {
-    useEffect(() => {
-        return bindKeyEvents(event => {
-            if (canCopy && event.ctrlKey && event.code === 'KeyC') {
-                stop(event);
-                onCopy();
-            }
+function Clipboard({selectedElements, canCopy, canPaste, actions}) {
+    const handleCopy = () =>  {
+        copyElements(selectedElements);
+    };
+
+    const handlePaste = async () => {
+        const elements = await pasteElements()
+        elements && actions.addElements(elements);
+    };
     
-            if (canPaste && event.ctrlKey && event.code === 'KeyV') {
-                stop(event);
-                onPaste();
-            }
-        });
-
-    }, [canCopy, onCopy, canPaste, onPaste])
+    useKeyBindings(
+        key('KeyC').withControl().if(() => canCopy).bind(() => handleCopy()),
+        key('KeyV').withControl().if(() => canPaste).bind(() => handlePaste())
+    )
 
     return <>
-        <button className="tool-bar__button" title="Copy" disabled={!canCopy} onMouseDown={onCopy}><i className="fas fa-copy fa-fw"></i></button>
-        <button className="tool-bar__button" title="Paste" disabled={!canPaste} onMouseDown={onPaste}><i className="fas fa-paste fa-fw"></i></button>
+        <button className="tool-bar__button" title="Copy" disabled={!canCopy} onMouseDown={handleCopy}><i className="fas fa-copy fa-fw"></i></button>
+        <button className="tool-bar__button" title="Paste" disabled={!canPaste} onMouseDown={handlePaste}><i className="fas fa-paste fa-fw"></i></button>
     </>
 }
+
+function mapStateToProps({viewEditor}, element) {
+    return {
+        selectedElements: viewEditor.selectedElements,
+        canCopy: viewEditor.selectedElements.length > 0,
+        canPaste: true
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(viewEditorActions, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Clipboard);

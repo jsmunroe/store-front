@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import useViewGrid from "../hooks/useViewGrid";
 import Element from "./elements/Element";
 import ViewGrid from "./ViewGrid";
+import Busy from "./Busy";
 
-export default function View({view, toolFactory, showGrid, onUpdate, onSelectedElementChange}) {
+export default function View({view, toolFactory, showGrid, onUpdate}) {
     const [domView, setDomView] = useState(null);
     const [localTool, setLocalTool] = useState(null);
     const { grid, styles } = useViewGrid(view, domView);
@@ -39,20 +40,12 @@ export default function View({view, toolFactory, showGrid, onUpdate, onSelectedE
         localTool?.onPointerUp(event);
     }
 
-    const handleElementFocus = (element, domElement) => {
-        onSelectedElementChange({isSelected: true, element, domElement});
-    }
-
-    const handleElementBlur = (element, domElement) => {
-        onSelectedElementChange({isSelected: false});
-    }
-
     if (!view?.id) {
-        return <></>
+        return <Busy />
     }
 
     return <section className="view" style={styles} ref={setDomView} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
         {showGrid && <ViewGrid grid={grid} />}
-        {view.elements?.map((element) => <Element type={element.type} key={element.id} grid={grid} tool={toolFactory} onFocus={handleElementFocus} onBlur={handleElementBlur} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
+        {view.elements?.map((element) => <Element type={element.type} key={element.id} grid={grid} tool={toolFactory} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </section>
 }

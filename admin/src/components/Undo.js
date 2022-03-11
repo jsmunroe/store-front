@@ -1,22 +1,12 @@
-import { useEffect } from "react";
 import { connect } from "react-redux"
+import { key, useKeyBindings } from "../hooks/useKeyBindings";
 import * as undoActions from "../redux/actions/undoActions"
-import { bindKeyEvents, stop } from "../utils/domHelpers";
 
 function Undo({stateName, canUndo, onUndo, canRedo, onRedo}) {
-    useEffect(() => {
-        return bindKeyEvents(event => {
-            if (canUndo && event.ctrlKey && event.code === 'KeyZ') {
-                stop(event);
-                onUndo();
-            }
-    
-            if (canRedo && event.ctrlKey && event.code === 'KeyY') {
-                stop(event);
-                onRedo();
-            }
-        });
-    }, [canUndo, onUndo, canRedo, onRedo])
+    useKeyBindings(
+        key('KeyZ').withControl().if(() => canUndo).bind(onUndo),
+        key('KeyY').withControl().if(() => canRedo).bind(onRedo),
+    )
 
     return <>
         <button className="tool-bar__button" disabled={!canUndo} onClick={onUndo}><i className="fas fa-undo-alt"></i></button>

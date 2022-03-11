@@ -5,6 +5,10 @@ const initialState = {
         all: [],
     },
     view: {},
+    viewEditor: {
+        view: {},
+        selectedElements: [],
+    },
 }
 
 export default initialState;

@@ -1,22 +1,17 @@
 import { useContext } from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { confirm as confirmBox } from "react-confirm-box";
-import { bindKeyEvents, stop } from "../utils/domHelpers";
+import { key, useKeyBindings } from "../hooks/useKeyBindings";
 
 const ModalContext = createContext();
 
 export function Modal({content, ...state}) {
     const { onCancel } = state;
-    useEffect(() => {
-        return bindKeyEvents(event => {
-            if (content && ['Escape'].includes(event.code)) {
-                stop(event);
-                onCancel && onCancel();
-            }
-        })
-    }, [content, onCancel]);
+
+    useKeyBindings(
+        key('Escape').if(() => content).bind(onCancel)
+    )
 
     if (!content) {
         return <></>;
@@ -83,7 +78,10 @@ export async function confirm(message) {
 }
 
 function Confirm({message, onConfirm, onCancel}) {
-    useEffect(() => setupKeyCommandHandler(onConfirm, onCancel), [onConfirm, onCancel]);
+    useKeyBindings(
+        key('Enter', 'NumpadEnter').bind(onConfirm),
+        key('Escape').bind(onCancel),
+    )
 
     return <div className="confirm">
         <div className="confirm__backdrop" onMouseDown={onCancel}></div>
@@ -97,25 +95,4 @@ function Confirm({message, onConfirm, onCancel}) {
             </div>
         </div>
     </div>;
-}
-
-function setupKeyCommandHandler(onConfirm, onCancel) {
-    const handleKeyCommands = event => {
-
-        if (['Enter', 'NumpadEnter'].includes(event.code)) {
-            event.preventDefault();
-            event.stopPropagation();
-            onConfirm && onConfirm();
-        }
-
-        if (['Escape'].includes(event.code)) {
-            event.preventDefault();
-            event.stopPropagation();
-            onCancel && onCancel();
-        }
-    }
-
-    document.addEventListener("keydown", handleKeyCommands, false);
-
-    return () => document.removeEventListener("keydown", handleKeyCommands, false);
 }

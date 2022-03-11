@@ -6,19 +6,16 @@ import * as viewActions from "../redux/actions/viewActions"
 import { useParams } from "react-router-dom"
 import { toIsChecked, toValue } from "../utils/htmlHelpers"
 import createToolFactory from "../tools/createToolFactory"
-import './ViewEditor.scss'
 import RadioButton from "../components/controls/RadioButton"
 import Checkbox from "../components/controls/Checkbox"
 import Undo from "../components/Undo"
 import Clipboard from "../components/Clipboard"
 import useSetting from "../hooks/useSetting"
-import { copyElement, pastElement as pasteElement } from "../utils/clipboard"
-import uuid from "react-uuid"
+import './ViewEditor.scss'
 
 function ViewEditor({view, viewsLoaded, actions}) {
     const [toolFactory, setToolFactory] = useState(createToolFactory(null))
     const [showGrid, setShowGrid] = useSetting('ViewEditor.ShowGrid', true);
-    const [selectedElement, setSelectedElement] = useState({isSelected: false});
     const { id } = useParams();
 
     useEffect(() => {
@@ -42,29 +39,9 @@ function ViewEditor({view, viewsLoaded, actions}) {
         setShowGrid(value);
     }
 
-    const handleCopy = () => {
-        if (selectedElement) {
-            copyElement(selectedElement);
-        }
-    }
-
-    const handlePaste = async () => {
-        let element = await pasteElement();
-
-        if (!element) {
-            return;
-        }
-
-        element = {...element, id: uuid(), top: 2, left: 2}
-        
-        let elements = [...view.elements, element];
-        view = {...view, elements};
-        actions.saveView(view);
-    }
-
     return <div className="view-editor">
         <div className="view-editor__page">
-            <View toolFactory={toolFactory} onUpdate={handleViewUpdate} onSelectedElementChange={setSelectedElement} view={view} showGrid={showGrid} />
+            <View toolFactory={toolFactory} onUpdate={handleViewUpdate} view={view} showGrid={showGrid} />
         </div>
         <div className="tool-bar">
             <RadioButton className="tool-bar__button" name="tool" value="resize" title="Resize" checked={toolFactory.key === 'resize'} onChange={toValue(handleSelectTool)}><i className="icon-resize"></i></RadioButton>
@@ -75,7 +52,7 @@ function ViewEditor({view, viewsLoaded, actions}) {
             <div className="tool-bar__spacer"></div>
             <Undo stateName="view" />
             <div className="tool-bar__spacer"></div>
-            <Clipboard canCopy={selectedElement.isSelected} onCopy={handleCopy} canPaste={true} onPaste={handlePaste} />            
+            <Clipboard />            
         </div>
     </div>
 }

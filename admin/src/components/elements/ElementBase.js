@@ -1,11 +1,13 @@
-import { useEffect } from "react";
 import { useState } from "react";
+import { connect } from "react-redux";
 import useElementPlacement from "../../hooks/useElementPlacement"
-import { bindKeyEvents } from "../../utils/domHelpers";
+import { bindActionCreators } from "redux";
 import { useModal } from "../Modal";
+import * as viewEditorActions from '../../redux/actions/viewEditorActions'
+import useChange from "../../hooks/useChange";
+import { key, useKeyBindings } from "../../hooks/useKeyBindings";
 
-export default function ElementBase({element, tool, grid, optionsForm, isEditing, onFocus, onBlur, onChange, onRemove, children}) {
-    const [hasFocus, setHasFocus] = useState(false);
+function ElementBase({element, isSelected, tool, grid, optionsForm, onRemove, actions, children}) {
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
 
@@ -13,29 +15,20 @@ export default function ElementBase({element, tool, grid, optionsForm, isEditing
 
     const modal = useModal();
 
-    useEffect(() => {
+    function handleChange(element) {
+        actions.saveElement(element);
+    }
+
+    useChange(() => {
         if (!!tool && !!domElement && !! grid) {
-            setLocalTool(tool.bindToElement(element, domElement, grid, onChange));
-        }       
-
-    }, [tool, domElement, element, grid, onChange])
-
-    useEffect(() => {
-        if (isEditing) {
-            localTool?.disable();
-        } else {
-            localTool?.enable();
+            setLocalTool(tool.bindToElement(element, domElement, grid, element => handleChange(element)));
         }
-        
-    }, [localTool, isEditing])
 
-    useEffect(() => {
-        return bindKeyEvents(event => {
-            if (hasFocus && event.code === 'Delete') {
-                handleRemoveRequest(event);
-            }
-        })
-    })
+    }, [tool, domElement, element, grid, actions])
+
+    useKeyBindings(
+        key('Delete').if(() => isSelected).bind(event => handleRemoveRequest(event)),
+    )
 
     const handlePointerDown = event => {
         localTool?.onPointerDown(event);
@@ -50,15 +43,11 @@ export default function ElementBase({element, tool, grid, optionsForm, isEditing
     }
 
     const handleFocus = event => {
-        setHasFocus(true);
-        localTool?.onFocus(event);
-        onFocus(element, domElement);
+        actions.selectElement(element);
     }
 
     const handleBlur = event => {
-        setHasFocus(false);
-        localTool?.onBlur(event);
-        onBlur(element, domElement);
+        actions.deselectElement(element, true); // Setting isGroupSelect to true so we can avoid a race condition where the blur happens after the other control is focussed.
     }
 
     const handleShowOptionsUpdate = elementOptions => {
@@ -69,7 +58,7 @@ export default function ElementBase({element, tool, grid, optionsForm, isEditing
         const elementOptions = await modal.show(optionsForm, { elementOptions: element, onUpdate: handleShowOptionsUpdate });
 
         if (elementOptions) {
-            onChange({...element, ...elementOptions});
+            handleChange({...element, ...elementOptions});
         }
     }
 
@@ -79,13 +68,25 @@ export default function ElementBase({element, tool, grid, optionsForm, isEditing
 
     return <div className="element" tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
         {children}
-        {!isEditing && <div className="element__tool-buttons">
+        <div className="element__tool-buttons">
             {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
-        </div>}
-        {!isEditing && <div className="element__close-button">
+        </div>
+        <div className="element__close-button">
             <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
-        </div>}
+        </div>
     </div>
 }
 
+function mapStateToProps({viewEditor}, {element}) {
+    return {
+        isSelected: viewEditor.selectedElements.some(e => e.id === element?.id)
+    }
+}
 
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(viewEditorActions, dispatch),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ElementBase);
