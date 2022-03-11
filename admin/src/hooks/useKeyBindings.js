@@ -64,13 +64,16 @@ export function key(...codes) {
 
 export function useKeyBindings(...bindings) {
     useEffect(() => {
+        const codes = bindings.map(b => b.codes).flat();
         const onKeyDown = event => {
             bindings.forEach(binding => binding.do(event));
         }
 
+        console.log(`Binding keydown for [${codes}]`);
         document.addEventListener('keydown', onKeyDown);
 
         return () => {
+            console.log(`Unbinding keydown for [${codes}]`);
             document.removeEventListener('keydown', onKeyDown);
         }
     }, [bindings])

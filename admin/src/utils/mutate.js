@@ -54,6 +54,29 @@ export function removeIfPresent(array, element, match = byId) {
     return array;
 }
 
+export function extract(array, elements, match = byId) {
+    if (!Array.isArray(array) && !Array.isArray(elements)) {
+        return [];
+    }
+
+    if (!array.length && elements.length) {
+        return elements;
+    } 
+
+    if (!elements.length) {
+        return array;
+    }
+
+    // Mutate array only if come elements are in the aray...
+    if (elements.some(e => array.some(a => match(e, a)))) {
+        elements.forEach(element => {
+            array = removeIfPresent(array, element, match);
+        })
+    }
+
+    return array;
+}
+
 export function combine(array, elements, match = byId) {
     if (!Array.isArray(array) && !Array.isArray(elements)) {
         return [];
@@ -67,7 +90,7 @@ export function combine(array, elements, match = byId) {
         return array;
     }
 
-    // Mutate array only if necessary.
+    // Mutate array only if some elements are not in the array..
     if (elements.some(e => !array.some(a => match(e, a)))) {
         elements.forEach(element => {
             array = addIfMissing(array, element, match);

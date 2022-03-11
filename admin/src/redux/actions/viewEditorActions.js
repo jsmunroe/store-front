@@ -16,6 +16,10 @@ export function addElements(elements) {
     return { type: actionTypes.addElements, elements };
 }
 
+export function removeElements(elements) {
+    return { type: actionTypes.removeElements, elements };
+}
+
 export function saveElement(element) {
     return { type: actionTypes.saveElement, element }; 
 }

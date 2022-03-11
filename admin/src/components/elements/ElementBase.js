@@ -5,15 +5,16 @@ import { bindActionCreators } from "redux";
 import { useModal } from "../Modal";
 import * as viewEditorActions from '../../redux/actions/viewEditorActions'
 import useChange from "../../hooks/useChange";
-import { key, useKeyBindings } from "../../hooks/useKeyBindings";
+import { useClass } from "../../utils/htmlHelpers";
 
-function ElementBase({element, isSelected, tool, grid, optionsForm, onRemove, actions, children}) {
+function ElementBase({element, isSelected, tool, grid, optionsForm, actions, children}) {
     const [localTool, setLocalTool] = useState(null);
     const [domElement, setDomElement] = useState(null);
 
     const { placementStyles } = useElementPlacement(element,grid);
 
     const modal = useModal();
+
 
     function handleChange(element) {
         actions.saveElement(element);
@@ -26,12 +27,10 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, onRemove, ac
 
     }, [tool, domElement, element, grid, actions])
 
-    useKeyBindings(
-        key('Delete').if(() => isSelected).bind(event => handleRemoveRequest(event)),
-    )
-
     const handlePointerDown = event => {
         localTool?.onPointerDown(event);
+
+        actions.selectElement(element, event.ctrlKey);
     }
 
     const handlePointerMove = event => {
@@ -43,11 +42,11 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, onRemove, ac
     }
 
     const handleFocus = event => {
-        actions.selectElement(element);
+        localTool?.onFocus(event);
     }
 
     const handleBlur = event => {
-        actions.deselectElement(element, true); // Setting isGroupSelect to true so we can avoid a race condition where the blur happens after the other control is focussed.
+        localTool?.onBlur(event);
     }
 
     const handleShowOptionsUpdate = elementOptions => {
@@ -63,10 +62,10 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, onRemove, ac
     }
 
     const handleRemoveRequest = event => {
-        onRemove(element);
+        actions.removeElements([element]);
     }
 
-    return <div className="element" tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
+    return <div className={`element ${useClass(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
         {children}
         <div className="element__tool-buttons">
             {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}

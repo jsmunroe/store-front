@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import View from "../components/View"
 import * as viewActions from "../redux/actions/viewActions"
+import * as viewEditorActions from "../redux/actions/viewEditorActions"
 import { useParams } from "react-router-dom"
 import { toIsChecked, toValue } from "../utils/htmlHelpers"
 import createToolFactory from "../tools/createToolFactory"
@@ -11,9 +12,10 @@ import Checkbox from "../components/controls/Checkbox"
 import Undo from "../components/Undo"
 import Clipboard from "../components/Clipboard"
 import useSetting from "../hooks/useSetting"
+import { key, useKeyBindings } from "../hooks/useKeyBindings"
 import './ViewEditor.scss'
 
-function ViewEditor({view, viewsLoaded, actions}) {
+function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
     const [toolFactory, setToolFactory] = useState(createToolFactory(null))
     const [showGrid, setShowGrid] = useSetting('ViewEditor.ShowGrid', true);
     const { id } = useParams();
@@ -23,6 +25,10 @@ function ViewEditor({view, viewsLoaded, actions}) {
             actions.loadViewById(id);
         }
     }, [id, viewsLoaded, actions])
+
+    useKeyBindings(
+        key('Delete').bind(event => handleDeleteElements(event)),
+    )
 
     const handleViewUpdate = view => {  
         actions.saveView(view);
@@ -39,7 +45,18 @@ function ViewEditor({view, viewsLoaded, actions}) {
         setShowGrid(value);
     }
 
+    const handleDeleteElements = (event) => {
+        if (viewEditor.selectedElements.length) {
+            actions.removeElements(viewEditor.selectedElements);
+        }
+    }
+
+    const handleSelectionDropDownClick = (event) => {
+        actions.clearSelectedElements();
+    }
+
     return <div className="view-editor">
+        {!!viewEditor.selectedElements.length && <div className="view-editor__selection-backdrop" onClick={handleSelectionDropDownClick}></div>}
         <div className="view-editor__page">
             <View toolFactory={toolFactory} onUpdate={handleViewUpdate} view={view} showGrid={showGrid} />
         </div>
@@ -52,21 +69,23 @@ function ViewEditor({view, viewsLoaded, actions}) {
             <div className="tool-bar__spacer"></div>
             <Undo stateName="view" />
             <div className="tool-bar__spacer"></div>
-            <Clipboard />            
+            <Clipboard />
         </div>
     </div>
 }
 
-function mapStateToProps({view, views}, ownProps) {
+function mapStateToProps({view, views, viewEditor}, ownProps) {
     return {
         view: view.present, 
-        viewsLoaded: views.loaded
+        viewsLoaded: views.loaded,
+        viewEditor,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(viewActions, dispatch),
+        actions: {...bindActionCreators(viewActions, dispatch),
+                  ...bindActionCreators(viewEditorActions, dispatch)}
     }
 }
 

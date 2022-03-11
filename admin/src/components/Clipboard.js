@@ -9,12 +9,18 @@ import { useState } from "react";
 function Clipboard({selectedElements, canCopy, actions}) {
     const [canPaste, setCanPaste] = useState(false);
 
-    const handleCopy = async () =>  {
+    const handleCopy = async event =>  {
+        event.preventDefault();
+        event.stopPropagation();
+        
         await copyElements(selectedElements);
         setCanPaste(await hasElements());
     };
 
-    const handlePaste = async () => {
+    const handlePaste = async event => {
+        event.preventDefault();
+        event.stopPropagation();
+
         const elements = await pasteElements()
         elements && actions.addElements(elements);
     };
@@ -25,7 +31,14 @@ function Clipboard({selectedElements, canCopy, actions}) {
     )
 
     useInterval(async () => {
-        setCanPaste(await hasElements());
+        try {
+            setCanPaste(await hasElements());
+        }
+        catch(error) {
+            if (error.message !== 'Document is not focused.') {
+                throw error;
+            }
+        }
     }, 5000)
 
     return <>
