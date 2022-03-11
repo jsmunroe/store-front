@@ -1,12 +1,17 @@
 import { connect } from "react-redux";
-import { copyElements, pasteElements } from "../utils/clipboard"
+import { copyElements, hasElements, pasteElements } from "../utils/clipboard"
 import * as viewEditorActions from '../redux/actions/viewEditorActions'
 import { bindActionCreators } from "redux";
 import { key, useKeyBindings } from "../hooks/useKeyBindings";
+import { useInterval } from "../hooks/useInterval";
+import { useState } from "react";
 
-function Clipboard({selectedElements, canCopy, canPaste, actions}) {
-    const handleCopy = () =>  {
-        copyElements(selectedElements);
+function Clipboard({selectedElements, canCopy, actions}) {
+    const [canPaste, setCanPaste] = useState(false);
+
+    const handleCopy = async () =>  {
+        await copyElements(selectedElements);
+        setCanPaste(await hasElements());
     };
 
     const handlePaste = async () => {
@@ -18,6 +23,10 @@ function Clipboard({selectedElements, canCopy, canPaste, actions}) {
         key('KeyC').withControl().if(() => canCopy).bind(() => handleCopy()),
         key('KeyV').withControl().if(() => canPaste).bind(() => handlePaste())
     )
+
+    useInterval(async () => {
+        setCanPaste(await hasElements());
+    }, 5000)
 
     return <>
         <button className="tool-bar__button" title="Copy" disabled={!canCopy} onMouseDown={handleCopy}><i className="fas fa-copy fa-fw"></i></button>

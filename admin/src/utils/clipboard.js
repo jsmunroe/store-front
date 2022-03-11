@@ -59,3 +59,10 @@ export async function pasteElements() {
 
     return elements.map(e => ({...e, id: uuid()}));
 }
+
+export async function hasElements() {
+    const text = await navigator.clipboard.readText();
+    const match = /^SF-Element:(?<json>.*)$/g.exec(text);
+
+    return !!match;
+}
