@@ -1,11 +1,11 @@
 import { px } from "../utils/number";
 
-export default function useElementPlacement(element, sectionGrid) {
-    if (!sectionGrid) {
+export default function useElementPlacement(element, viewGrid) {
+    if (!viewGrid) {
         return { placementStyles: { display: 'none' } };
     }
 
-    const placement = sectionGrid.computeElementPlacement(element);
+    const placement = viewGrid.computeElementPlacement(element);
 
     const placementStyles = {
         position: 'absolute',

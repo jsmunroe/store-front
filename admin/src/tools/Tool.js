@@ -5,35 +5,35 @@ export class ToolFactory {
         this.key = key;
     }
 
-    bindToElement(element, target, sectionGrid, onChange) {
+    bindToElement(element, target, viewGrid, onChange) {
         return oldTool => {
             oldTool?.unbind();
 
-            return this.createElementTool(element, target, sectionGrid, onChange);
+            return this.createElementTool(element, target, viewGrid, onChange);
         }
     }
 
-    bindToSection(section, target, sectionGrid, onChange) {
+    bindToView(view, target, viewGrid, onChange) {
         return oldTool => {
             oldTool?.unbind();
 
-            return this.createSectionTool(section, target, sectionGrid, onChange)
+            return this.createViewTool(view, target, viewGrid, onChange)
         }
     }
 
     // Create a new tool to a single element creating a state to support that element only.
-    createElementTool(element, target, sectionGrid, onChange) { }
+    createElementTool(element, target, viewGrid, onChange) { }
 
-    // Create a new tool to a section creating a state to support that section only.
-    createSectionTool(section, target, sectionGrid, onChange) { }
+    // Create a new tool to a view creating a state to support that view only.
+    createViewTool(view, target, viewGrid, onChange) { }
 }
 
 export class Tool {
-    constructor(target, sectionGrid, onChange) {
+    constructor(target, viewGrid, onChange) {
         this._target = target;
-        this._sectionGrid = sectionGrid;
+        this._viewGrid = viewGrid;
         this._onChange = onChange;
-        this._sectionRect = null;
+        this._viewRect = null;
         this._isPointerDown = false;
 
         this._enabled = true;
@@ -41,10 +41,10 @@ export class Tool {
 
 
         if (target.classList.contains('element')) {
-            this._sectionElement = target.closest('.section');
+            this._viewElement = target.closest('.view');
 
-        } else if (target.classList.contains('section')) {
-            this._sectionElement = target;
+        } else if (target.classList.contains('view')) {
+            this._viewElement = target;
         }
     }
 
@@ -68,7 +68,7 @@ export class Tool {
         }
 
         event.target.setPointerCapture(event.pointerId);
-        this._sectionRect = this._sectionElement?.getBoundingClientRect();
+        this._viewRect = this._viewElement?.getBoundingClientRect();
         this._isPointerDown = true;
 
         if (this._selectionEnabled) {
@@ -83,7 +83,7 @@ export class Tool {
             return;
         }
 
-        this._sectionRect = this._sectionElement?.getBoundingClientRect();
+        this._viewRect = this._viewElement?.getBoundingClientRect();
 
         if (this._selectionEnabled) {
             const cell = this.hitCell(event);
@@ -103,7 +103,7 @@ export class Tool {
         }
 
         event.target.releasePointerCapture(event.pointerId);
-        this._sectionRect = this._sectionElement?.getBoundingClientRect();
+        this._viewRect = this._viewElement?.getBoundingClientRect();
         this._isPointerDown = false;
 
         if (this._selectionEnabled) {
@@ -142,8 +142,8 @@ export class Tool {
 
     getPointer(event) {
         return {
-            clientX: event.clientX - this._sectionRect.x,
-            clientY: event.clientY - this._sectionRect.y,
+            clientX: event.clientX - this._viewRect.x,
+            clientY: event.clientY - this._viewRect.y,
         }
     }
 
@@ -151,20 +151,20 @@ export class Tool {
         const {top, right, bottom, left, width, height, x, y} = element.getBoundingClientRect();
 
         return {
-            top: top - this._sectionRect.y,
-            left: left - this._sectionRect.x,
-            right: right - this._sectionRect.x,
-            bottom: bottom - this._sectionRect.y,
+            top: top - this._viewRect.y,
+            left: left - this._viewRect.x,
+            right: right - this._viewRect.x,
+            bottom: bottom - this._viewRect.y,
             width, 
             height, 
-            x: x - this._sectionRect.x,
-            y: y - this._sectionRect.y,
+            x: x - this._viewRect.x,
+            y: y - this._viewRect.y,
         }
     }
 
     hitCell(event) {
         const location = this.getPointer(event);
-        return this._sectionGrid.hitCell({x: location.clientX, y: location.clientY});
+        return this._viewGrid.hitCell({x: location.clientX, y: location.clientY});
     }
 
     correctSelection(start, end) {
@@ -198,8 +198,8 @@ export class Tool {
     selectCells(start, end) {
         const corrected = this.correctSelection(start, end);
 
-        const topLeft = this._sectionGrid.getCellRect({row:corrected.start.row, column:corrected.start.column});
-        const bottomRight = this._sectionGrid.getCellRect({row:corrected.end.row, column:corrected.end.column});
+        const topLeft = this._viewGrid.getCellRect({row:corrected.start.row, column:corrected.start.column});
+        const bottomRight = this._viewGrid.getCellRect({row:corrected.end.row, column:corrected.end.column});
 
         const top = topLeft.top;
         const left = topLeft.left;
@@ -226,7 +226,7 @@ export class Tool {
     }
 
     hoverCell(cell) {
-        const cellRect = this._sectionGrid.getCellRect({row:cell.row, column:cell.column});
+        const cellRect = this._viewGrid.getCellRect({row:cell.row, column:cell.column});
 
         if (!this._hover) {
             this._hover = document.createElement("div");

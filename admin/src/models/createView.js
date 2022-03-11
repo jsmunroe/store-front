@@ -1,5 +1,4 @@
 import uuid from 'react-uuid';
-import { createSection } from './createSection';
 
 export function createView(name) {
     if (typeof name !== "string") {
@@ -9,6 +8,8 @@ export function createView(name) {
     return {
         id: uuid(),
         name,
-        sections: [createSection()],
+        columns: 12,
+        rows: 12,
+        elements: [],
     };
 }

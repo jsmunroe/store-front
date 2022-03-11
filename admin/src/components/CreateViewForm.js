@@ -5,20 +5,14 @@ import { replace, toValue } from "../utils/htmlHelpers";
 export default function CreateViewForm({onSubmit, onCancel}) {
     const [name, setName] = useState('');
 
-    const clearForm = () => {
-        setName('');
-    }
-
     const handleFormSubmit = event => {
         const view = createView(name)
         
-        !!onSubmit && onSubmit(view);
-        clearForm();
+        onSubmit && onSubmit(view);
     }
 
     const handleCancelClick = event => {      
-        !!onCancel && onCancel();
-        clearForm();
+        onCancel && onCancel();
     }
 
     return <form className="form" onSubmit={replace(handleFormSubmit)}>

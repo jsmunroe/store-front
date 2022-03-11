@@ -16,10 +16,20 @@
         background-color: $color-highlight;
     }
 
-    .section {
-        margin: 15px; // TODO: This will be a property of how the section is generally defined.
+    &__selection-backdrop {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        background: transparent;
+        z-index: 1;
+    }
+
+    .view {
+        margin: 15px; // TODO: This will be a property of how the view is generally defined.
         display: grid;
-        gap: 15px; // TODO: This will be a property of how the section is generally defined.
+        gap: 15px; // TODO: This will be a property of how the view is generally defined.
         position: relative;
 
         &__grid-column,
@@ -52,6 +62,7 @@
 
     .element {
         transition: top 0.2s, left 0.2s, width 0.2s, height 0.2s;
+        z-index: 1;
 
         &__image {
             height: 100%;
@@ -142,12 +153,14 @@
             transition: none;
         }
 
-        &:focus,
-        &:focus-within {
+        &--selected {
             outline: dashed 2px lightgray;
             outline-offset: -2px;
             z-index: 1;
+        }
 
+        &:focus,
+        &:focus-within {
             .element__tool-buttons, .element__close-button {
                 display: flex;
             }
@@ -173,6 +186,7 @@
     gap: 5px;
     position: fixed;
     left: 370px;
+    z-index: 1;
 
     &__button {
         @include icon-button;
