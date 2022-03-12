@@ -1,170 +1,121 @@
 import { px } from "../utils/number";
 
-export class ToolFactory {
-    constructor(key) {
-        this.key = key;
-    }
+export default class Tool {
+    buildState(target, viewGrid, onChange) {
+        let targetType = getTargetType(target);
 
-    bindToElement(element, target, viewGrid, onChange) {
-        return oldTool => {
-            oldTool?.unbind();
-
-            return this.createElementTool(element, target, viewGrid, onChange);
+        return {
+            target,
+            targetType,
+            viewGrid,
+            viewElement: getViewElement(target, targetType),
+            viewRect: null,
+            onChange,
+            isPointerDown: false,
+            selectionEnabled: false,
         }
     }
 
-    bindToView(view, target, viewGrid, onChange) {
-        return oldTool => {
-            oldTool?.unbind();
-
-            return this.createViewTool(view, target, viewGrid, onChange)
-        }
+    unbind(toolState) {
+        toolState.selector?.remove();
+        toolState.hover?.remove();
     }
 
-    // Create a new tool to a single element creating a state to support that element only.
-    createElementTool(element, target, viewGrid, onChange) { }
-
-    // Create a new tool to a view creating a state to support that view only.
-    createViewTool(view, target, viewGrid, onChange) { }
-}
-
-export class Tool {
-    constructor(target, viewGrid, onChange) {
-        this._target = target;
-        this._viewGrid = viewGrid;
-        this._onChange = onChange;
-        this._viewRect = null;
-        this._isPointerDown = false;
-
-        this._enabled = true;
-        this._selectionEnabled = false;
-
-
-        if (target.classList.contains('element')) {
-            this._viewElement = target.closest('.view');
-
-        } else if (target.classList.contains('view')) {
-            this._viewElement = target;
-        }
-    }
-
-    unbind() {
-        this._selector?.remove();
-        this._hover?.remove();
-    }
-
-    disable() {
-        this._enabled = false;
-        this.unbind();
-    }
-
-    enable() {
-        this._enabled = true;
-    }
-
-    onPointerDown(event) {
-        if (!this._enabled) {
+    onPointerDown(toolState, event) {
+        if (!toolState) {
             return;
         }
 
         event.target.setPointerCapture(event.pointerId);
-        this._viewRect = this._viewElement?.getBoundingClientRect();
-        this._isPointerDown = true;
+        toolState.viewRect = toolState.viewElement?.getBoundingClientRect();
+        toolState.isPointerDown = true;
 
-        if (this._selectionEnabled) {
-            this._pointerDownCell = {...this.hitCell(event)};
+        if (toolState.selectionEnabled) {
+            toolState.pointerDownCell = {...this.hitCell(toolState, event)};
         }
 
-        this.doPointerDown(event);
+        this.doPointerDown(toolState, event);
     }
     
-    onPointerMove(event) { 
-        if (!this._enabled) {
+    onPointerMove(toolState, event) {
+        if (!toolState) {
             return;
         }
 
-        this._viewRect = this._viewElement?.getBoundingClientRect();
+        toolState.viewRect = toolState.viewElement?.getBoundingClientRect();
 
-        if (this._selectionEnabled) {
-            const cell = this.hitCell(event);
-            if (this._pointerDownCell) {
-                this.selectCells(this._pointerDownCell, cell);
+        if (toolState.selectionEnabled) {
+            const cell = this.hitCell(toolState, event);
+            if (toolState.pointerDownCell) {
+                this.selectCells(toolState, toolState.pointerDownCell, cell);
             } else {
-                this.hoverCell(cell);
+                this.hoverCell(toolState, cell);
             }
         }
 
-        this.doPointerMove(event);
+        this.doPointerMove(toolState, event);
     }
     
-    onPointerUp(event) { 
-        if (!this._enabled) {
+    onPointerUp(toolState, event) {
+        if (!toolState) {
             return;
         }
 
         event.target.releasePointerCapture(event.pointerId);
-        this._viewRect = this._viewElement?.getBoundingClientRect();
-        this._isPointerDown = false;
+        toolState.viewRect = toolState.viewElement?.getBoundingClientRect();
+        toolState.isPointerDown = false;
 
-        if (this._selectionEnabled) {
-            const cell = this.hitCell(event);
-            const selection = this.createSelectionRect(cell, this._pointerDownCell);
-            this.onSelect(selection)
-            this._pointerDownCell = null;
+        if (toolState.selectionEnabled) {
+            const cell = this.hitCell(toolState, event);
+            const selection = this.createSelectionRect(toolState, cell, toolState.pointerDownCell);
+            this.onSelect(toolState, selection)
+            toolState.pointerDownCell = null;
         }
 
-        this.doPointerUp(event);
+        this.doPointerUp(toolState, event);
     }
 
-    onBlur(event) {
-        if (!this._enabled) {
-            return;
-        }
-
-        this.doBlur(event);
+    onBlur(toolState, event) {
+        this.doBlur(toolState, event);
     }
 
-    onFocus(event) {
-        if (!this._enabled) {
-            return;
-        }
-
-        this.doFocus(event);
+    onFocus(toolState, event) {
+        this.doFocus(toolState, event);
     }
 
-    onSelect(selection) { }
+    onSelect(toolState, selection) { }
 
-    doPointerDown(event) { }
-    doPointerMove(event) { }
-    doPointerUp(event) { }
-    doBlur(event) { }
-    doFocus(event) { }
+    doPointerDown(toolState, event) { }
+    doPointerMove(toolState, event) { }
+    doPointerUp(toolState, event) { }
+    doBlur(toolState, event) { }
+    doFocus(toolState, event) { }
 
-    getPointer(event) {
+    getPointer(toolState, event) {
         return {
-            clientX: event.clientX - this._viewRect.x,
-            clientY: event.clientY - this._viewRect.y,
+            clientX: event.clientX - toolState.viewRect.x,
+            clientY: event.clientY - toolState.viewRect.y,
         }
     }
 
-    getRect(element) {
+    getRect(toolState, element) {
         const {top, right, bottom, left, width, height, x, y} = element.getBoundingClientRect();
 
         return {
-            top: top - this._viewRect.y,
-            left: left - this._viewRect.x,
-            right: right - this._viewRect.x,
-            bottom: bottom - this._viewRect.y,
+            top: top - toolState.viewRect.y,
+            left: left - toolState.viewRect.x,
+            right: right - toolState.viewRect.x,
+            bottom: bottom - toolState.viewRect.y,
             width, 
             height, 
-            x: x - this._viewRect.x,
-            y: y - this._viewRect.y,
+            x: x - toolState.viewRect.x,
+            y: y - toolState.viewRect.y,
         }
     }
 
-    hitCell(event) {
-        const location = this.getPointer(event);
-        return this._viewGrid.hitCell({x: location.clientX, y: location.clientY});
+    hitCell(toolState, event) {
+        const location = this.getPointer(toolState, event);
+        return toolState.viewGrid.hitCell({x: location.clientX, y: location.clientY});
     }
 
     correctSelection(start, end) {
@@ -195,11 +146,11 @@ export class Tool {
         };
     }
 
-    selectCells(start, end) {
+    selectCells(toolState, start, end) {
         const corrected = this.correctSelection(start, end);
 
-        const topLeft = this._viewGrid.getCellRect({row:corrected.start.row, column:corrected.start.column});
-        const bottomRight = this._viewGrid.getCellRect({row:corrected.end.row, column:corrected.end.column});
+        const topLeft = toolState.viewGrid.getCellRect({row:corrected.start.row, column:corrected.start.column});
+        const bottomRight = toolState.viewGrid.getCellRect({row:corrected.end.row, column:corrected.end.column});
 
         const top = topLeft.top;
         const left = topLeft.left;
@@ -208,37 +159,60 @@ export class Tool {
         const width = right - left;
         const height = bottom - top;
 
-        this._hover?.remove();
-        this._hover = null;
+        toolState.hover?.remove();
+        toolState.hover = null;
 
-        if (!this._selector) {
-            this._selector = document.createElement("div");
-            this._selector.className = 'selector';
-            this._selector.style.display = 'none';
-            this._target.appendChild(this._selector);    
+        if (!toolState.selector) {
+            toolState.selector = document.createElement("div");
+            toolState.selector.className = 'selector';
+            toolState.selector.style.display = 'none';
+            toolState.target.appendChild(toolState.selector);    
         }
 
-        this._selector.style.top = px(top);
-        this._selector.style.left = px(left);
-        this._selector.style.width = px(width);
-        this._selector.style.height = px(height);
-        this._selector.style.display = null
+        toolState.selector.style.top = px(top);
+        toolState.selector.style.left = px(left);
+        toolState.selector.style.width = px(width);
+        toolState.selector.style.height = px(height);
+        toolState.selector.style.display = null
     }
 
-    hoverCell(cell) {
-        const cellRect = this._viewGrid.getCellRect({row:cell.row, column:cell.column});
+    hoverCell(toolState, cell) {
+        const cellRect = toolState.viewGrid.getCellRect({row:cell.row, column:cell.column});
 
-        if (!this._hover) {
-            this._hover = document.createElement("div");
-            this._hover.className = 'hover';
-            this._hover.style.display = 'none';
-            this._target.appendChild(this._hover);    
+        if (!toolState.hover) {
+            toolState.hover = document.createElement("div");
+            toolState.hover.className = 'hover';
+            toolState.hover.style.display = 'none';
+            toolState.target.appendChild(toolState.hover);    
         }
 
-        this._hover.style.top = px(cellRect.top);
-        this._hover.style.left = px(cellRect.left);
-        this._hover.style.width = px(cellRect.width);
-        this._hover.style.height = px(cellRect.height);
-        this._hover.style.display = null;
+        toolState.hover.style.top = px(cellRect.top);
+        toolState.hover.style.left = px(cellRect.left);
+        toolState.hover.style.width = px(cellRect.width);
+        toolState.hover.style.height = px(cellRect.height);
+        toolState.hover.style.display = null;
+    }
+
+}
+    
+function getTargetType(target) {
+    switch (true) {
+        case target.classList.contains('element'):
+            return 'element';
+        case target.classList.contains('view'):
+            return 'view';
+        default:
+            return '';
+    }
+}
+
+function getViewElement(target, targetType) {
+    switch (targetType) {
+        case 'element':
+            return target.closest('.view');
+        case 'view':
+            return target;
+        default:
+            return null;
     }
 }

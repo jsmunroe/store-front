@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 
+const showLog = false;
+const log = test => showLog && console.log(showLog);
+
 class binding {
     constructor(codes) {
         this.codes = Array.isArray(codes) ? codes : [codes];
@@ -69,11 +72,11 @@ export function useKeyBindings(...bindings) {
             bindings.forEach(binding => binding.do(event));
         }
 
-        console.log(`Binding keydown for [${codes}]`);
+        log(`Binding keydown for [${codes}]`);
         document.addEventListener('keydown', onKeyDown);
 
         return () => {
-            console.log(`Unbinding keydown for [${codes}]`);
+            log(`Unbinding keydown for [${codes}]`);
             document.removeEventListener('keydown', onKeyDown);
         }
     }, [bindings])

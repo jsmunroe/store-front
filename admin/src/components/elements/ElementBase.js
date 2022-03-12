@@ -8,7 +8,8 @@ import useChange from "../../hooks/useChange";
 import { useClass } from "../../utils/htmlHelpers";
 
 function ElementBase({element, isSelected, tool, grid, optionsForm, actions, children}) {
-    const [localTool, setLocalTool] = useState(null);
+    const [toolState, setToolState] = useState(null);
+
     const [domElement, setDomElement] = useState(null);
 
     const { placementStyles } = useElementPlacement(element,grid);
@@ -21,32 +22,32 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, actions, chi
     }
 
     useChange(() => {
-        if (!!tool && !!domElement && !! grid) {
-            setLocalTool(tool.bindToElement(element, domElement, grid, element => handleChange(element)));
+        if (tool && domElement && grid) {
+            setToolState(tool.buildState(element, domElement, grid, handleChange));
         }
 
     }, [tool, domElement, element, grid, actions])
 
     const handlePointerDown = event => {
-        localTool?.onPointerDown(event);
+        tool.onPointerDown(toolState, event);
 
         actions.selectElement(element, event.ctrlKey);
     }
 
     const handlePointerMove = event => {
-        localTool?.onPointerMove(event);
+        tool.onPointerMove(toolState, event);
     }
 
     const handlePointerUp = event => {
-        localTool?.onPointerUp(event);
+        tool.onPointerUp(toolState, event);
     }
 
     const handleFocus = event => {
-        localTool?.onFocus(event);
+        tool.onFocus(toolState, event);
     }
 
     const handleBlur = event => {
-        localTool?.onBlur(event);
+        tool.onBlur(toolState, event);
     }
 
     const handleShowOptionsUpdate = elementOptions => {
