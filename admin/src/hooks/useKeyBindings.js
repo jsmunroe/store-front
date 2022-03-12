@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 
+const showLog = false;
+const log = test => showLog && console.log(showLog);
+
 class binding {
     constructor(codes) {
         this.codes = Array.isArray(codes) ? codes : [codes];
