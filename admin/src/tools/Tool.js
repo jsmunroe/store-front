@@ -196,14 +196,7 @@ export default class Tool {
 }
     
 function getTargetType(target) {
-    switch (true) {
-        case target.classList.contains('element'):
-            return 'element';
-        case target.classList.contains('view'):
-            return 'view';
-        default:
-            return '';
-    }
+    return target.dataset.targetType;
 }
 
 function getViewElement(target, targetType) {
@@ -211,7 +204,7 @@ function getViewElement(target, targetType) {
         case 'element':
             return target.closest('.view');
         case 'view':
-            return target;
+            return target.closest('.view');
         default:
             return null;
     }

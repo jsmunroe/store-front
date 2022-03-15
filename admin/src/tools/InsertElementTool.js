@@ -13,6 +13,10 @@ export default class InsertElementTool extends Tool {
     buildState(view, target, viewGrid, onChange) {
         const toolState = super.buildState(target, viewGrid, onChange);
 
+        if (toolState.targetType !== 'view') {
+            return null;
+        }
+
         return {
             ...toolState,
             elementType: this.elementType,

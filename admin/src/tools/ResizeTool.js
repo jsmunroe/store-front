@@ -11,6 +11,10 @@ export default class ResizeTool extends Tool {
 
     buildState(element, target, viewGrid, onChange) {
         const toolState = super.buildState(target, viewGrid, onChange);
+
+        if (toolState.targetType !== 'element') {
+            return null;
+        }
    
         toolState.targetHandles = { 
             top: false,
@@ -86,7 +90,7 @@ export default class ResizeTool extends Tool {
 
         let { clientX, clientY } = this.getPointer(toolState, event);
 
-        if (event.target.hasPointerCapture(event.pointerId)) {   
+        if (toolState.isPointerDown) {   
             toolState.target.classList.add('element--no-transition');
   
             this.snapHandles(toolState, clientX, clientY);
