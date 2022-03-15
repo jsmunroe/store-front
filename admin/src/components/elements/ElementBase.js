@@ -1,17 +1,12 @@
-import { useState } from "react";
 import { connect } from "react-redux";
 import useElementPlacement from "../../hooks/useElementPlacement"
 import { bindActionCreators } from "redux";
 import { useModal } from "../Modal";
 import * as viewEditorActions from '../../redux/actions/viewEditorActions'
-import useChange from "../../hooks/useChange";
 import { useClass } from "../../utils/htmlHelpers";
+import ToolTarget from "../ToolTarget";
 
 function ElementBase({element, isSelected, tool, grid, optionsForm, actions, children}) {
-    const [toolState, setToolState] = useState(null);
-
-    const [domElement, setDomElement] = useState(null);
-
     const { placementStyles } = useElementPlacement(element,grid);
 
     const modal = useModal();
@@ -21,33 +16,8 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, actions, chi
         actions.saveElement(element);
     }
 
-    useChange(() => {
-        if (tool && domElement && grid) {
-            setToolState(tool.buildState(element, domElement, grid, handleChange));
-        }
-
-    }, [tool, domElement, element, grid, actions])
-
     const handlePointerDown = event => {
-        tool.onPointerDown(toolState, event);
-
         actions.selectElement(element, event.ctrlKey);
-    }
-
-    const handlePointerMove = event => {
-        tool.onPointerMove(toolState, event);
-    }
-
-    const handlePointerUp = event => {
-        tool.onPointerUp(toolState, event);
-    }
-
-    const handleFocus = event => {
-        tool.onFocus(toolState, event);
-    }
-
-    const handleBlur = event => {
-        tool.onBlur(toolState, event);
     }
 
     const handleShowOptionsUpdate = elementOptions => {
@@ -66,7 +36,7 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, actions, chi
         actions.removeElements([element]);
     }
 
-    return <div className={`element ${useClass(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} style={{...placementStyles}} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onFocus={handleFocus} onBlur={handleBlur} onDoubleClick={handleShowOptionsDialog} ref={setDomElement}>
+    return <ToolTarget tool={tool} targetType="element" targetModel={element} className={`element ${useClass(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} style={{...placementStyles}} onDoubleClick={handleShowOptionsDialog} onPointerDown={handlePointerDown} grid={grid} onUpdate={handleChange}>
         {children}
         <div className="element__tool-buttons">
             {optionsForm && <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>}
@@ -74,7 +44,7 @@ function ElementBase({element, isSelected, tool, grid, optionsForm, actions, chi
         <div className="element__close-button">
             <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
         </div>
-    </div>
+    </ToolTarget>
 }
 
 function mapStateToProps({viewEditor}, {element}) {

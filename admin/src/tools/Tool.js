@@ -17,8 +17,8 @@ export default class Tool {
     }
 
     unbind(toolState) {
-        toolState.selector?.remove();
-        toolState.hover?.remove();
+        toolState?.selector?.remove();
+        toolState?.hover?.remove();
     }
 
     onPointerDown(toolState, event) {
@@ -67,7 +67,7 @@ export default class Tool {
 
         if (toolState.selectionEnabled) {
             const cell = this.hitCell(toolState, event);
-            const selection = this.createSelectionRect(toolState, cell, toolState.pointerDownCell);
+            const selection = this.createSelectionRect(cell, toolState.pointerDownCell);
             this.onSelect(toolState, selection)
             toolState.pointerDownCell = null;
         }
@@ -196,14 +196,7 @@ export default class Tool {
 }
     
 function getTargetType(target) {
-    switch (true) {
-        case target.classList.contains('element'):
-            return 'element';
-        case target.classList.contains('view'):
-            return 'view';
-        default:
-            return '';
-    }
+    return target.dataset.targetType;
 }
 
 function getViewElement(target, targetType) {
@@ -211,7 +204,7 @@ function getViewElement(target, targetType) {
         case 'element':
             return target.closest('.view');
         case 'view':
-            return target;
+            return target.closest('.view');
         default:
             return null;
     }
