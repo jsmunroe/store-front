@@ -86,7 +86,9 @@ export default class ResizeTool extends Tool {
 
         let { clientX, clientY } = this.getPointer(toolState, event);
 
-        if (event.target.hasPointerCapture(event.pointerId)) {      
+        if (event.target.hasPointerCapture(event.pointerId)) {   
+            toolState.target.classList.add('element--no-transition');
+  
             this.snapHandles(toolState, clientX, clientY);
         } 
         else {
@@ -246,7 +248,7 @@ export default class ResizeTool extends Tool {
         }
 
         if (toolState.targetHandles.body) {
-            const { snapX, snapY } = snap(clientX - toolState.grabLocation.x, clientY - toolState.grabLocation.y, true)
+            const { snapX, snapY } = snap(clientX - toolState.grabLocation.x, clientY - toolState.grabLocation.y)
 
             toolState.target.style.left = px(snapX);
             toolState.target.style.top = px(snapY);
