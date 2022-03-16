@@ -1,6 +1,4 @@
 import { px } from "../../utils/number";
-import TextOptionsForm from "../options/TextOptionsForm";
-import ElementBase from "./ElementBase";
 
 export function translateFlexAlign(align) {
     switch (align) {
@@ -17,7 +15,7 @@ export function translateFlexAlign(align) {
     }
 }
 
-export default function Text({element, ...props}) {
+export default function Text({element}) {
     let style = { 
         display: 'flex',
         justifyContent: translateFlexAlign(element.horizontalAlign),
@@ -28,7 +26,5 @@ export default function Text({element, ...props}) {
         fontSize: px(element.fontSize) ?? '16px'
     };    
 
-    return <ElementBase element={element} optionsForm={TextOptionsForm} {...props}>
-        <div className="element__text" tabIndex={-1} style={style} dangerouslySetInnerHTML={{ __html: element.text }}></div>
-    </ElementBase>
+    return <div className="element__text" tabIndex={-1} style={style} dangerouslySetInnerHTML={{ __html: element.text }}></div>
 }

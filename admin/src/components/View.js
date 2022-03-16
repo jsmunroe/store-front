@@ -1,9 +1,9 @@
 import { useState } from "react";
 import useViewGrid from "../hooks/useViewGrid";
-import Element from "./elements/Element";
 import ViewGrid from "./ViewGrid";
 import Busy from "./Busy";
 import ToolTarget from "./ToolTarget";
+import Element from "./elements/Element";
 
 export default function View({view, tool, showGrid, onUpdate}) {
     const [domView, setDomView] = useState(null);

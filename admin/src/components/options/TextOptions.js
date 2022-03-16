@@ -1,7 +1,6 @@
 import { toNameValue } from "../../utils/htmlHelpers";
 import ReactQuill from 'react-quill';
 import RadioButton from "../controls/RadioButton";
-import ElementOptionsForm from "./ElementOptionsForm";
 import 'react-quill/dist/quill.snow.css';
 
 const { Quill } = ReactQuill;
@@ -16,9 +15,9 @@ icons.clean = '<i class="fas fa-remove-format fa-fw"></i>';
 
 Quill.register('ui/icons', icons, true);
 
-function TextOptionsForm({elementOptions, onChange}) {
+export default function TextOptions({element, onChange}) {
     const handlePropertyValueChange = (name, value) => {
-        onChange({...elementOptions, [name]: value})
+        onChange({...element, [name]: value})
     }
 
     const handleKeyDown = event => {
@@ -45,29 +44,29 @@ function TextOptionsForm({elementOptions, onChange}) {
         
         <div className="form__row">
             <EditorToolbar />
-            <ReactQuill theme="snow" value={elementOptions.text} modules={modules} onChange={value => handlePropertyValueChange('text', value)} onKeyDown={handleKeyDown} />
+            <ReactQuill theme="snow" value={element.text} modules={modules} onChange={value => handlePropertyValueChange('text', value)} onKeyDown={handleKeyDown} />
             <br/>
         </div>
 
         <label className="form__label">Font Size</label>
         <div>
-            <select className="form__select" name="fontSize" value={elementOptions.fontSize} onChange={toNameValue(handlePropertyValueChange)}>
+            <select className="form__select" name="fontSize" value={element.fontSize} onChange={toNameValue(handlePropertyValueChange)}>
                 {fontSizes.map(f => <option key={f.size} value={f.size}>{f.text}</option>)}
             </select>
         </div>
 
         <label className="form__label">Horizontal Align</label>
         <div>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Left" value="left" checked={elementOptions.horizontalAlign === 'left'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-left fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Center" value="center" checked={elementOptions.horizontalAlign === 'center'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-center fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Right" value="right" checked={elementOptions.horizontalAlign === 'right'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-right fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Left" value="left" checked={element.horizontalAlign === 'left'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-left fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Center" value="center" checked={element.horizontalAlign === 'center'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-center fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Right" value="right" checked={element.horizontalAlign === 'right'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-right fa-fw"></i></RadioButton>
         </div>
 
         <label className="form__label">Vertical Align</label>
         <div>
-            <RadioButton className="form__radio" name="verticalAlign" title="Top" value="top" checked={elementOptions.verticalAlign === 'top'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw super"></i></RadioButton>
-            <RadioButton className="form__radio" name="verticalAlign" title="Middle" value="middle" checked={elementOptions.verticalAlign === 'middle'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="verticalAlign" title="Bottom" value="bottom" checked={elementOptions.verticalAlign === 'bottom'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw sub"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Top" value="top" checked={element.verticalAlign === 'top'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw super"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Middle" value="middle" checked={element.verticalAlign === 'middle'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Bottom" value="bottom" checked={element.verticalAlign === 'bottom'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw sub"></i></RadioButton>
         </div>
     </>;
 }
@@ -82,5 +81,3 @@ function EditorToolbar() {
         <button className="ql-clean" title="Clear Format"></button>
     </div>
 }
-
-export default ElementOptionsForm(TextOptionsForm);
