@@ -40,7 +40,10 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
 
     const handleSelectTool = value => {
         setTool(getTool(value));
+<<<<<<< HEAD
         actions.clearSelectedElements();
+=======
+>>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
     }
 
     const handleShowGrid = value => {
