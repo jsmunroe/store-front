@@ -53,13 +53,9 @@ export default class ResizeTool extends Tool {
     
     unbind(toolState) {
         super.unbind(toolState);
-<<<<<<< HEAD
         if (toolState) {
             toolState.target.style.cursor = null;
         }
-=======
-        toolState.target.style.cursor = null;
->>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
     }
 
     doPointerDown(toolState, event) {       

@@ -8,15 +8,10 @@ export default function ToolTarget({tool, className, targetType, targetModel, gr
 
     useChange(() => {
         if (targetRef.current && grid) {
-<<<<<<< HEAD
             setToolState(currentToolState => {
                 tool.unbind(currentToolState);
                 return tool.buildState(targetModel, targetRef.current, grid, onUpdate);
             });
-=======
-            const ts = tool.buildState(targetModel, targetRef.current, grid, onUpdate)
-            setToolState(ts);
->>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
         }
     }, [tool, grid, !onUpdate, targetModel]);
 

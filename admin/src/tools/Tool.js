@@ -17,13 +17,8 @@ export default class Tool {
     }
 
     unbind(toolState) {
-<<<<<<< HEAD
         toolState?.selector?.remove();
         toolState?.hover?.remove();
-=======
-        toolState.selector?.remove();
-        toolState.hover?.remove();
->>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
     }
 
     onPointerDown(toolState, event) {
@@ -72,11 +67,7 @@ export default class Tool {
 
         if (toolState.selectionEnabled) {
             const cell = this.hitCell(toolState, event);
-<<<<<<< HEAD
             const selection = this.createSelectionRect(cell, toolState.pointerDownCell);
-=======
-            const selection = this.createSelectionRect(toolState, cell, toolState.pointerDownCell);
->>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
             this.onSelect(toolState, selection)
             toolState.pointerDownCell = null;
         }
