@@ -10,23 +10,21 @@ function Copy({selectedElements, canCopy, actions}) {
     const [canPaste, setCanPaste] = useState(false);
 
     const handleCopy = async event =>  {
-        event.preventDefault();
-        event.stopPropagation();
-
         await copyElements(selectedElements);
         setCanPaste(await hasElements());
     };
 
     const handlePaste = async event => {
-        event.preventDefault();
-        event.stopPropagation();
-
         const elements = await pasteElements()
         elements && actions.addElements(elements);
     };
     
+    const checkCanCopy = () => {
+        return canCopy && document.getSelection().type !== 'Range';
+    }
+
     useKeyBindings(
-        key('KeyC').withControl().if(() => canCopy).bind(() => handleCopy()),
+        key('KeyC').withControl().if(checkCanCopy).bind(() => handleCopy()),
         key('KeyV').withControl().if(() => canPaste).bind(() => handlePaste())
     )
 
