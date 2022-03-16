@@ -29,6 +29,13 @@ export default createReducer({
         return state.selectedElements === selectedElements ? state : {...state, selectedElements};
     },
     
+    [actionTypes.selectAllElements]: function (state) {
+        const selectedElements = combine(state.selectedElements, state.view.elements);
+
+        // Mutate the state only if the selectedElements list has changed.
+        return state.selectedElements === selectedElements ? state : {...state, selectedElements};
+    },
+
     [actionTypes.clearSelectedElements]: function (state) {
         // Mutate the state only if the selectedElements list was not already empty.
         return !state.selectedElements.length ? state : {...state, selectedElements: []};

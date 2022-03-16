@@ -1,46 +1,41 @@
-import { Tool, ToolFactory } from "./Tool"
+import Tool from "./Tool"
 import { createElement } from "../models/createElement"
 import { saveElementOnProperty } from "../utils/mutate"
 
-export default class InsertElementToolFactory extends ToolFactory {
+export default class InsertElementTool extends Tool {
     constructor(elementType) {
-        super(`insert-${elementType?.toLowerCase()}`);
-
+        super();
+        
+        this.key = `insert-${elementType}`.toLowerCase();
         this.elementType = elementType;
     }
+    
+    buildState(view, target, viewGrid, onChange) {
+        const toolState = super.buildState(target, viewGrid, onChange);
 
-    // Bind a new tool to a view creating a state to support that view only.
-    createViewTool(view, target, viewGrid, onChange) { 
-        if (!target) {
+        if (toolState.targetType !== 'view') {
             return null;
         }
 
-        return new InsertElementTool(this.elementType, view, target, viewGrid, onChange);
-    }
-}
+        return {
+            ...toolState,
+            elementType: this.elementType,
 
-export class InsertElementTool extends Tool {
-    constructor(elementType, view, target, viewGrid, onChange) {
-        super(target, viewGrid, onChange);
-
-        this.elementType = elementType;
-
-        this._view = view;
-        this._target = target;
-        this._viewGrid = viewGrid;
-        this._onChange = onChange;
-
-        this._pointerDownCell = null;
-
-        this._selectionEnabled = true;
+            view: view,
+            target: target,
+            viewGrid: viewGrid,
+            onChange: onChange,
+    
+            pointerDownCell: null,
+    
+            selectionEnabled: true,
+        }
     }
 
-    onSelect(selection) {
+    onSelect(toolState, selection) {
         const element = createElement(this.elementType, selection);
-        const view = saveElementOnProperty(this._view, 'elements', element);
+        const view = saveElementOnProperty(toolState.view, 'elements', element);
 
-        this._onChange(view);
-
-        setTimeout(() => document.querySelector(`[data-id="${element.id}"]`)?.focus(), 250);
+        toolState.onChange(view);
     }
 }
