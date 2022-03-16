@@ -8,6 +8,10 @@ export function deselectElement(element, isGroupSelect) {
     return { type: actionTypes.deselectElement, element, isGroupSelect };
 }
 
+export function selectAllElements() {
+    return { type: actionTypes.selectAllElements };
+}
+
 export function clearSelectedElements() {
     return { type: actionTypes.clearSelectedElements };
 }

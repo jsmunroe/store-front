@@ -28,6 +28,7 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
 
     useKeyBindings(
         key('Delete').bind(event => handleDeleteElements(event)),
+        key('KeyA').withControl().bind(event => handleSelectAllElements(event)),
     )
 
     const handleViewUpdate = view => {  
@@ -46,18 +47,22 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
         setShowGrid(value);
     }
 
+    const handleSelectAllElements = (event) => {
+        actions.selectAllElements();
+    }
+
     const handleDeleteElements = (event) => {
         if (viewEditor.selectedElements.length) {
             actions.removeElements(viewEditor.selectedElements);
         }
     }
 
-    const handleSelectionDropDownClick = (event) => {
+    const handleSelectionBackdropClick = (event) => {
         actions.clearSelectedElements();
     }
 
     return <div className="view-editor">
-        {!!viewEditor.selectedElements.length && <div className="view-editor__selection-backdrop" onClick={handleSelectionDropDownClick}></div>}
+        {!!viewEditor.selectedElements.length && <div className="view-editor__selection-backdrop" onClick={handleSelectionBackdropClick}></div>}
         <div className="view-editor__page">
             <View tool={tool} onUpdate={handleViewUpdate} view={view} showGrid={showGrid} />
         </div>
