@@ -14,11 +14,6 @@ function Copy({selectedElements, canCopy, actions}) {
         setCanPaste(await hasElements());
     };
 
-    const handleCut = async event => {
-        await handleCopy(event);
-        actions.removeElements(selectedElements);
-    }
-
     const handlePaste = async event => {
         const elements = await pasteElements()
         elements && actions.addElements(elements);
@@ -30,8 +25,7 @@ function Copy({selectedElements, canCopy, actions}) {
 
     useKeyBindings(
         key('KeyC').withControl().if(checkCanCopy).bind(() => handleCopy()),
-        key('KeyX').withControl().if(checkCanCopy).bind(() => handleCut()),
-        key('KeyV').withControl().if(() => canPaste).bind(() => handlePaste()),
+        key('KeyV').withControl().if(() => canPaste).bind(() => handlePaste())
     )
 
     useInterval(async () => {
@@ -48,7 +42,6 @@ function Copy({selectedElements, canCopy, actions}) {
     return <>
         <button className="tool-bar__button" title="Copy" disabled={!canCopy} onMouseDown={handleCopy}><i className="fas fa-copy fa-fw"></i></button>
         <button className="tool-bar__button" title="Paste" disabled={!canPaste} onMouseDown={handlePaste}><i className="fas fa-paste fa-fw"></i></button>
-        <button className="tool-bar__button" title="Cut" disabled={!canCopy} onMouseDown={handleCut}><i className="fas fa-cut fa-fw"></i></button>
     </>
 }
 

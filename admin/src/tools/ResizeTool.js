@@ -1,22 +1,27 @@
 import { closestIndex } from "../utils/array";
 import { px } from "../utils/number";
-import Tool from "./Tool";
+import { Tool, ToolFactory } from "./Tool";
 
-export default class ResizeTool extends Tool {
+export default class ResizeToolFactory extends ToolFactory {
     constructor() {
-        super();
-
-        this.key = 'resize';
+        super('resize');
     }
-
-    buildState(element, target, viewGrid, onChange) {
-        const toolState = super.buildState(target, viewGrid, onChange);
-
-        if (toolState.targetType !== 'element') {
+    
+    // Bind a new tool to a single element creating a state to support that element only.
+    createElementTool(element, target, viewGrid, onChange) { 
+        if (!target) {
             return null;
         }
+
+        return new ResizeTool(element, target, viewGrid, onChange);
+    }
+}
+
+export class ResizeTool extends Tool {
+    constructor(element, target, viewGrid, onChange) {
+        super(target, viewGrid, onChange);
    
-        toolState.targetHandles = { 
+        this._targetHandles = { 
             top: false,
             left: false,
             bottom: false,
@@ -24,126 +29,100 @@ export default class ResizeTool extends Tool {
             body: false,
         };
     
-        toolState.columnGap = 0;
-        toolState.rowGap = 0;
-        toolState.pointerDownRect = null;
-        toolState.snappedColumnIndex = -1;
-        toolState.snappedRowIndex = -1;
+        this._columnGap = 0;
+        this._rowGap = 0;
+        this._pointerDownRect = null;
+        this._snappedColumnIndex = -1;
+        this._snappedRowIndex = -1;
     
-        toolState.leftSnapPositions = [];
-        toolState.rightSnapPositions = [];
-        toolState.topSnapPositions = [];
-        toolState.bottomSnapPositions = [];
+        this._leftSnapPositions = [];
+        this._rightSnapPositions = [];
+        this._topSnapPositions = [];
+        this._bottomSnapPositions = [];
     
-        toolState.handleThreshold = 15;
-        toolState.snapThreshold = 20;
+        this._handleThreshold = 15;
+        this._snapThreshold = 20;
 
-        toolState.element = {
+        this._element = {
             ...element, 
             top: element.top ?? 0,
             left: element.left ?? 0
         };
 
-        if (!toolState.viewElement) {
+        if (!this._viewElement) {
             throw new Error('Cannot find parent view element.');
         }
-
-        return toolState;
     }
     
-    unbind(toolState) {
-        super.unbind(toolState);
-<<<<<<< HEAD
-        if (toolState) {
-            toolState.target.style.cursor = null;
-        }
-=======
-        toolState.target.style.cursor = null;
->>>>>>> c17324f62d81353a54da056d33847c8c6af640e8
+    unbind() {
+        super.unbind();
+        this._target.style.cursor = null;
     }
 
-    doPointerDown(toolState, event) {       
+    doPointerDown(event) {       
         if (event.pointerType === 'mouse' && event.button !== 0) {
             return;
         }
 
-        if (toolState.targetType !== 'element') {
-            return;
-        }
+        const viewStyle = window.getComputedStyle(this._viewElement);
+        this._columnGap = parseFloat(viewStyle.columnGap);
+        this._rowGap = parseFloat(viewStyle.rowGap);
 
-        const viewStyle = window.getComputedStyle(toolState.viewElement);
-        toolState.columnGap = parseFloat(viewStyle.columnGap);
-        toolState.rowGap = parseFloat(viewStyle.rowGap);
-
-        const { clientX, clientY } = this.getPointer(toolState, event);
+        const { clientX, clientY } = this.getPointer(event);
         
-        toolState.pointerDownRect = this.getRect(toolState, toolState.target);
-        toolState.grabLocation = { x: clientX - toolState.pointerDownRect.x, y: clientY - toolState.pointerDownRect.y };
-        toolState.targetHandles = this.getHandles(toolState, clientX, clientY, toolState.pointerDownRect);
-        toolState.target.classList.add('element--no-transition');
+        this._pointerDownRect = this.getRect(this._target);
+        this._grabLocation = { x: clientX - this._pointerDownRect.x, y: clientY - this._pointerDownRect.y };
+        this._targetHandles = this.getHandles(clientX, clientY, this._pointerDownRect);
+        this._target.classList.add('element--no-transition');
 
-        this.updateSnapPositions(toolState);
+        this.updateSnapPositions();
     }
     
-    doPointerMove(toolState, event) {
+    doPointerMove(event) {
         event.preventDefault();
 
-        if (toolState.targetType !== 'element') {
-            return;
-        }
+        this._viewRect = this._viewElement.getBoundingClientRect();
 
-        toolState.viewRect = toolState.viewElement.getBoundingClientRect();
+        let { clientX, clientY } = this.getPointer(event);
 
-        let { clientX, clientY } = this.getPointer(toolState, event);
-
-        if (toolState.isPointerDown) {   
-            toolState.target.classList.add('element--no-transition');
-  
-            this.snapHandles(toolState, clientX, clientY);
+        if (event.target.hasPointerCapture(event.pointerId)) {      
+            this.snapHandles(clientX, clientY);
         } 
         else {
-            const { clientX, clientY } = this.getPointer(toolState, event);
+            const { clientX, clientY } = this.getPointer(event);
 
-            const targetRect = this.getRect(toolState, toolState.target);
-            const handles = this.getHandles(toolState, clientX, clientY, targetRect)
-            this.updateHandleType(toolState, handles);
+            const targetRect = this.getRect(this._target);
+            const handles = this.getHandles(clientX, clientY, targetRect)
+            this.updateHandleType(handles);
         }
     }
     
-    doPointerUp(toolState, event) {
-        if (toolState.targetType !== 'element') {
-            return;
-        }
+    doPointerUp(event) {
+        this._target.classList.remove('element--no-transition');
 
-        toolState.target.classList.remove('element--no-transition');
+        let { clientX, clientY } = this.getPointer(event);
+        this.snapHandles(clientX, clientY, this.snapClosest.bind(this));
 
-        let { clientX, clientY } = this.getPointer(toolState, event);
-        this.snapHandles(toolState, clientX, clientY, (x, y) => this.snapClosest(toolState, x, y));
-
-        const updatedElement = this.updateElementPosition(toolState, toolState.element);
+        const updatedElement = this.updateElementPosition(this._element);
         if (updatedElement) {
-            toolState.onChange(updatedElement);
+            this._onChange(updatedElement);
         }
     }
 
-    doBlur(toolState, event) {
-        if (toolState.targetType !== 'element') {
-            return;
-        }
-        
-        toolState.target.style.cursor = '';
+    doBlur(event) {
+        this._target.style.cursor = '';
     }
 
-    doFocus(toolState, event) {
+    doFocus(event) {
         // Not used.
     }
 
-    getHandles(toolState, clientX, clientY, targetRect) {
+    getHandles(clientX, clientY, targetRect) {
         const handles = {
-            top: Math.abs(clientY - targetRect.top) < toolState.handleThreshold,
-            left: Math.abs(clientX - targetRect.left) < toolState.handleThreshold,
-            bottom: Math.abs(clientY - targetRect.bottom) < toolState.handleThreshold,
-            right: Math.abs(clientX - targetRect.right) < toolState.handleThreshold,
+            top: Math.abs(clientY - targetRect.top) < this._handleThreshold,
+            left: Math.abs(clientX - targetRect.left) < this._handleThreshold,
+            bottom: Math.abs(clientY - targetRect.bottom) < this._handleThreshold,
+            right: Math.abs(clientX - targetRect.right) < this._handleThreshold,
         };
 
         handles.body = !handles.top && !handles.left && !handles.right && !handles.bottom;
@@ -152,13 +131,13 @@ export default class ResizeTool extends Tool {
     }
 
     // Snap to nothing.
-    snapNone(toolState, clientX, clientY) {
+    snapNone(clientX, clientY) {
         return { snapX: clientX, snapY: clientY };
     }
 
     // Snap this point to a row or column if one is within the snap threshold.
-    snapClose(toolState, clientX, clientY) {
-        let { top, left, right, bottom, body } = toolState.targetHandles;
+    snapClose(clientX, clientY) {
+        let { top, left, right, bottom, body } = this._targetHandles;
 
         if (body) {
             top = true;
@@ -166,30 +145,30 @@ export default class ResizeTool extends Tool {
         }
 
         if (top || bottom ) {
-            const rows = top ? toolState.topSnapPositions : toolState.bottomSnapPositions;
+            const rows = top ? this._topSnapPositions : this._bottomSnapPositions;
 
-            const rowIndex = rows.findIndex(row => Math.abs(row - clientY) < toolState.snapThreshold);
+            const rowIndex = rows.findIndex(row => Math.abs(row - clientY) < this._snapThreshold);
             if (rowIndex !== -1) {
                 clientY = rows[rowIndex];
 
-                toolState.snappedRowIndex = rowIndex + (top ? 0 : 1); // To include the zeroth row if bottom handle is active.
+                this._snappedRowIndex = rowIndex + (top ? 0 : 1); // To include the zeroth row if bottom handle is active.
             } 
             else {
-                toolState.snappedRowIndex = -1;
+                this._snappedRowIndex = -1;
             }
         }
 
         if (left || right ) {
-            const columns = left ? toolState.leftSnapPositions : toolState.rightSnapPositions;
+            const columns = left ? this._leftSnapPositions : this._rightSnapPositions;
 
-            const columnIndex = columns.findIndex(column => Math.abs(column - clientX) < toolState.snapThreshold);
+            const columnIndex = columns.findIndex(column => Math.abs(column - clientX) < this._snapThreshold);
             if (columnIndex !== -1) {
                 clientX = columns[columnIndex];
 
-                toolState.snappedColumnIndex = columnIndex + (left ? 0 : 1); // To include the zeroth column if bottom handle is active.
+                this._snappedColumnIndex = columnIndex + (left ? 0 : 1); // To include the zeroth column if bottom handle is active.
             }
             else {
-                toolState.snappedColumnIndex = -1;
+                this._snappedColumnIndex = -1;
             }
         }
 
@@ -197,8 +176,8 @@ export default class ResizeTool extends Tool {
     }
 
     // Snap this point to the closest column and row regardless of threshold.
-    snapClosest(toolState, clientX, clientY) {
-        let { top, left, right, bottom, body } = toolState.targetHandles;
+    snapClosest(clientX, clientY) {
+        let { top, left, right, bottom, body } = this._targetHandles;
 
         if (body) {
             top = true;
@@ -206,164 +185,164 @@ export default class ResizeTool extends Tool {
         }
 
         if (top || bottom ) {
-            const rows = top ? toolState.topSnapPositions : toolState.bottomSnapPositions;
+            const rows = top ? this._topSnapPositions : this._bottomSnapPositions;
 
             const rowIndex = closestIndex(rows, clientY);
             if (rowIndex !== -1) {
                 clientY = rows[rowIndex];
 
-                toolState.snappedRowIndex = rowIndex + (top ? 0 : 1); // To include the zeroth row if bottom handle is active.
+                this._snappedRowIndex = rowIndex + (top ? 0 : 1); // To include the zeroth row if bottom handle is active.
             } 
             else {
-                toolState.snappedRowIndex = -1;
+                this._snappedRowIndex = -1;
             }
         }
 
         if (left || right ) {
-            const columns = left ? toolState.leftSnapPositions : toolState.rightSnapPositions;
+            const columns = left ? this._leftSnapPositions : this._rightSnapPositions;
 
             const columnIndex = closestIndex(columns, clientX);
             if (columnIndex !== -1) {
                 clientX = columns[columnIndex];
 
-                toolState.snappedColumnIndex = columnIndex + (left ? 0 : 1); // To include the zeroth column if bottom handle is active.
+                this._snappedColumnIndex = columnIndex + (left ? 0 : 1); // To include the zeroth column if bottom handle is active.
             }
             else {
-                toolState.snappedColumnIndex = -1;
+                this._snappedColumnIndex = -1;
             }
         }
 
         return { snapX: clientX, snapY: clientY }; 
     }
 
-    snapHandles(toolState, clientX, clientY, snap = (x, y) => this.snapNone(toolState, x, y)) {
+    snapHandles(clientX, clientY, snap = this.snapNone.bind(this)) {
         const { snapX, snapY } = snap(clientX, clientY);
 
-        if (toolState.targetHandles.top) {
-            toolState.target.style.top = px(snapY);
-            toolState.target.style.height = px(toolState.pointerDownRect.bottom - snapY);
+        if (this._targetHandles.top) {
+            this._target.style.top = px(snapY);
+            this._target.style.height = px(this._pointerDownRect.bottom - snapY);
         }
 
-        if (toolState.targetHandles.left) {
-            toolState.target.style.left = px(snapX);
-            toolState.target.style.width = px(toolState.pointerDownRect.right - snapX);
+        if (this._targetHandles.left) {
+            this._target.style.left = px(snapX);
+            this._target.style.width = px(this._pointerDownRect.right - snapX);
         }
 
-        if (toolState.targetHandles.right) {
-            toolState.target.style.width = px(snapX - toolState.pointerDownRect.left);
+        if (this._targetHandles.right) {
+            this._target.style.width = px(snapX - this._pointerDownRect.left);
         }
 
-        if (toolState.targetHandles.bottom) {
-            toolState.target.style.height = px(snapY - toolState.pointerDownRect.top);
+        if (this._targetHandles.bottom) {
+            this._target.style.height = px(snapY - this._pointerDownRect.top);
         }
 
-        if (toolState.targetHandles.body) {
-            const { snapX, snapY } = snap(clientX - toolState.grabLocation.x, clientY - toolState.grabLocation.y)
+        if (this._targetHandles.body) {
+            const { snapX, snapY } = snap(clientX - this._grabLocation.x, clientY - this._grabLocation.y, true)
 
-            toolState.target.style.left = px(snapX);
-            toolState.target.style.top = px(snapY);
+            this._target.style.left = px(snapX);
+            this._target.style.top = px(snapY);
         }
     }
 
-    updateSnapPositions(toolState) {
-        const halfColumnGap = toolState.columnGap / 2;
-        const halfRowGap = toolState.rowGap / 2;
-        toolState.leftSnapPositions = [-halfColumnGap, ...toolState.viewGrid.columns].map(position => position + halfColumnGap);
-        toolState.rightSnapPositions = [...toolState.viewGrid.columns, toolState.viewRect.width + halfColumnGap].map(position => position - halfColumnGap);;
-        toolState.topSnapPositions = [-halfRowGap, ...toolState.viewGrid.rows].map(position => position + halfRowGap);;
-        toolState.bottomSnapPositions = [...toolState.viewGrid.rows, toolState.viewRect.height + halfRowGap].map(position => position - halfRowGap);;
+    updateSnapPositions() {
+        const halfColumnGap = this._columnGap / 2;
+        const halfRowGap = this._rowGap / 2;
+        this._leftSnapPositions = [-halfColumnGap, ...this._viewGrid.columns].map(position => position + halfColumnGap);
+        this._rightSnapPositions = [...this._viewGrid.columns, this._viewRect.width + halfColumnGap].map(position => position - halfColumnGap);;
+        this._topSnapPositions = [-halfRowGap, ...this._viewGrid.rows].map(position => position + halfRowGap);;
+        this._bottomSnapPositions = [...this._viewGrid.rows, this._viewRect.height + halfRowGap].map(position => position - halfRowGap);;
     }
 
-    updateHandleType(toolState, {top, left, bottom, right, body}) {
+    updateHandleType({top, left, bottom, right, body}) {
         if ((top && left) || (bottom && right)) {
-            toolState.target.style.cursor = 'nwse-resize';
+            this._target.style.cursor = 'nwse-resize';
             return;
         }
 
         if ((top && right) || (bottom && left)) {
-            toolState.target.style.cursor = 'nesw-resize';
+            this._target.style.cursor = 'nesw-resize';
             return;
         }
 
         if (top || bottom) {
-            toolState.target.style.cursor = 'ns-resize';
+            this._target.style.cursor = 'ns-resize';
             return;
         }
 
         if (left || right) {
-            toolState.target.style.cursor = 'ew-resize';
+            this._target.style.cursor = 'ew-resize';
             return;
         }
 
         if (body) {
-            toolState.target.style.cursor = 'move';
+            this._target.style.cursor = 'move';
             return;
         }
 
-        toolState.target.style.cursor = 'null';
+        this._target.style.cursor = 'null';
     }
 
-    updateElementPosition(toolState) {
-        let position = toolState.element;
+    updateElementPosition() {
+        let position = this._element;
 
-        const bottom = toolState.element.top + toolState.element.height;
-        const right = toolState.element.left + toolState.element.width;
+        const bottom = this._element.top + this._element.height;
+        const right = this._element.left + this._element.width;
 
-        if (toolState.targetHandles.top && toolState.snappedRowIndex >= 0 &&
-            position.top !== toolState.snappedRowIndex &&
+        if (this._targetHandles.top && this._snappedRowIndex >= 0 &&
+            position.top !== this._snappedRowIndex &&
             position.height !== bottom - this.snappedRowIndex) {
                 
             position = {
                 ...position, 
-                top: toolState.snappedRowIndex,
-                height: bottom - toolState.snappedRowIndex,
+                top: this._snappedRowIndex,
+                height: bottom - this._snappedRowIndex,
             };
         }
 
-        if (toolState.targetHandles.bottom && toolState.snappedRowIndex >= 0 && 
-            position.height !== toolState.snappedRowIndex - toolState.element.top) {
+        if (this._targetHandles.bottom && this._snappedRowIndex >= 0 && 
+            position.height !== this._snappedRowIndex - this._element.top) {
 
             position = {
                 ...position, 
-                height: toolState.snappedRowIndex - toolState.element.top
+                height: this._snappedRowIndex - this._element.top
             };
         }
 
-        if (toolState.targetHandles.left && toolState.snappedColumnIndex >= 0 &&
-            position.left !== toolState.snappedColumnIndex &&
-            position.width !== right - toolState.snappedColumnIndex) {
+        if (this._targetHandles.left && this._snappedColumnIndex >= 0 &&
+            position.left !== this._snappedColumnIndex &&
+            position.width !== right - this._snappedColumnIndex) {
 
             position = {...position, 
-                left: toolState.snappedColumnIndex, 
-                width: right - toolState.snappedColumnIndex
+                left: this._snappedColumnIndex, 
+                width: right - this._snappedColumnIndex
             };
         }
 
-        if (toolState.targetHandles.right && toolState.snappedColumnIndex >= 0 && 
-            position.width !== toolState.snappedColumnIndex - toolState.element.left) {
+        if (this._targetHandles.right && this._snappedColumnIndex >= 0 && 
+            position.width !== this._snappedColumnIndex - this._element.left) {
 
             position = {
                 ...position, 
-                width: toolState.snappedColumnIndex - toolState.element.left
+                width: this._snappedColumnIndex - this._element.left
             };
         }
 
-        if (toolState.targetHandles.body && toolState.snappedRowIndex >= 0 &&
-            position.top !== toolState.snappedRowIndex) {
+        if (this._targetHandles.body && this._snappedRowIndex >= 0 &&
+            position.top !== this._snappedRowIndex) {
 
             position = {...position,
-                top: toolState.snappedRowIndex,
+                top: this._snappedRowIndex,
             };
         }
 
-        if (toolState.targetHandles.body && toolState.snappedColumnIndex >= 0 &&
-            position.left !== toolState.snappedColumnIndex) {
+        if (this._targetHandles.body && this._snappedColumnIndex >= 0 &&
+            position.left !== this._snappedColumnIndex) {
 
             position = {...position,
-                left: toolState.snappedColumnIndex,  
+                left: this._snappedColumnIndex,  
             };
         }
 
-        return (position === toolState.element) ? null : position;
+        return (position === this._element) ? null : position;
     }
 }
