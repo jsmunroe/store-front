@@ -1,5 +1,5 @@
 import { createViewEditor } from '../../models/createViewEditor';
-import { addIfMissing, combine, extract, removeIfPresent, saveElement } from '../../utils/mutate';
+import { combine, extract, saveElement } from '../../utils/mutate';
 import { createReducer } from '../../utils/reduxHelpers';
 import * as actionTypes from '../actions/actionTypes';
 import initialState from './initialState';
@@ -15,15 +15,15 @@ export default createReducer({
         return state.view === view ? state : {...state, view};
     },
 
-    [actionTypes.selectElement]: function (state, {element, isGroupSelect}) {
-        const selectedElements = isGroupSelect ? addIfMissing(state.selectedElements, element) : [element];
+    [actionTypes.selectElements]: function (state, {elements, isGroupSelect}) {
+        const selectedElements = isGroupSelect ? combine(state.selectedElements, elements) : [...elements];
 
         // Mutate the state only if the selectedElements list has changed.
         return state.selectedElements === selectedElements ? state : {...state, selectedElements};
     },
 
-    [actionTypes.deselectElement]: function (state, {element, isGroupSelect}) {
-        const selectedElements = isGroupSelect ? removeIfPresent(state.selectedElements, element) : [];
+    [actionTypes.deselectElements]: function (state, {elements, isGroupSelect}) {
+        const selectedElements = isGroupSelect ? extract(state.selectedElements, elements) : [];
 
         // Mutate the state only if the selectedElements list has changed.
         return state.selectedElements === selectedElements ? state : {...state, selectedElements};

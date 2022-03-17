@@ -1,5 +1,5 @@
 
-export function useClass(shouldUse, className) {
+export function classIf(shouldUse, className) {
     return shouldUse ? className : '';
 }
 

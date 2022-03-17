@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import useChange from "../hooks/useChange";
 
-export default function ToolTarget({tool, className, targetType, targetModel, grid, onUpdate, onRef, onPointerDown, onPointerMove, onPointerUp, onFocus, onBlur, children, ...props}) {
+export default function ToolTarget({tool, className, targetType, targetModel, grid, onUpdate, onSetRef, onPointerDown, onPointerMove, onPointerUp, onFocus, onBlur, children, ...props}) {
     const [toolState, setToolState] = useState(null);
     
     const targetRef = useRef();
@@ -16,8 +16,8 @@ export default function ToolTarget({tool, className, targetType, targetModel, gr
     }, [tool, grid, !onUpdate, targetModel]);
 
     useChange(() => {
-        onRef && onRef(targetRef.current);
-    }, [!onRef, targetRef.current])
+        onSetRef && onSetRef(targetRef.current);
+    }, [!onSetRef, targetRef.current])
 
     const handlePointerDown = event => {
         event.stopPropagation();

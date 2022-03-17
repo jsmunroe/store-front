@@ -35,7 +35,7 @@ export async function copyElements(elements) {
 
 export async function pasteElements() {
     const text = await navigator.clipboard.readText();
-    const match = /^SF-Element:(?<json>.*)$/g.exec(text);
+    const match = /^SF-Element:(?<json>.*)$/gs.exec(text);
 
     if (!match) {
         return;
@@ -62,7 +62,7 @@ export async function pasteElements() {
 
 export async function hasElements() {
     const text = await navigator.clipboard.readText();
-    const match = /^SF-Element:(?<json>.*)$/g.exec(text);
+    const match = /^SF-Element:(?<json>.*)$/gs.exec(text);
 
     return !!match;
 }

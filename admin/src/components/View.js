@@ -23,7 +23,7 @@ export default function View({view, tool, showGrid, onUpdate}) {
         return <Busy />
     }
 
-    return <ToolTarget tool={tool} targetType="view" targetModel={view} grid={grid} onUpdate={onUpdate} className="view" style={styles} onRef={setDomView}>
+    return <ToolTarget tool={tool} targetType="view" targetModel={view} grid={grid} onUpdate={onUpdate} className="view" style={styles} onSetRef={setDomView}>
         {showGrid && <ViewGrid grid={grid} />}
         {view.elements?.map((element) => <Element type={element.type} key={element.id} grid={grid} tool={tool} onChange={handleElementChange} onRemove={handleElementRemove} element={element} />)}
     </ToolTarget>

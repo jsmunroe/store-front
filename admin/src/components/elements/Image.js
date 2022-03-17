@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useClass } from "../../utils/htmlHelpers";
+import { classIf } from "../../utils/htmlHelpers";
 
 export default function Image({element}) {
     const [hasError, setHasError] = useState(element.src === '');
@@ -21,7 +21,7 @@ export default function Image({element}) {
     }  
 
     return <>
-        <img className={`element__image ${useClass(hasError, 'error')}`} alt="Element" src={element.src} onError={handleError} />
+        <img className={`element__image ${classIf(hasError, 'error')}`} alt="Element" src={element.src} onError={handleError} />
         {hasError && <div className="element__error"><p className="">Image source cannot be found.</p></div>}
     </>
 }

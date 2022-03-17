@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
-import useElementPlacement from "../../hooks/useElementPlacement"
 import { bindActionCreators } from "redux";
+import useElementPlacement from "../../hooks/useElementPlacement"
+import useCatalog from "../../hooks/useCatalog";
 import { useModal } from "../Modal";
+import { classIf } from "../../utils/htmlHelpers";
 import * as viewEditorActions from '../../redux/actions/viewEditorActions'
-import { useClass } from "../../utils/htmlHelpers";
 import ToolTarget from "../ToolTarget";
 import ElementOptionsForm from '../options/ElementOptionsForm'
 import ElementContent from "./ElementContent";
@@ -13,12 +14,14 @@ function Element({element, isSelected, tool, grid, actions}) {
 
     const modal = useModal();
 
+    const catalog = useCatalog('element-refs');
+
     function handleChange(element) {
         actions.saveElement(element);
     }
 
     const handlePointerDown = event => {
-        actions.selectElement(element, event.ctrlKey);
+        actions.selectElements([element], event.ctrlKey);
     }
 
     const handleShowOptionsDialog = async event => {
@@ -33,7 +36,11 @@ function Element({element, isSelected, tool, grid, actions}) {
         actions.removeElements([element]);
     }
 
-    return <ToolTarget tool={tool} targetType="element" targetModel={element} className={`element ${useClass(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} style={{...placementStyles}} onDoubleClick={handleShowOptionsDialog} onPointerDown={handlePointerDown} grid={grid} onUpdate={handleChange}>
+    const handleSetRef = domElement => {
+        catalog.setValue(element.id, domElement);
+    }
+
+    return <ToolTarget tool={tool} targetType="element" targetModel={element} className={`element ${classIf(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} onSetRef={handleSetRef} style={{...placementStyles}} onDoubleClick={handleShowOptionsDialog} onPointerDown={handlePointerDown} grid={grid} onUpdate={handleChange}>
         <ElementContent element={element} />
         <div className="element__tool-buttons">
             <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>

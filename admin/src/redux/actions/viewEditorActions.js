@@ -1,11 +1,11 @@
 import * as actionTypes from './actionTypes';
 
-export function selectElement(element, isGroupSelect) {
-    return { type: actionTypes.selectElement, element, isGroupSelect };
+export function selectElements(elements, isGroupSelect) {
+    return { type: actionTypes.selectElements, elements, isGroupSelect };
 }
 
-export function deselectElement(element, isGroupSelect) {
-    return { type: actionTypes.deselectElement, element, isGroupSelect };
+export function deselectElements(elements, isGroupSelect) {
+    return { type: actionTypes.deselectElements, elements, isGroupSelect };
 }
 
 export function selectAllElements() {

@@ -14,6 +14,7 @@ import Copy from "../components/Copy"
 import useSetting from "../hooks/useSetting"
 import { key, useKeyBindings } from "../hooks/useKeyBindings"
 import './ViewEditor.scss'
+import useCatalog from "../hooks/useCatalog"
 
 function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
     const [tool, setTool] = useState(getTool())
@@ -30,6 +31,8 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
         key('Delete').bind(event => handleDeleteElements(event)),
         key('KeyA').withControl().bind(event => handleSelectAllElements(event)),
     )
+
+    const { getValue } = useCatalog('element-refs')
 
     const handleViewUpdate = view => {  
         actions.saveView(view);
@@ -49,6 +52,7 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
 
     const handleSelectAllElements = (event) => {
         actions.selectAllElements();
+        focusElement(viewEditor.view.elements[0]);
     }
 
     const handleDeleteElements = (event) => {
@@ -59,6 +63,17 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
 
     const handleSelectionBackdropClick = (event) => {
         actions.clearSelectedElements();
+    }
+
+    const handleElementsPasted = elements => {
+        actions.selectElements(elements);
+
+        focusElement(elements[0]);
+    }
+
+    const focusElement = element => {
+        const domElement = getValue(element?.id);
+        domElement.focus();
     }
 
     return <div className="view-editor">
@@ -75,7 +90,7 @@ function ViewEditor({view, viewsLoaded, viewEditor, actions}) {
             <div className="tool-bar__spacer"></div>
             <Undo stateName="view" />
             <div className="tool-bar__spacer"></div>
-            <Copy />
+            <Copy onPaste={handleElementsPasted}/>
         </div>
     </div>
 }

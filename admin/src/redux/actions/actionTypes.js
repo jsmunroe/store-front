@@ -15,8 +15,8 @@ export const redo = 'REDO';
 export const clearHistory = 'CLEAR_HISTORY';
 
 // View editor actions
-export const selectElement = 'SELECT_ELEMENT';
-export const deselectElement = 'DESELECT_ELEMENT';
+export const selectElements = 'SELECT_ELEMENTS';
+export const deselectElements = 'DESELECT_ELEMENTS';
 export const selectAllElements = 'SELECT_ALL_ELEMENTS';
 export const clearSelectedElements = 'CLEAR_SELECTED_ELEMENTS';
 export const addElements = 'ADD_ELEMENTS';

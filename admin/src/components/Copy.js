@@ -6,22 +6,25 @@ import { key, useKeyBindings } from "../hooks/useKeyBindings";
 import { useInterval } from "../hooks/useInterval";
 import { useState } from "react";
 
-function Copy({selectedElements, canCopy, actions}) {
+function Copy({selectedElements, canCopy, onCopy, onCut, onPaste, actions}) {
     const [canPaste, setCanPaste] = useState(false);
 
     const handleCopy = async event =>  {
         await copyElements(selectedElements);
         setCanPaste(await hasElements());
+        onCopy(selectedElements);
     };
 
     const handleCut = async event => {
         await handleCopy(event);
         actions.removeElements(selectedElements);
+        onCut(selectedElements);
     }
 
     const handlePaste = async event => {
         const elements = await pasteElements()
         elements && actions.addElements(elements);
+        onPaste(elements);
     };
     
     const checkCanCopy = () => {
