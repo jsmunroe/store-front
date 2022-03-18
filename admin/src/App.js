@@ -1,4 +1,4 @@
-import { Provider as ReduxProvider } from 'react-redux';
+import { Provider } from 'react-redux';
 import Router from './components/Router';
 import { ModalHarness } from './components/Modal';
 import store from "./redux/store";
@@ -9,11 +9,11 @@ import './App.scss';
 function App() {
   return (
     <div className="app">
-        <ReduxProvider store={store}>
+        <Provider store={store}>
             <ModalHarness>
                 <Router/>
             </ModalHarness>
-        </ReduxProvider>
+        </Provider>
     </div>
   );
 }

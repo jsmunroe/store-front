@@ -1,6 +1,7 @@
 import * as fs from "firebase/firestore";
 import * as fbAuth from "firebase/auth";
 import "./app.firebase";
+import debug from "../utils/log";
 
 const auth = fbAuth.getAuth();
 const db = fs.getFirestore();
@@ -35,12 +36,12 @@ function logPath(path) {
 }
 
 export async function getDoc(path) {
-    console.log(`Firestore getting document: ${logPath(path)}`)
+    debug(`Firestore getting document: ${logPath(path)}`)
     return await fs.getDoc(fs.doc(db, ...path));
 }
 
 export async function getCollection(path) {
-    console.log(`Firestore getting collection: ${logPath(path)}`)
+    debug(`Firestore getting collection: ${logPath(path)}`)
     return await fs.getDocs(fs.collection(db, ...path))
 }
 
@@ -53,12 +54,12 @@ export async function readCollection(path) {
 }
 
 export async function setDoc(path, data, options) {
-    console.log(`Firestore setting document: ${logPath(path)}`)
+    debug(`Firestore setting document: ${logPath(path)}`)
     return await fs.setDoc(fs.doc(db, ...path), data, options);
 }
 
 export async function addDoc(path, data) {
-    console.log(`Firestore adding document: ${logPath(path)}`)
+    debug(`Firestore adding document: ${logPath(path)}`)
 
     const ref = await fs.addDoc(fs.collection(db, ...path), data);
 
@@ -66,7 +67,7 @@ export async function addDoc(path, data) {
 }
 
 export async function deleteDoc(path) {
-    console.log(`Firestore deleting document: ${logPath(path)}`)
+    debug(`Firestore deleting document: ${logPath(path)}`)
 
     await fs.deleteDoc(fs.doc(db, ...path));
 }
