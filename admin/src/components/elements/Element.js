@@ -43,10 +43,10 @@ function Element({element, isSelected, tool, grid, actions}) {
     return <ToolTarget tool={tool} targetType="element" targetModel={element} className={`element ${classIf(isSelected, 'element--selected')}`} tabIndex={-1} data-id={element.id} onSetRef={handleSetRef} style={{...placementStyles}} onDoubleClick={handleShowOptionsDialog} onPointerDown={handlePointerDown} grid={grid} onUpdate={handleChange}>
         <ElementContent element={element} />
         <div className="element__tool-buttons">
-            <button className="button tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>
+            <button className="element__tool-button" title="Options" onClick={handleShowOptionsDialog}><i className="fas fa-ellipsis-v fa-fw"></i></button>
         </div>
         <div className="element__close-button">
-            <button className="button tool-button" title="Remove this element." onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
+            <button className="element__tool-button" title="Remove element" onClick={handleRemoveRequest}><i className="fas fa-times fa-fw"></i></button>
         </div>
     </ToolTarget>
 }

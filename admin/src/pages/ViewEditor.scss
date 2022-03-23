@@ -144,6 +144,10 @@
             left: 10px;
         }
 
+        &__tool-button {
+            @include tool-button;
+        }
+
         &__close-button {
             top: 10px;
             right: 10px;

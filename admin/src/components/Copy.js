@@ -12,19 +12,19 @@ function Copy({selectedElements, canCopy, onCopy, onCut, onPaste, actions}) {
     const handleCopy = async event =>  {
         await copyElements(selectedElements);
         setCanPaste(await hasElements());
-        onCopy(selectedElements);
+        onCopy && onCopy(selectedElements);
     };
 
     const handleCut = async event => {
         await handleCopy(event);
         actions.removeElements(selectedElements);
-        onCut(selectedElements);
+        onCut && onCut(selectedElements);
     }
 
     const handlePaste = async event => {
         const elements = await pasteElements()
         elements && actions.addElements(elements);
-        onPaste(elements);
+        onPaste && onPaste(elements);
     };
     
     const checkCanCopy = () => {

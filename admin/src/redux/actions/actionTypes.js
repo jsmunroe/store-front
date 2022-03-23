@@ -2,10 +2,9 @@
 export const loadUser = 'LOAD_USER';
 export const clearUser = 'CLEAR_USER';
 
-// Views actions
-export const saveView = 'SAVE_VIEW';
-
 // View actions
+export const saveView = 'SAVE_VIEW';
+export const removeView = 'REMOVE_VIEW';
 export const loadViews = 'LOAD_VIEWS';
 export const loadView = 'LOAD_VIEW';
 

@@ -1,4 +1,5 @@
 @import './src/styles/colors';
+@import './src/styles/mixins';
 
 .view-list {
     width: 100%;
@@ -17,14 +18,33 @@
         border: 0.5px $color-highlight solid;
         color: $color-shadow;
         text-align: left;
-        padding-left: 15px;
+        padding: 0 15px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
         &__icon {
             margin-right: 5px;
         }
+        
+        &__tool-buttons {
+            display: none;
+            flex-direction: row;
+            margin-left: auto;
+            gap: 5px;
+        }
+
+        &__tool-button {
+            @include tool-button;
+        }
+
+        &:hover .view-item__tool-buttons {
+            display: flex;
+        }
 
         &:hover,
-        &:focus {
+        &:focus, 
+        &--selected {
             color: $color-highlight;
             background-color: rgba($color-shadow, 0.2);
         }
@@ -47,4 +67,5 @@
             background-color: rgba($color-shadow, 0.5);
         }
     }
+
 }

@@ -12,15 +12,31 @@ export default createReducer({
     },
 
     [actionTypes.saveView]: function (state, {view}) {
-        if (state.all.find(v => v.id === view.id)) {
-            return {...state,
-                all: state.all.map(v => v.id === view.id ? view : v)
-            };
+        let { all } = state;
+
+        let found = all.find(v => v.id === view.id)
+        if (!found) {
+            all = [...all, view];
+            return {...state, all};
         }
 
-        return {...state, 
-            all: _.sortBy([...state.all, view], v => v.name) 
-        };
+        if (found !== view) {
+            all = all.map(v => v.id === view.id ? view : v);
+            return {...state, all};
+        }
+
+        return state;
     },
+
+    [actionTypes.removeView]: function (state, {view}) {
+        let { all } = state;
+
+        if (all.some(v => v.id === view.id)) {
+            all = all.filter(v => v.id !== view.id);
+            return {...state, all};
+        }
+
+        return state;
+    }
 
 }, initialState.views)

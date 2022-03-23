@@ -277,12 +277,6 @@ body {
     }
 }
 
-.tool-button {
-    @include icon-button;
-    width: 25px;
-    height: 25px;
-}
-
 .fas {
     &.super {
         position: relative;

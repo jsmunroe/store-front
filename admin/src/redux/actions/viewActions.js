@@ -30,3 +30,7 @@ export function loadViewById(viewId) {
 export function saveView(view) {
     return { type: actionTypes.saveView, view };
 }
+
+export function removeView(view) {
+    return { type: actionTypes.removeView, view }
+}
