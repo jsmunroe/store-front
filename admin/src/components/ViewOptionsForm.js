@@ -1,37 +1,31 @@
-import { useState } from "react";
 import { createView } from "../models/createView";
-import { replace, toNameValue } from "../utils/htmlHelpers";
+import Form from "./controls/Form";
+import TextBox from "./controls/TextBox";
 
-export default function ViewOptionsForm({view: viewProp, onSubmit, onCancel}) {
-    const [view, setView] = useState(viewProp ?? {});
-
-    const handleFormSubmit = event => {
+export default function ViewOptionsForm({view, onSubmit, onCancel}) {
+    const handleFormSubmit = data => {
         if (!onSubmit) {
             console.warn('Form has not been given an onSubmit handler.')
             return;
         }
 
-        if (!view.id) {
-            onSubmit(createView(view.name));
+        if (!data.id) {
+            onSubmit(createView(data.name));
         }
         
-        onSubmit(view);
-    }
-
-    const handleViewChange = (name, value) => {
-        setView(view => ({...view, [name]: value}))
+        onSubmit(data);
     }
 
     const handleCancelClick = event => {      
         onCancel && onCancel();
     }
 
-    return <form className="form" onSubmit={replace(handleFormSubmit)}>
+    return <Form className="form" state={view} onSubmit={handleFormSubmit}>
         <label className="form__label">Name</label>
-        <input className="form__input" type="text" name="name" value={view.name} onChange={toNameValue(handleViewChange)} autoFocus required></input>
+        <TextBox className="form__input" name="name" autoFocus />
         <div className="form__buttons">
             <button type="submit" className="form__submit">{view.id ? "Save" : "Create"}</button>
             <button type="button" className="form__button" onClick={handleCancelClick}>Cancel</button>
         </div>
-    </form>
+    </Form>
 }

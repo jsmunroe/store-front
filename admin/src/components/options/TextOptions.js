@@ -1,29 +1,9 @@
 import { toNameValue } from "../../utils/htmlHelpers";
-import ReactQuill from 'react-quill';
 import RadioButton from "../controls/RadioButton";
-import 'react-quill/dist/quill.snow.css';
+import Select from "../controls/Select";
+import TextEditor from "./TextEditor";
 
-const { Quill } = ReactQuill;
-
-var icons = Quill.import('ui/icons');
-icons.bold = '<i class="fas fa-bold fa-fw"></i>';
-icons.italic = '<i class="fas fa-italic fa-fw"></i>';
-icons.underline = '<i class="fas fa-underline fa-fw"></i>';
-icons.strike = '<i class="fas fa-strikethrough fa-fw"></i>';
-icons.link = '<i class="fas fa-link fa-fw"></i>';
-icons.clean = '<i class="fas fa-remove-format fa-fw"></i>';
-
-Quill.register('ui/icons', icons, true);
-
-export default function TextOptions({element, onChange}) {
-    const handlePropertyValueChange = (name, value) => {
-        onChange({...element, [name]: value})
-    }
-
-    const handleKeyDown = event => {
-        event.stopPropagation();
-    }
-
+export default function TextOptions() {
     const fontSizes = [
         { text: 'Very Small', size: 10 },
         { text: 'Small', size: 14 },
@@ -33,51 +13,32 @@ export default function TextOptions({element, onChange}) {
         { text: 'Banner', size: 48 },
     ];
 
-    const modules = {
-        toolbar: {
-            container: '#toolbar',
-        },
-    };
-
     return <>
         <div className="form__title"><i className="icon-text"></i> Text Element Properties</div>
         
         <div className="form__row">
-            <EditorToolbar />
-            <ReactQuill theme="snow" value={element.text} modules={modules} onChange={value => handlePropertyValueChange('text', value)} onKeyDown={handleKeyDown} />
-            <br/>
+            <TextEditor name="text" />
         </div>
 
         <label className="form__label">Font Size</label>
         <div>
-            <select className="form__select" name="fontSize" value={element.fontSize} onChange={toNameValue(handlePropertyValueChange)}>
+            <Select className="form__select" name="fontSize">
                 {fontSizes.map(f => <option key={f.size} value={f.size}>{f.text}</option>)}
-            </select>
+            </Select>
         </div>
 
         <label className="form__label">Horizontal Align</label>
         <div>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Left" value="left" checked={element.horizontalAlign === 'left'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-left fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Center" value="center" checked={element.horizontalAlign === 'center'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-center fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="horizontalAlign" title="Right" value="right" checked={element.horizontalAlign === 'right'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-align-right fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Left" value="left"><i className="fas fa-align-left fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Center" value="center"><i className="fas fa-align-center fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="horizontalAlign" title="Right" value="right"><i className="fas fa-align-right fa-fw"></i></RadioButton>
         </div>
 
         <label className="form__label">Vertical Align</label>
         <div>
-            <RadioButton className="form__radio" name="verticalAlign" title="Top" value="top" checked={element.verticalAlign === 'top'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw super"></i></RadioButton>
-            <RadioButton className="form__radio" name="verticalAlign" title="Middle" value="middle" checked={element.verticalAlign === 'middle'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw"></i></RadioButton>
-            <RadioButton className="form__radio" name="verticalAlign" title="Bottom" value="bottom" checked={element.verticalAlign === 'bottom'} onChange={toNameValue(handlePropertyValueChange)}><i className="fas fa-grip-lines fa-fw sub"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Top" value="top"><i className="fas fa-grip-lines fa-fw super"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Middle" value="middle"><i className="fas fa-grip-lines fa-fw"></i></RadioButton>
+            <RadioButton className="form__radio" name="verticalAlign" title="Bottom" value="bottom"><i className="fas fa-grip-lines fa-fw sub"></i></RadioButton>
         </div>
     </>;
-}
-
-function EditorToolbar() {
-    return <div id="toolbar">
-        <button className="ql-bold" title="Bold"></button>
-        <button className="ql-italic" title="Italics"></button>
-        <button className="ql-underline" title="Underline"></button>
-        <button className="ql-strike" title="Strike-through"></button>
-        <button className="ql-link" title="Create Link"></button>
-        <button className="ql-clean" title="Clear Format"></button>
-    </div>
 }
