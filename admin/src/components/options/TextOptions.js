@@ -1,4 +1,3 @@
-import { toNameValue } from "../../utils/htmlHelpers";
 import RadioButton from "../controls/RadioButton";
 import Select from "../controls/Select";
 import TextEditor from "./TextEditor";
@@ -14,7 +13,7 @@ export default function TextOptions() {
     ];
 
     return <>
-        <div className="form__title"><i className="icon-text"></i> Text Element Properties</div>
+        <div className="form__title"><i className="icon-text"></i> Text Properties</div>
         
         <div className="form__row">
             <TextEditor name="text" />

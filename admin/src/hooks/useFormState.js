@@ -168,15 +168,15 @@ export default function useFieldState(name, validator) {
     const formState = useContext(FormStateContext);
 
     useChange(() => {
-        if (validator && formState) {
+        if (name && validator && formState) {
             formState.setFieldValidator(name, validator);
         }
-    }, [!validator]);
+    }, [name, !validator]);
 
-    // This simple state and validation section is to support controls that are not within a Form component.
+    // This simple state and validation section is to support controls that are not within a Form component or without a name.
     const [fieldValue, setFieldValue] = useState();
-    if (!formState) { 
-        const error = validator ? validator(name) : '';
+    if (!formState || !name) { 
+        const error = validator ? validator(fieldValue) : '';
 
         return [fieldValue, setFieldValue, error];
     }

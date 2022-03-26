@@ -21,10 +21,12 @@ export default function ViewOptionsForm({view, onSubmit, onCancel}) {
     }
 
     return <Form className="form" state={view} onSubmit={handleFormSubmit}>
+        <div className="form__title"><i className="icon-view"></i> View Properties</div>
+
         <label className="form__label">Name</label>
         <TextBox className="form__input" name="name" autoFocus />
         <div className="form__buttons">
-            <button type="submit" className="form__submit">{view.id ? "Save" : "Create"}</button>
+            <button type="submit" className="form__submit">{view?.id ? "Save" : "Create"}</button>
             <button type="button" className="form__button" onClick={handleCancelClick}>Cancel</button>
         </div>
     </Form>

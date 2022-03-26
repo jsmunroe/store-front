@@ -9,6 +9,10 @@ $color-dim: lighten($color-dark, 50%);
     color: $color-dark;
     border-radius: 3px;
     transition: $transition-normal;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    gap: 5px;
     cursor: pointer;
 
     & input[type="radio"], 
@@ -16,9 +20,13 @@ $color-dim: lighten($color-dark, 50%);
         display: none;
     }
 
-    &:hover, &:focus-within {
+    &:hover {
         background-color: $color-accent-light-green;
     }
+
+    // &:focus-within {
+    //     background-color: lighten($color-accent-light-green, 100);
+    // }
 
     &:disabled {
         background-color: $color-shadow;
@@ -33,11 +41,16 @@ $color-dim: lighten($color-dark, 50%);
     background-color: $color-accent-green;
     color: $color-highlight;
 
-    &:hover, &:focus-within {
+    &:hover {
         border-color: $color-accent-green;
         background-color: $color-highlight;
         color: $color-accent-green;
     }
+
+    // &:focus-within {
+    //     background-color: lighten($color-accent-green, 100);
+    //     border-color: $color-accent-green;
+    // }
 }
 
 @mixin icon-button {
