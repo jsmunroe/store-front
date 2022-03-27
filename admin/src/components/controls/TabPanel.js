@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useReducer} from "react"
+import useChange from "../../hooks/useChange";
 import useFieldState from "../../hooks/useFormState";
 import { callWith, classIf } from "../../utils/htmlHelpers";
 import { createReducer } from "../../utils/reduxHelpers";
@@ -127,9 +128,9 @@ function useTabPanelState(selectedTabName) {
 function useTabItemState(name, title) {
     const tabPanelState = useContext(TabPanelContext);
 
-    useEffect(() => {
+    useChange(() => {
         tabPanelState.addTab(name, title);
-    }, [name, title])
+    }, [])
 
     const isSelected = tabPanelState.getSelectedTabName() === name;
     const select = () => tabPanelState.selectTab(name);

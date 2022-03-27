@@ -156,10 +156,23 @@ class formState {
     }
 }
 
-export function useFormState(form) {
+export function useFormReducer(form) {
     const [state, dispatch] = useReducer(formReducer, {...initialState, form: form ?? {}});
 
     return new formState(state, dispatch);
+}
+
+export function useFormState(name) {
+    const formState = useContext(FormStateContext);
+    
+    if (!name) {
+        throw new Error('useFormState requires a name argument.');
+    }
+
+    const value = formState.getFieldValue(name);
+    const setValue = value => formState.setFieldValue(name, value);
+
+    return [value, setValue];
 }
 
 export const FormStateContext = createContext();

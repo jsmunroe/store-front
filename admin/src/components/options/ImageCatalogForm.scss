@@ -1,0 +1,30 @@
+@import './src/styles/colors';
+
+.image-catalog {
+
+    &__item-list {
+        display: flex;
+        gap: 5px;
+        padding: 15px;
+        justify-items: start;
+        flex-wrap: wrap;
+        flex-basis: auto;
+        margin: -10px;
+        overflow-y: auto;
+        max-height: 350px;
+    }
+
+    &__button {
+        cursor: pointer;
+        transition: $transition-normal;
+        height: 100px;
+    }
+
+    &__button:hover {
+        transform: scale(110%, 110%);
+    }
+
+    &__image {
+        height: 100%;
+    }
+}

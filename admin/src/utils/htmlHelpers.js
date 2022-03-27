@@ -150,3 +150,4 @@ export function newLinesToBreaks(text) {
 export function breaksToNewLines(text) {
     return text.replace(/<br\s*\/?>/i, '\r\n');  
 }
+

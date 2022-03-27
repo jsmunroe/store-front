@@ -1,7 +1,7 @@
-import {useFormState, FormStateContext } from "../../hooks/useFormState";
+import {useFormReducer, FormStateContext } from "../../hooks/useFormState";
 
 export default function Form({state, onSubmit, children, ...props}) {
-    const formState = useFormState(state);
+    const formState = useFormReducer(state);
 
     const handleSubmit = event => {
         event.preventDefault();

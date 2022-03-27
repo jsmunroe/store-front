@@ -38,12 +38,12 @@ export function ModalHarness({children}) {
                 onSubmit: (model) => {
                     setModalState(null);
                     resolve(model);
-                    state.onSubmit && state.onSubmit(model);
+                    state?.onSubmit && state.onSubmit(model);
                 },
                 onCancel: (model) => {
                     setModalState(null);
                     resolve(null);
-                    state.onCancel && state.onCancel(model);
+                    state?.onCancel && state.onCancel(model);
                 }
             }
 

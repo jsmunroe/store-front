@@ -12,16 +12,22 @@ export async function listCategories() {
 }
 
 export async function listImages(categoryName, pageSize, pageToken) {
+    if (!categoryName) {
+        return {
+            images: []
+        }
+    }
+
     const categoryRef = ref(storage, `image-store/${categoryName}`);
     const res = await list(categoryRef, { maxResults: pageSize, pageToken: pageToken });
 
     const images = await Promise.all(res.items.map(async item => {
-        const src = await getDownloadURL(item);
+        const source = await getDownloadURL(item);
 
         return {
             name: item.name,
             path: item.fullPath,
-            src
+            source
         }
     }));
 
