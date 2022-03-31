@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import { useContext, useReducer } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { confirm as confirmBox } from "react-confirm-box";
 import { key, useKeyBindings } from "../hooks/useKeyBindings";
+import { createReducer } from "../utils/reduxHelpers";
 
 const ModalContext = createContext();
 
@@ -26,34 +27,51 @@ export function Modal({content, ...state}) {
     </div>
 }
 
+const modalReducerActions = {
+    pushFrame: frame => ({type: 'PUSH_FRAME', frame}),
+    popFrame: () => ({type: 'POP_FRAME'}),
+}
+
+const modalReducer = createReducer({
+    PUSH_FRAME: (state, {frame}) => {
+        return [...state, frame];
+    },
+    POP_FRAME: (state) => {
+        return state.slice(0, -1);
+    }
+}, [])
+
 export function ModalHarness({children}) {
-    const [modalState, setModalState] = useState(null);
+    const [state, dispatch] = useReducer(modalReducer, []);
+
+    const popFrame = () => dispatch(modalReducerActions.popFrame());
+    const pushFrame = frame => dispatch(modalReducerActions.pushFrame(frame));
 
     const contextValue = {};
-    contextValue.hide = () => setModalState(null);
+    contextValue.hide = () => popFrame(null);
     contextValue.show = (content, state) => {
         return new Promise((resolve, reject) => {
-            const thisState = {
+            const frameState = {
                 ...state, 
                 onSubmit: (model) => {
-                    setModalState(null);
+                    popFrame();
                     resolve(model);
                     state?.onSubmit && state.onSubmit(model);
                 },
                 onCancel: (model) => {
-                    setModalState(null);
+                    popFrame();
                     resolve(null);
                     state?.onCancel && state.onCancel(model);
                 }
             }
 
-            setModalState({...thisState, content})
+            pushFrame({...frameState, content})
         })
     }
 
     return <ModalContext.Provider value={contextValue}>
         {children}
-        <Modal {...modalState} />
+        {state.map((frame, index) => <Modal key={index} {...frame} />)}
     </ModalContext.Provider>
 }
 

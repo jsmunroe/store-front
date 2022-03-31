@@ -1,27 +1,36 @@
 @import './src/styles/colors';
 
-.image-catalog {
+.image-catalog-form {
+    height: 75vh;
 
-    &__item-list {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    justify-items: stretch;
+    gap: 10px;
+}
+
+.image-catalog {
+    height: 100%;
+    overflow-y: auto;
+
+    &__collage {
         display: flex;
-        gap: 5px;
-        padding: 15px;
         justify-items: start;
+        gap: 5px;
         flex-wrap: wrap;
         flex-basis: auto;
-        margin: -10px;
-        overflow-y: auto;
-        max-height: 350px;
     }
 
     &__button {
         cursor: pointer;
         transition: $transition-normal;
         height: 100px;
+        //padding: 2.5px;
+        //border: 0.5px solid gray;
     }
 
     &__button:hover {
-        transform: scale(110%, 110%);
+        transform: scale(105%, 105%);
     }
 
     &__image {

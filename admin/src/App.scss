@@ -180,18 +180,49 @@ body {
     display: none;
 }
 
+// Scrollbars
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    opacity: 0;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #222; 
+    border-radius: 200px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
 // Reused Styles
 .form {
     padding: 20px;
     font-size: 1.1rem;
 
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 8px;
+    &:not(.no-grid) {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+    }
+
+    &__group {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+    }
 
     &__title {
-        grid-column: 1/3;
-        margin: -10px -10px 20px -10px;
+        margin: -10px -10px 10px -10px;
 
         i {
             font-size: 1.25em;
@@ -200,12 +231,16 @@ body {
         }
     }
 
-    &__row {
+    &:not(.no-grid) &__title {
+        grid-column: 1/3;
+    }
+
+    &:not(.no-grid) &__row {
         grid-column: 1/3;
     }
 
     &__label {
-        padding-top: 9px;
+        padding-top: 4px;
         text-align: right;
     }
 
@@ -220,7 +255,7 @@ body {
     }
 
     &__input, &__select {
-        height: 38px;
+        height: 30px;
         width: 100%;
     }
 
@@ -243,8 +278,11 @@ body {
     &__buttons {
         display: flex;
         justify-items: end;
-        grid-column: 1 / 3;
         margin-top: 16px;
+    }
+    
+    &:not(.no-grid) &__buttons {
+        grid-column: 1 / 3;
     }
 
     &__submit,
@@ -328,7 +366,7 @@ body {
 
     &__button {
         @include button;
-        padding: 4px 8px;
+        padding: 2px 8px;
         margin-left: 5px;
     }
 }

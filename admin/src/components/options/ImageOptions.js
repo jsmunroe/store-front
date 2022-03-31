@@ -8,12 +8,14 @@ import { useFormState } from "../../hooks/useFormState";
 export default function ImageOptions() {
     const modal = useModal();
     const [,setImageRef] = useFormState("image-ref");
+    const [,setSrc] = useFormState("src");
     
     const handleBrowseCatalogClick = async event => {
         const image = await modal.show(ImageCatalogForm);
 
         if (image) {
             setImageRef(image.path);
+            setSrc(image.source);
         }
     }
 

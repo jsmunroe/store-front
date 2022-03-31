@@ -24,15 +24,35 @@ export async function listImages(categoryName, pageSize, pageToken) {
     const images = await Promise.all(res.items.map(async item => {
         const source = await getDownloadURL(item);
 
-        return {
+        const [width, height] = await getDimensions(source);
+
+        var image = {
             name: item.name,
             path: item.fullPath,
-            source
-        }
+            source,
+            width, 
+            height,
+        };
+
+        image.getDimensions = () => getDimensions(source, image);
+
+        return image;
     }));
 
     return {
         images,
         nextPageToken: res.nextPageToken,
     }
+}
+
+function getDimensions(source) {
+    const image = new Image();
+    var promise = new Promise(resolve => {
+        image.addEventListener("load", () => {
+            resolve([image.naturalWidth, image.naturalHeight])
+        }, { once: true });
+    })    
+    image.src = source;
+
+    return promise;
 }
