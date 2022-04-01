@@ -12,28 +12,41 @@
 .image-catalog {
     height: 100%;
     overflow-y: auto;
+    overflow-x: visible;
+}
 
-    &__collage {
-        display: flex;
-        justify-items: start;
+.collage {
+    &__image-list {
         gap: 5px;
-        flex-wrap: wrap;
-        flex-basis: auto;
     }
 
     &__button {
         cursor: pointer;
-        transition: $transition-normal;
-        height: 100px;
-        //padding: 2.5px;
-        //border: 0.5px solid gray;
     }
 
     &__button:hover {
         transform: scale(105%, 105%);
     }
+}
 
-    &__image {
-        height: 100%;
+.image {
+    position: relative;
+
+    &__name {
+        position: absolute;
+        font-size: 0.7em;
+        left: 0px;
+        bottom: 0px;
+        padding: 5px;
+        font-weight: bold;
+        color: white;
+        opacity: 0;
+        background-color: rgba(black, 0.5);
+        width: 100%;
+    }
+
+    &:hover &__name {
+        opacity: 1;
+        transition: $transition-normal;
     }
 }

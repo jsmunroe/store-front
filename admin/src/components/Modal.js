@@ -1,5 +1,4 @@
 import { useContext, useReducer } from "react";
-import { useState } from "react";
 import { createContext } from "react";
 import { confirm as confirmBox } from "react-confirm-box";
 import { key, useKeyBindings } from "../hooks/useKeyBindings";

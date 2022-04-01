@@ -1,0 +1,18 @@
+.collage {
+    &__image-list {
+        display: flex;
+        justify-items: start;
+        flex-wrap: wrap;
+        flex-basis: auto;
+    }
+
+    &__button {
+        transition: all 0.2s;
+        height: 100px;
+    }
+    
+    &__image, &__button > * {
+        height: 100%;
+    }
+}
+
