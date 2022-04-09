@@ -1,12 +1,12 @@
 import { listCategories, listImages } from "../../api/images.firebase";
 import useFetch from "../../hooks/useFetch";
 import { useFormState } from "../../hooks/useFormState";
-import './ImageCatalogForm.scss';
 import Form from "../controls/Form";
 import Select from "../controls/Select";
 import Error from "../Error";
 import Busy from "../Busy";
-import Collage from "../Collage";
+import ImagePanel from "../ImagePanel";
+import './ImageCatalogForm.scss';
 
 export default function ImageCatalogForm({onSubmit, onCancel}) {
     var {data, isLoading, error} = useFetch(listCategories);
@@ -53,7 +53,7 @@ function CatalogImages({onSelect}) {
         {error && <Error message="Error loading images." />}
 
         <div className="image-catalog__item-list">
-            <Collage images={images} onSelect={onSelect} itemComponent={CatalogImage} />
+            <ImagePanel images={images} onSelect={onSelect} itemComponent={CatalogImage} />
         </div>
     </div>
 }
