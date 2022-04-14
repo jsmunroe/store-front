@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useChange from "./useChange";
 
-export default function useFetch(fetch, ready=true) {
+export default function useFetch(fetch, dependencies = []) {
     if (typeof fetch !== 'function') {
         throw new Error('useFetch requires an asynchronous function that fetches data.');
     }
@@ -11,20 +11,19 @@ export default function useFetch(fetch, ready=true) {
     const [error, setError] = useState();
 
     useChange(() => {
-        if (ready) {
-            fetch()
-                .then(data => {
-                    setData(data)
-                })
-                .catch(error => {
-                    setError(error);
-                })
-                .then(() => {
-                    setIsLoading(false);
-                })
-        }
+        fetch()
+            .then(data => {
+                setData(data)
+            })
+            .catch(error => {
+                setError(error);
+            })
+            .then(() => {
+                setIsLoading(false);
+            });
             
-    }, [ready])
+        dependencies.toString();
+    }, dependencies)
 
     return {data, isLoading, error}
 }

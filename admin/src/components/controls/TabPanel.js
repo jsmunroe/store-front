@@ -4,13 +4,14 @@ import useFieldState from "../../hooks/useFormState";
 import { callWith, classIf } from "../../utils/htmlHelpers";
 import { createReducer } from "../../utils/reduxHelpers";
 
-export function TabPanel({name, title, selectedTabName: selectedTabNameProp, children}) {
+export function TabPanel({name, title, selectedTabName: selectedTabNameProp, onSelectedTabChange, children}) {
     const [value, setValue] = useFieldState(name);
     const tabPanelState = useTabPanelState(selectedTabNameProp ?? value);
 
     const handleTabClick = (event, tabName) => {
         tabPanelState.selectTab(tabName);
         setValue(tabName);
+        onSelectedTabChange && onSelectedTabChange(tabName);
     }
 
     return <TabPanelContext.Provider value={tabPanelState}>

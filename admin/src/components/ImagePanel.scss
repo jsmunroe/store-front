@@ -16,28 +16,17 @@
         width: 20%;
         padding: 2.5px;
     }
-
-    &__button.active {
-        transition: all 0.5s ease-in;
-        position: absolute;
-        z-index:10;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
     
     &__image {
         height: 99%;
         width: 100%;
         object-fit: cover;
         transition: all 0.1s;
-
     }
 
-    &__button:not(.active) &__image:hover {
+    &__button:not(.active):hover {
         transition: all 0.5s;
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 }
 
