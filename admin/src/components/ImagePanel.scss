@@ -1,3 +1,5 @@
+@import './src/styles/mixins';
+
 .image-panel {
     height: 100%;
     position: relative;
@@ -8,10 +10,9 @@
         flex-wrap: wrap;
         flex-basis: auto;
         overflow: hidden;
-        padding: 10px;
     }
 
-    &__button {
+    &__button, &__add-button {
         height: 100px;
         width: 20%;
         padding: 2.5px;
@@ -27,6 +28,16 @@
     &__button:not(.active):hover {
         transition: all 0.5s;
         transform: scale(1.05);
+    }
+
+    &__add-button {
+        @include new-button;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: initial;
+
     }
 }
 

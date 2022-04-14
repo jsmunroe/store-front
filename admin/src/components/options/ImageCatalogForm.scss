@@ -25,17 +25,16 @@
     }
 }
 
-.collage {
-    &__image-list {
-        gap: 5px;
-    }
+.image-drop-zone {    
+    height: 100%;
+    position: relative;
 
-    &__button {
-        cursor: pointer;
-    }
+    &__cancel-button {
+        @include tool-button;
 
-    &__button:hover {
-        transform: scale(105%, 105%);
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
 }
 

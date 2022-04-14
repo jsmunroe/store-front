@@ -115,3 +115,17 @@ $color-dim: lighten($color-dark, 50%);
         color: $color-dark;
     }
 }
+
+@mixin new-button {
+    background-color: rgba($color-shadow, 0.2);
+    color: $color-highlight;
+
+    &__icon {
+        font-size: 1.25em;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: rgba($color-shadow, 0.5);
+    }
+}

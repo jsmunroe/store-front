@@ -55,17 +55,7 @@
     }
 
     &__create-view {
-        background-color: rgba($color-shadow, 0.2);
-        color: $color-highlight;
-
-        &__icon {
-            font-size: 1.25em;
-        }
-
-        &:hover,
-        &:focus {
-            background-color: rgba($color-shadow, 0.5);
-        }
+        @include new-button;        
     }
 
 }

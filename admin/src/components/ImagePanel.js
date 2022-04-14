@@ -12,11 +12,11 @@ export default function ImagePanel({images, onSelect, itemComponent}) {
     return <div className="image-panel">
         <div className="image-panel__image-list">
             {images?.map(image => 
-                <button key={image.name} type="button" className="image-panel__button" onClick={callWith(handleImageClick, image)} style={{height: image.cellHeight}}>
+                <div key={image.name} className="image-panel__button" onClick={callWith(handleImageClick, image)}>
                     <Item image={image}>
                         <img className="image-panel__image" src={image.source} alt={image.name} />
                     </Item>
-                </button>
+                </div>
             )}
         </div>
     </div>
