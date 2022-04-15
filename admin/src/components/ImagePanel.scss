@@ -25,11 +25,6 @@
         transition: all 0.1s;
     }
 
-    &__button:not(.active):hover {
-        transition: all 0.5s;
-        transform: scale(1.05);
-    }
-
     &__add-button {
         @include new-button;
 

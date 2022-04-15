@@ -180,6 +180,20 @@ body {
     &__content {
         min-width: 400px;
     }
+
+    &__message {
+        margin: 15px;
+        font-size: 1.2em;
+    }
+
+    .form__button, .form__submit {
+        padding: 4px 8px;
+        min-width: 60px;
+    }
+
+    .form__buttons {
+        margin-top: 4px;
+    }
 }
 
 .confirm-box__overlay {

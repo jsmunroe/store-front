@@ -11,7 +11,7 @@ $color-dim: lighten($color-dark, 50%);
     transition: $transition-normal;
     display: flex;
     align-items: center;
-    justify-items: center;
+    justify-content: center;
     gap: 5px;
     cursor: pointer;
 

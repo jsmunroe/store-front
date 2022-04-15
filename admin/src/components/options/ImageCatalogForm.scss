@@ -23,6 +23,18 @@
     &__item-list {
         height:100%;
     }
+
+    &__busy {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba($color-highlight, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
 
 .image-drop-zone {    
@@ -49,9 +61,8 @@
         bottom: 0px;
         padding: 5px;
         font-weight: bold;
-        color: white;
         opacity: 0;
-        background-color: rgba(black, 0.5);
+        background-color: rgba(white, 0.8);
         width: 100%;
     }
 
@@ -68,9 +79,18 @@
         opacity: 1;
         transition: $transition-normal;
     }
+}
 
-    &:hover &__tool-button {
-        opacity: 1;
+.drop-zone {
+    border: 3px dashed transparent;
+    border-radius: 10px;
+    margin: -8px;
+    padding: 5px;
+    height: 100%;
+
+    &.active {
+        border: 3px dashed darkgray;
         transition: $transition-normal;
     }
 }
+

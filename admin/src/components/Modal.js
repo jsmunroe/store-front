@@ -104,7 +104,7 @@ function Confirm({message, onConfirm, onCancel}) {
         <div className="confirm__backdrop" onMouseDown={onCancel}></div>
         <div className="confirm__content">
             <div className="form">
-                <label>{message}</label>
+                <label className="confirm__message">{message}</label>
                 <div className="form__buttons">
                     <button type="submit" className="form__submit" onClick={onConfirm}>Yes</button>
                     <button type="button" className="form__button" onClick={onCancel}>No</button>
