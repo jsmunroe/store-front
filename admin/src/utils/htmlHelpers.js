@@ -98,7 +98,7 @@ export function toNameIsChecked(handler) {
 }
 
 export function callWith(handler, ...params) {
-    return event => handler(event, ...params);
+    return event => handler && handler(event, ...params);
 }
 
 // Replace the default behavior of the event with the given handler.

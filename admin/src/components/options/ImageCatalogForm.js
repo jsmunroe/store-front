@@ -11,7 +11,9 @@ import Busy from "../Busy";
 import ImagePanel from "../ImagePanel";
 
 import './ImageCatalogForm.scss';
-import { classIf } from "../../utils/htmlHelpers";
+import { callWith, classIf } from "../../utils/htmlHelpers";
+import useRefresh from "../../hooks/useRefresh";
+import useStateList from "../../hooks/useStateList";
 
 export default function ImageCatalogForm({onSubmit, onCancel}) {
     var {data, isLoading, error} = useFetch(listCategories);
@@ -35,6 +37,7 @@ function CatalogImages({onSelect, onCancel}) {
     const [category] = useFormState('category');
     const {data, isLoading, error, refresh} = useFetch(() => listImages(category), [category]);
     const {isBusy, busyWhile} = useBusy();
+    const selectedImages = useStateList();
 
     const { getRootProps, getInputProps, open, isDragActive } = useDropzone({
         onDrop: files => handleDrop(files), 
@@ -67,24 +70,44 @@ function CatalogImages({onSelect, onCancel}) {
         }
     }
 
+    const handleItemSelect = (event, image) => {
+        if (event.ctrlKey) {
+            isSelected(image) ? selectedImages.add(image) : selectedImages.remove(i => i === image);
+        }
+        else {
+            selectedImages.clear();
+            !isSelected(image) && selectedImages.add(image);
+        }
+    }
+
+    const handleClearItemSelection = event => {
+        selectedImages.clear();
+    }
+
     const handleUploadClick = event => {
         open();
     }
 
-    const { images } = data ?? { images: [] };
-    const Item = ({children, ...props}) => <CatalogImage onDelete={handleDeleteImage} {...props}>{children}</CatalogImage>
+    const isSelected = image => selectedImages.items.some(i => i === image);
+
+    let { images } = data ?? { images: [] };
+    images.forEach(image => image.isSelected = isSelected(image));
+
+    const Item = ({children, ...props}) => <CatalogImage onSelect={handleItemSelect} {...props}>{children}</CatalogImage>
 
     return <>
-        <div className={`drop-zone ${classIf(isDragActive, 'active')}`}>
-            {/* <input {...getInputProps()} /> */}
+        <div className={`image-catalog drop-zone ${classIf(isDragActive, 'active')}`} {...getRootProps()}>
+            <input {...getInputProps()} />
 
-            <div className="image-catalog">
+            <div className="image-catalog" onClick={handleClearItemSelection}>
                 {error && <Error message="Error loading images." />}
 
                 <div className="image-catalog__item-list">
-                    <ImagePanel images={images} onSelect={handleSelectImage} itemComponent={Item} />
+                    <ImagePanel images={images} itemComponent={Item} />
                 </div>
             </div>
+
+            <div className="drop-zone__overlay">Drop the image here to add it to this category.</div>
         </div>
         <div className="form__buttons">
             <button type="button" className="form__button" onClick={handleUploadClick}>Upload an Image</button>
@@ -96,18 +119,20 @@ function CatalogImages({onSelect, onCancel}) {
     </>
 }
     
-function CatalogImage({image, children, onDelete}) {
-    const handleDelete = event => {
+function CatalogImage({image, children, onSelect}) {
+    const [refresh] = useRefresh();
+
+    const handleClick = (event, image) => {
         event.stopPropagation();
-        onDelete && onDelete(image);
+        onSelect && onSelect(event, image);
+        refresh();
     }
 
-    return <div className="image">
-        {children}
-        <div className="image__name">{image.name}</div>
-        <button type="button" className="image__tool-button" onMouseDown={handleDelete}>
-            <i className="fas fa-times fa-fw"></i>
-        </button>
+    return <div className={`item ${classIf(image.isSelected, 'selected')}`} onClick={callWith(handleClick, image)}>
+        <div className="item__image">
+            {children}
+        </div>
+        <div className="item__name">{image.name}</div>
     </div>
 }
 
